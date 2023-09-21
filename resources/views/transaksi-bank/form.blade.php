@@ -32,7 +32,7 @@
                                 <th>Harga / Kg</th>
                                 <th>Berat (kg)</th>
                                 <th>Subtotal</th>
-                                <th>Action</th>
+                                <th style="width: 50px;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -56,7 +56,7 @@
                                     <span class="subtotal">0</span>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-success" onclick="addRow()">Tambah</button>
+                                    <button type="button" class="btn btn-success" onclick="addRow()">+</button>
                                 </td>
                             </tr>
                         </tbody>

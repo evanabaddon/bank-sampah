@@ -38,7 +38,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->name }}</td>
-                                    <td>{{ $item->harga }}</td>
+                                    <td>{{ $item->formatRupiah('harga') }}</td>
                                     <td>
                                         {!! Form::open([
                                             'route' => [ 'kategori-layanan.destroy', $item->id],

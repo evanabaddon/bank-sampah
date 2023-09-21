@@ -5,21 +5,27 @@ namespace App\Http\Controllers;
 use App\Models\Nasabah;
 use App\Models\Tagihan;
 use App\Models\TransaksiBank;
+use App\Traits\HasFormatRupiah;
 use DB;
 use Illuminate\Http\Request;
 
 class BerandaOperatorController extends Controller
 {
+    use HasFormatRupiah;
+
     public function index()
     {
         // hitung jumlah nasabah
         $jumlahNasabah = Nasabah::count();
-        // hitung total tagihan belum lunas bulan ini
+        // hitung total tagihan belum lunas bulan ini dengan format rupiah
         $totalTagihanBulanIni = Tagihan::where('status', 'belum')->whereMonth('tanggal_jatuh_tempo', date('m'))->sum('jumlah_tagihan');
+        
         // hitung total tagihan lunas bulan ini
         $totalTagihanLunasBulanIni = Tagihan::where('status', 'lunas')->whereMonth('tanggal_jatuh_tempo', date('m'))->sum('jumlah_tagihan');
+        
         // hitung total transaksi bank bulan ini
         $totalTransaksiBankBulanIni = TransaksiBank::whereMonth('created_at', date('m'))->sum('total_harga');
+        
         // tampilkan 10 nasabah terakhir
         $nasabahTerakhir = Nasabah::orderBy('created_at', 'desc')->limit(10)->get();
 

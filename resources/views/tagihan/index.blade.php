@@ -45,7 +45,7 @@
                                         <td>{{ $item->tanggal_tagihan }}</td>
                                         <td>{{ $item->tanggal_jatuh_tempo }}</td>
                                         <td>{{ $item->nasabah->kategoriLayanan->name }}</td>
-                                        <td>{{ $item->jumlah_tagihan }}</td>
+                                        <td>{{ $item->formatRupiah('jumlah_tagihan') }}</td>
                                         <td>
                                             @if ($item->status == 'belum')
                                                 <span class="badge bg-red">Belum Bayar</span>

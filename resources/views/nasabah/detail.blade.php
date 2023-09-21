@@ -25,7 +25,7 @@
                     <b>Terdaftar Pada</b> <a class="pull-right">{{ \Carbon\Carbon::parse($model->created_at)->translatedFormat('d F Y H:i:s') }}</a>
                   </li>
                   <li class="list-group-item">
-                    <b>Saldo</b> <a class="pull-right">{{ $model->saldo }}</a>
+                    <b>Saldo</b> <a class="pull-right">{{ $model->formatRupiah('saldo') }}</a>
                   </li>
                   <li class="list-group-item">
                     <b>Friends</b> <a class="pull-right">13,287</a>
@@ -113,7 +113,7 @@
                                     <td>{{ $monthName }}</td>
                                     <td>{{ $tagihan ? \Carbon\Carbon::parse($model->tanggal_tagihan)->translatedFormat('d F Y') : '-' }}</td>
                                     <td>{{ $tagihan ? \Carbon\Carbon::parse($model->tanggal_jatuh_tempo)->translatedFormat('d F Y') : '-' }}</td>
-                                    <td>{{ $tagihan ? $tagihan->jumlah_tagihan : '-' }}</td>
+                                    <td>{{ $tagihan ? $tagihan->formatRupiah('jumlah_tagihan') : '-' }}</td>
                                     <td>
                                         @if ($tagihan && $tagihan->status === 'belum')
                                             <span class="badge bg-red">Belum Dibayar</span>

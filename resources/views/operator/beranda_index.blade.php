@@ -25,7 +25,7 @@
         <div class="col-lg-3 col-xs-6">
             <div class="small-box bg-green">
                 <div class="inner">
-                    <h3>{{ $totalTagihanLunasBulanIni }}</h3>
+                    <h3>Rp {{ number_format($totalTagihanLunasBulanIni, 0, ',', '.') }}</h3>
                     <p>Total PPC Lunas Bulan Ini</p>
                 </div>
                 <div class="icon">
@@ -38,7 +38,7 @@
         <div class="col-lg-3 col-xs-6">
             <div class="small-box bg-red">
                 <div class="inner">
-                    <h3>{{ $totalTagihanBulanIni }}</h3>
+                    <h3>Rp {{ number_format($totalTagihanBulanIni, 0, ',', '.') }}</h3>
                     <p>Total PPC Belum Lunas Bulan Ini</p>
                 </div>
                 <div class="icon">
@@ -51,7 +51,7 @@
         <div class="col-lg-3 col-xs-6">
             <div class="small-box bg-yellow">
                 <div class="inner">
-                    <h3>{{ $totalTransaksiBankBulanIni }}</h3>
+                    <h3>Rp {{ number_format($totalTransaksiBankBulanIni, 0, ',', '.') }}</h3>
                     <p>Total Transaksi BSP Bulan Ini</p>
                 </div>
                     <div class="icon">
@@ -132,7 +132,7 @@
                                     <td>{{ $nasabah->rt }}</td>
                                     <td>{{ $nasabah->rw }}</td>
                                     <td>{{ $nasabah->nohp }}</td>
-                                    <td>{{ $nasabah->saldo }}</td>
+                                    <td>{{ $nasabah->formatRupiah('saldo') }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

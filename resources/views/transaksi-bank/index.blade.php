@@ -42,7 +42,7 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item->nasabah->name }}</td>
                                         <td>{{ $item->created_at }}</td>
-                                        <td>{{ $item->total_harga }}</td>
+                                        <td>{{ $item->formatRupiah('total_harga') }}</td>
                                         <td>{{ $item->operator_name }}</td>
                                         <td>
                                             {!! Form::open([

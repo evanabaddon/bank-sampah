@@ -67,7 +67,7 @@
                                             @endif
                                         </td>
                                         <td>{{ $item->kategoriLayanan->name ?? '-' }}</td>
-                                        <td>{{ $item->saldo }}</td>
+                                        <td>{{ $item->formatRupiah('saldo') }}</td>
                                         <td>
                                             {!! Form::open([
                                                 'route' => [ 'nasabah.destroy', $item->id],
