@@ -12,7 +12,7 @@
         <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <a href="{{ route('transaksi-bank.create') }}" class="btn btn-primary">Tambah Transaksi Bank</a>
+                    <a href="{{ route('transaksi-bank.create') }}" class="btn btn-primary">Tambah Transaksi BSP</a>
                     <div class="box-tools">
                         <div class="input-group input-group-sm hidden-xs" style="width: 200px;">
                             <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
@@ -51,31 +51,34 @@
                                                 'onsubmit' => 'return confirm("Yakin ingin menghapus data ini?")'
                                             ]) !!}
                                             <div class="btn-group">
-                                                    <a href="#" class="btn btn-success" data-toggle="modal" data-target="#confirmModal-{{ $item->id }}"><b>Bayar</b></a>
-                                                    <a href="{{ route('tagihan.edit',  $item->id) }}" class="btn btn-primary">Edit</a>
-                                                
+                                                <a href="{{ route('transaksi-bank.show', ['transaksi_bank' => $item->id]) }}" class="btn btn-primary">Detail</a>
+                                                {{-- spasi --}}
+                                                &nbsp;
+                                                <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#confirmModalDelete-{{ $item->id }}"><b>Hapus</b></a>
                                             </div>
                                             {!! Form::close() !!}
                                         </td>
                                     </tr>
-                                    <!-- Modal Konfirmasi Pembayaran -->
-                                    <div class="modal fade" id="confirmModal-{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel-{{ $item->id }}">
+                                    <!-- Modal Konfirmasi Hapus -->
+                                    <div class="modal fade" id="confirmModalDelete-{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="confirmModalDeleteLabel-{{ $item->id }}">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h4 class="modal-title" id="confirmModalLabel-{{ $item->id }}">Konfirmasi Pembayaran</h4>
+                                                    <h4 class="modal-title" id="confirmModalDeleteLabel-{{ $item->id }}">Konfirmasi Hapus Transaksi</h4>
                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <p>Apakah Anda yakin ingin melakukan transaksi pembayaran untuk tagihan ini?</p>
+                                                    <p>Apakah Anda yakin ingin menghapus transaksi ini?</p>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary pull-left" data-dismiss="modal">Tutup</button>
-                                                    @if ($item)
-                                                    <a href="{{ route('update.and.print.nota', ['tagihan_id' => $item->id]) }}" class="btn btn-primary">Yakin</a>
-                                                    @endif
+                                                    <form action="{{ route('transaksi-bank.destroy', ['transaksi_bank' => $item->id]) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger">Hapus</button>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>

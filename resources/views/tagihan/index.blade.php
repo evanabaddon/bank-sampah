@@ -28,6 +28,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th>Invoice</th>
                                     <th>Nama Nasabah</th>
                                     <th>Tanggal Tagihan</th>
                                     <th>Tanggal Jatuh Tempo</th>
@@ -41,6 +42,7 @@
                                 @forelse ($models as $item)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
+                                        <td>{{  'PPC/' . $item->id . '/' . $item->nasabah_id . '/' . date('my', strtotime($item->tanggal_tagihan)) }}</td>
                                         <td>{{ $item->nasabah->name }}</td>
                                         <td>{{ $item->tanggal_tagihan }}</td>
                                         <td>{{ $item->tanggal_jatuh_tempo }}</td>

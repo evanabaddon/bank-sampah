@@ -60,6 +60,7 @@
 		<tr>
 			<td colspan="100" style="font-size: 14px; color: #5b5b5b; font-family: 'Open Sans', sans-serif; line-height: 18px; vertical-align: bottom; text-align: center;">
 				<strong>Bukti Bayar</strong>
+				<br>INVOICE: {{  'PPC/' . $tagihan->id . '/' . $tagihan->nasabah_id  . '/' . date('my', strtotime($tagihan->tanggal_tagihan)) }}
 			</td>
 		</tr>
 		<tr>
@@ -68,7 +69,6 @@
 				<br>
 			</td>
 			<td style="font-size: 12px; color: #5b5b5b; font-family: 'Open Sans', sans-serif; line-height:18px; vertical-align: top; text-align: right;">
-				<br>INVOICE: {{  'PPC/' . $tagihan->id }}
 				<br>Tanggal: {{ now()->format('d F Y') }}
 			</td>
 		</tr>

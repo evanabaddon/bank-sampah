@@ -27,9 +27,6 @@
                   <li class="list-group-item">
                     <b>Saldo</b> <a class="pull-right">{{ $model->formatRupiah('saldo') }}</a>
                   </li>
-                  <li class="list-group-item">
-                    <b>Friends</b> <a class="pull-right">13,287</a>
-                  </li>
                 </ul>
                     <button class="btn btn-warning btn-block" data-toggle="modal" data-target="#confirmGeneratePinModal"><b>Buat PIN Baru</b></button>
                     <a href="{{ route('nasabah.kirim-pin', $model->id) }}" class="btn btn-success btn-block" target="_blank"><b>Kirim PIN</b></a>
@@ -74,12 +71,13 @@
                     
                     <h3 class="box-title">Detail Tagihan Layanan PPC (Pelayanan Sampah) Tahun {{ date('Y') }}</h3>
                     <div class="box-tools">
-                        <div class="input-group input-group-sm hidden-xs" style="width: 200px;">
-                            <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
-                            <div class="input-group-btn">
-                                <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                            </div>
-                        </div>
+                        {{-- tombol transaksi bank sampah dengan mengirim id_nasabah --}}
+                        @if ($model->is_bsp)
+                            <a href="{{ route('transaksi-bank.create', ['id_nasabah' => $model->id]) }}" class="btn btn-block btn-primary"><b>Transaksi BSP</b></a>
+                        @else
+                        <a href="{{ route('transaksi-bank.create', ['id_nasabah' => $model->id]) }}" class="btn btn-block btn-primary disabled"><b>Transaksi BSP</b></a>
+                        @endif
+                        
                     </div>
                 </div>
                 <!-- /.box-header -->

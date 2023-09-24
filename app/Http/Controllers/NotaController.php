@@ -40,8 +40,17 @@ class NotaController extends Controller
         // Retrieve the nasabah (customer) based on the provided nasabah_id
         $nasabah = Nasabah::findOrFail($tagihan->nasabah_id);
 
+        // nomor tagihan
+        $nomor_tagihan = 'PPC/' . $tagihan->id . '/' . $tagihan->nasabah_id . '/' . date('my', strtotime($tagihan->tanggal_tagihan));
+
+        // bulan tagihan
+        $bulan_tagihan = date('F Y', strtotime($tagihan->tanggal_tagihan));
+
+        // footer pesan. ambil dari env nama aplikasi
+        $footer = env('APP_NAME');
+
         // Format URL untuk mengirim pesan ke WhatsApp nasabah dengan status tagihan lunas
-        $whatsappUrl = 'https://api.whatsapp.com/send?phone=' . $nasabah->nohp . '&text=Tagihan%20anda%20dengan%20nomor%20tagihan%20' . $tagihan->nomor_tagihan . '%20telah%20lunas.%20Terima%20kasih.';
+        $whatsappUrl = 'https://api.whatsapp.com/send?phone=' . $nasabah->nohp . '&text=Tagihan%20anda%20dengan%20nomor%20tagihan%20' . $nomor_tagihan . '%20Bulan%20'. $bulan_tagihan. '%20telah%20lunas.%20Terima%20kasih. *' . $footer . '*.';
     
         // Redirect ke URL WhatsApp dengan membuka tab baru
         return redirect()->away($whatsappUrl)->withHeaders(['target' => '_blank', 'rel' => 'noopener noreferrer']);

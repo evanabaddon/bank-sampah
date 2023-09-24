@@ -26,4 +26,25 @@ class TransaksiBank extends Model
     {
         return $this->belongsTo(Nasabah::class, 'id_nasabah', 'id');
     }
+
+    public function operator()
+    {
+        return $this->belongsTo(User::class, 'id_operator');
+    }
+
+    public function detailTransaksiBank()
+    {
+        return $this->hasMany(DetailTransaksiBank::class, 'id_transaksi_bank', 'id');
+    }
+
+    // Event deleting untuk menghapus detail transaksi bank
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($transaksiBank) {
+            // Hapus semua detail transaksi bank yang terkait
+            $transaksiBank->detailTransaksiBank()->delete();
+        });
+    }
 }

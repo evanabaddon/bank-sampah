@@ -17,13 +17,16 @@
                 <!-- /.box-header -->
                 <div class="box-body">
                     {!! Form::model($model, ['route' => $route, 'method' => $method, 'class'=>'form-horizontal']) !!}
+                    
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">Nama Nasabah</label>
                         <div class="col-sm-10">
-                            {!! Form::select('id_nasabah', $nasabahs, null, ['class'=>'form-control select2']) !!}
+                            {!! Form::select('id_nasabah', $nasabahs, $idNasabah, ['class'=>'form-control select2']) !!}
                             <span class="text-danger">{{ $errors->first('id_nasabah') }}</span> 
-                        </div>
+                        </div>                        
                     </div>
+                    
+                    
                     <!-- Tabel untuk detail jenis sampah -->
                     <table class="table table-bordered" id="jenisSampahTable">
                         <thead>

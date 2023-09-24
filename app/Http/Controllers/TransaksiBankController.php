@@ -44,8 +44,9 @@ class TransaksiBankController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($id_nasabah = null)
     {
+        
         // Get nasabah when is_bsp = 1
         $nasabahs = Nasabah::where('is_bsp', 1)->pluck('name', 'id')->all();
 
@@ -61,12 +62,14 @@ class TransaksiBankController extends Controller
             'method' => 'POST',
             'route' => $this->routePrefix . '.store',
             'button' => 'SIMPAN',
-            'title' => 'Transaksi Bank Sampah'
+            'title' => 'Transaksi Bank Sampah',
+            'idNasabah' => $id_nasabah, // Variabel ini akan digunakan dalam form
         ];
 
         // Return the view with compacted data
-        return view($this->routePrefix . '.' . $this->viewCreate, compact('nasabahs', 'jenisSampahs', 'hargaSampah') + $data);
+        return view($this->routePrefix . '.' . $this->viewCreate, compact('nasabahs', 'jenisSampahs', 'hargaSampah', 'id_nasabah') + $data);
     }
+
 
 
     /**
@@ -107,7 +110,7 @@ class TransaksiBankController extends Controller
         foreach ($jenisSampahIds as $index => $jenisSampahId) {
             $hargaSampah = JenisSampah::find($jenisSampahId)->harga;
             $berat = $beratSampahs[$index];
-            $subtotal = $hargaSampah * $berat;
+            $subtotal = $hargaSampah * $berat; // Hitung subtotal berdasarkan harga dan berat
             $totalHarga += $subtotal;
         }
 
@@ -116,15 +119,13 @@ class TransaksiBankController extends Controller
 
         // Menyimpan detail transaksi bank sampah
         foreach ($jenisSampahIds as $index => $jenisSampahId) {
-            $hargaSampah = JenisSampah::find($jenisSampahId)->harga;
             $berat = $beratSampahs[$index];
-            $subtotal = $hargaSampah * $berat;
 
             $detail = new DetailTransaksiBank();
             $detail->id_transaksi_bank = $transaksi->id;
             $detail->id_jenis_sampah = $jenisSampahId;
-            $detail->berat = $beratSampahs[$index];
-            $detail->harga = $hargaSampah; // Memasukkan harga ke dalam atribut 'harga'
+            $detail->berat = $berat; // Memasukkan berat yang sesuai
+            $detail->harga = $hargaSampah; // Menggunakan harga per kilogram
             $detail->save();
         }
 
@@ -137,6 +138,7 @@ class TransaksiBankController extends Controller
     }
 
 
+
     /**
      * Display the specified resource.
      *
@@ -145,7 +147,9 @@ class TransaksiBankController extends Controller
      */
     public function show(Model $transaksiBank)
     {
-        //
+        $transaksiBank->load('operator', 'nasabah', 'detailTransaksiBank.jenisSampah');
+        // dd($transaksiBank->toArray());
+        return view($this->routePrefix . '.' . $this->viewShow, compact('transaksiBank'));
     }
 
     /**
@@ -179,6 +183,28 @@ class TransaksiBankController extends Controller
      */
     public function destroy(Model $transaksiBank)
     {
-        //
+        // Pastikan pengguna telah login
+        if (Auth::check()) {
+            $id_operator = Auth::user()->id; // Mengambil id_operator dari pengguna yang login
+        } else {
+            // Handle jika pengguna tidak login (opsional)
+            return redirect()->route('login')->with('error', 'Anda harus login terlebih dahulu.');
+        }
+
+        // Mengambil data transaksi bank
+        $transaksi = TransaksiBank::find($transaksiBank->id);
+
+        // Mengambil saldo nasabah terkait
+        $nasabah = Nasabah::find($transaksi->id_nasabah);
+
+        // Mengurangkan saldo nasabah sesuai dengan total transaksi
+        $nasabah->saldo -= $transaksi->total_harga;
+        $nasabah->save();
+
+        // Hapus transaksi bank
+        $transaksiBank->delete();
+
+        return redirect()->route($this->routePrefix . '.index')->with('success', 'Transaksi berhasil dihapus');
     }
+
 }

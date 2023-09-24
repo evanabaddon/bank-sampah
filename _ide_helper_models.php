@@ -174,7 +174,10 @@ namespace App\Models{
  * @property int $id_operator
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DetailTransaksiBank> $detailTransaksiBank
+ * @property-read int|null $detail_transaksi_bank_count
  * @property-read \App\Models\Nasabah|null $nasabah
+ * @property-read \App\Models\User|null $operator
  * @method static \Database\Factories\TransaksiBankFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|TransaksiBank newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|TransaksiBank newQuery()

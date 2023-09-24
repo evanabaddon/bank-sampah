@@ -26,7 +26,7 @@
             <div class="small-box bg-green">
                 <div class="inner">
                     <h3>Rp {{ number_format($totalTagihanLunasBulanIni, 0, ',', '.') }}</h3>
-                    <p>Total PPC Lunas Bulan Ini</p>
+                    <p>PPC Lunas Bulan Ini</p>
                 </div>
                 <div class="icon">
                     <i class="ion ion-stats-bars"></i>
@@ -39,7 +39,7 @@
             <div class="small-box bg-red">
                 <div class="inner">
                     <h3>Rp {{ number_format($totalTagihanBulanIni, 0, ',', '.') }}</h3>
-                    <p>Total PPC Belum Lunas Bulan Ini</p>
+                    <p>PPC Belum Lunas Bulan Ini</p>
                 </div>
                 <div class="icon">
                     <i class="ion ion-pie-graph"></i>
