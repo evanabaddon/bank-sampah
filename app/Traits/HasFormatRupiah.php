@@ -7,7 +7,9 @@ trait HasFormatRupiah
     public function formatRupiah($field, $prefix = null)
     {
         $prefix = $prefix ?? 'Rp ';
-        return $prefix . number_format($this->attributes[$field], 0, ',', '.');
+        // if decimal convert to float if not as is
+        $value = ($this->$field) ? $this->$field : (float) $field;
+        return $prefix . number_format($value, 0, ',', '.');
     }
 }
 

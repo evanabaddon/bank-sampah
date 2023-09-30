@@ -108,10 +108,14 @@ class TransaksiBankController extends Controller
         $totalHarga = 0;
 
         foreach ($jenisSampahIds as $index => $jenisSampahId) {
+            $jenisSampah = JenisSampah::find($jenisSampahId);
             $hargaSampah = JenisSampah::find($jenisSampahId)->harga;
             $berat = $beratSampahs[$index];
             $subtotal = $hargaSampah * $berat; // Hitung subtotal berdasarkan harga dan berat
             $totalHarga += $subtotal;
+            // menambah stok jenis sampah
+            $jenisSampah->stok += $berat;
+            $jenisSampah->save();
         }
 
         $transaksi->total_harga = $totalHarga;
@@ -149,6 +153,7 @@ class TransaksiBankController extends Controller
     {
         $transaksiBank->load('operator', 'nasabah', 'detailTransaksiBank.jenisSampah');
         // dd($transaksiBank->toArray());
+        
         return view($this->routePrefix . '.' . $this->viewShow, compact('transaksiBank'));
     }
 
@@ -194,6 +199,17 @@ class TransaksiBankController extends Controller
         // Mengambil data transaksi bank
         $transaksi = TransaksiBank::find($transaksiBank->id);
 
+        // Mengambil detail transaksi bank
+        $detailTransaksi = DetailTransaksiBank::where('id_transaksi_bank', $transaksi->id)->get();
+
+        // Mengembalikan stok jenis sampah sesuai dengan berat pada detail transaksi
+        foreach ($detailTransaksi as $detail) {
+            $jenisSampah = JenisSampah::find($detail->id_jenis_sampah);
+            // mengurangkan stok jenis sampah
+            $jenisSampah->stok -= $detail->berat;
+            $jenisSampah->save();
+        }
+
         // Mengambil saldo nasabah terkait
         $nasabah = Nasabah::find($transaksi->id_nasabah);
 
@@ -206,5 +222,6 @@ class TransaksiBankController extends Controller
 
         return redirect()->route($this->routePrefix . '.index')->with('success', 'Transaksi berhasil dihapus');
     }
+
 
 }

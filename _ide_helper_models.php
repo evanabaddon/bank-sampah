@@ -17,8 +17,8 @@ namespace App\Models{
  * @property int $id
  * @property int $id_transaksi_bank
  * @property int $id_jenis_sampah
- * @property int $berat
- * @property int $harga
+ * @property string $berat
+ * @property string $harga
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\JenisSampah|null $jenisSampah

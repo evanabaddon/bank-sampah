@@ -30,7 +30,8 @@
                                 <th>No</th>
                                 <th>Nama</th>
                                 <th>Harga / Bulan</th>
-                                <th>Aksi</th>
+                                <th>Stok (Kg)</th>
+                                <th style="width: 200px">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -39,6 +40,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->formatRupiah('harga') }}</td>
+                                    <td>{{ $item->stok }}</td>
                                     <td>
                                         {!! Form::open([
                                             'route' => [ 'jenis-sampah.destroy', $item->id],

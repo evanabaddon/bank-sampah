@@ -38,7 +38,8 @@
                                 <tr>
                                     <th>Jenis Sampah</th>
                                     <th>Berat (Kg)</th>
-                                    <th>Total Harga</th>
+                                    <th>Harga</th>
+                                    <th>Subtotal</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -47,6 +48,7 @@
                                         <td>{{ $detail->jenisSampah->name }}</td>
                                         <td>{{ $detail->berat }}</td>
                                         <td>{{ $detail->formatRupiah('harga') }}</td>
+                                        <td>{{ $detail->formatRupiah($detail->berat * $detail->harga) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -155,8 +155,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <li class="{{ \Route::is('nasabah.*') ? 'active' : '' }}"><a href="{{ route('nasabah.index') }}"><i class="fa fa-group"></i> <span>Nasabah</span></a></li>
         {{-- transasi --}}
         <li class="header">TRANSAKSI</li>
-        <li class="{{ \Route::is('tagihan.*') ? 'active' : '' }}"><a href="{{ route('tagihan.index') }}"><i class="fa fa-file-text-o"></i> <span>Transaksi Tagihan</span></a></li>
-        <li class="{{ \Route::is('transaksi-bank.*') ? 'active' : '' }}"><a href="{{ route('transaksi-bank.index') }}"><i class="fa fa-university"></i> <span>Transaksi Bank</span></a></li>
+        <li class="{{ \Route::is('tagihan.*') ? 'active' : '' }}"><a href="{{ route('tagihan.index') }}"><i class="fa fa-file-text-o"></i> <span>Transaksi PPC</span></a></li>
+        <li class="{{ \Route::is('transaksi-bank.*') ? 'active' : '' }}"><a href="{{ route('transaksi-bank.index') }}"><i class="fa fa-university"></i> <span>Transaksi BSP</span></a></li>
         <li class="header">USER</li>
         <li class="{{ \Route::is('user.*') ? 'active' : '' }}"><a href="{{ route('user.index') }}"><i class="fa fa-user"></i> <span>Data User</span></a></li>
       </ul>
@@ -185,7 +185,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       Made With ❤️
     </div>
     <!-- Default to the left -->
-    <strong>Copyright &copy; 2023 <a href="https://agranirwasita.com/">AgranirwasitaTech</a>.</strong> All rights reserved.
+    <strong>Copyright &copy; 2023 <a href="https://www.instagram.com/evanhelga/">Digitaloka</a>.</strong> All rights reserved.
   </footer>
   <!-- Add the sidebar's background. This div must be placed
   immediately after the control sidebar -->
