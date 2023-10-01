@@ -31,5 +31,6 @@ class Tagihan extends Model
     {
         return $this->belongsTo(Nasabah::class, 'nasabah_id');
     }
+    
 }
 

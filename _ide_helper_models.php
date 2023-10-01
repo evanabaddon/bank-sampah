@@ -45,7 +45,7 @@ namespace App\Models{
  * @property int $id
  * @property string $name
  * @property int $harga
- * @property int $stok
+ * @property string $stok
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Database\Factories\JenisSampahFactory factory($count = null, $state = [])

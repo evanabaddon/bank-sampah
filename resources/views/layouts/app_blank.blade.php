@@ -44,6 +44,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
         font-size: 12px; /* Ganti ukuran sesuai kebutuhan Anda */
     }
 
+    /* Gaya cetak */
+    @media print {
+        /* CSS untuk header tabel gelap saat mencetak */
+        .table-dark thead {
+            background-color: #343a40; /* Warna latar belakang header gelap */
+            color: #fff; /* Warna teks pada header gelap */
+        }
+    }
+
+    /* CSS untuk header tabel gelap */
+    .table-dark thead {
+        background-color: #343a40; /* Warna latar belakang header gelap */
+        color: #fff; /* Warna teks pada header gelap */
+    }
+
+
+
     @keyframes marquee {
         0% {
             transform: translateX(100%);
@@ -72,128 +89,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
   </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
-<div class="wrapper">
 
-  <!-- Main Header -->
-  <header class="main-header">
 
-    <!-- Logo -->
-    <a href="#" class="logo">
-      <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>S</b>T</span>
-      <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Smart</b>Trash</span>
-    </a>
-
-    <!-- Header Navbar -->
-    <nav class="navbar navbar-static-top" role="navigation">
-      <!-- Sidebar toggle button-->
-      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-        <span class="sr-only">Toggle navigation</span>
-      </a>
-      <!-- Navbar Right Menu -->
-      <div class="navbar-custom-menu">
-        <ul class="nav navbar-nav">
-          <!-- User Account Menu -->
-          <li class="dropdown user user-menu">
-            <!-- Menu Toggle Button -->
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <!-- The user image in the navbar-->
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png" class="user-image" alt="User Image">
-              <!-- hidden-xs hides the username on small devices so only the image appears. -->
-              <span class="hidden-xs">{{ Auth::user()->name }}</span>
-            </a>
-            <ul class="dropdown-menu">
-              <!-- The user image in the menu -->
-              <li class="user-header">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png" class="img-circle" alt="User Image">
-                <p>
-                  {{ Auth::user()->name }}<br>
-                  {{ Auth::user()->email }}
-                </p>
-              </li>
-              <!-- Menu Footer-->
-              <li class="user-footer">
-                <div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat">Profile</a>
-                </div>
-                <div class="pull-right">
-                  <a href="{{ route('logout') }}" class="btn btn-default btn-flat">Sign out</a>
-                </div>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  </header>
-  <!-- Left side column. contains the logo and sidebar -->
-  <aside class="main-sidebar">
-
-    <!-- sidebar: style can be found in sidebar.less -->
-    <section class="sidebar">
-
-      <!-- Sidebar user panel (optional) -->
-      <div class="user-panel">
-        <div class="pull-left image">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png" class="img-circle" alt="User Image">
-        </div>
-        <div class="pull-left info">
-          <p>{{ Auth::user()->name }}</p>
-          <!-- Status -->
-          <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-        </div>
-      </div>
-
-      <!-- Sidebar Menu -->
-      <ul class="sidebar-menu" data-widget="tree">
-        <li class="header">UTAMA</li>
-        <li class="{{ \Route::is('operator.beranda') ? 'active' : '' }}"><a href="{{ route('operator.beranda') }}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-        <li class="header">MASTER DATA</li>
-        <li class="{{ \Route::is('kategori-layanan.*') ? 'active' : '' }}"><a href="{{ route('kategori-layanan.index') }}"><i class="fa fa-exchange"></i> <span>Kategori Layanan</span></a></li>
-        <li class="{{ \Route::is('jenis-sampah.*') ? 'active' : '' }}"><a href="{{ route('jenis-sampah.index') }}"><i class="fa fa-trash-o"></i> <span>Jenis Sampah</span></a></li>
-        <li class="{{ \Route::is('nasabah.*') ? 'active' : '' }}"><a href="{{ route('nasabah.index') }}"><i class="fa fa-group"></i> <span>Nasabah</span></a></li>
-        {{-- transasi --}}
-        <li class="header">TRANSAKSI</li>
-        <li class="{{ \Route::is('tagihan.*') ? 'active' : '' }}"><a href="{{ route('tagihan.index') }}"><i class="fa fa-file-text-o"></i> <span>Transaksi PPC</span></a></li>
-        <li class="{{ \Route::is('transaksi-bank.*') ? 'active' : '' }}"><a href="{{ route('transaksi-bank.index') }}"><i class="fa fa-university"></i> <span>Transaksi BSP</span></a></li>
-        <li class="header">LAPORAN</li>
-        <li class="{{ \Route::is('laporan.*') ? 'active' : '' }}"><a href="{{ route('laporan.index') }}"><i class="fa fa-files-o"></i> <span>Laporan Transaksi</span></a></li>
-        <li class="header">USER</li>
-        <li class="{{ \Route::is('user.*') ? 'active' : '' }}"><a href="{{ route('user.index') }}"><i class="fa fa-user"></i> <span>Data User</span></a></li>
-      </ul>
-      <!-- /.sidebar-menu -->
-    </section>
-    <!-- /.sidebar -->
-  </aside>
-
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
     
+
 
       @include('flash::message')
       @yield('content')
 
     
     <!-- /.content -->
-  </div>
+
   <!-- /.content-wrapper -->
 
-  <!-- Main Footer -->
-  <footer class="main-footer">
-    <!-- To the right -->
-    <div class="pull-right hidden-xs">
-      Made With ❤️
-    </div>
-    <!-- Default to the left -->
-    <strong>Copyright &copy; 2023 <a href="https://www.instagram.com/evanhelga/">Digitaloka</a>.</strong> All rights reserved.
-  </footer>
-  <!-- Add the sidebar's background. This div must be placed
-  immediately after the control sidebar -->
-  <div class="control-sidebar-bg"></div>
 
-</div>
+
+
 <!-- ./wrapper -->
 
 <!-- REQUIRED JS SCRIPTS -->

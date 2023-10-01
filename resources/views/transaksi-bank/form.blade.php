@@ -3,8 +3,8 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Transaksi Bank Sampah
-        <small>Tambah Transaksi Bank Sampah</small>
+        Transaksi BSP
+        <small>Tambah Transaksi BSP</small>
     </h1>
 </section>
 <section class="content">
@@ -49,7 +49,6 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <!-- Ini adalah tempat untuk menampilkan harga dari database -->
                                     <span class="harga"></span>
                                 </td>
                                 <td>
@@ -133,5 +132,6 @@
     }
 
 </script>
+
 
 @endsection

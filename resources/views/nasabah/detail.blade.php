@@ -28,8 +28,14 @@
                     <b>Saldo</b> <a class="pull-right">{{ $model->formatRupiah('saldo') }}</a>
                   </li>
                 </ul>
-                    <button class="btn btn-warning btn-block" data-toggle="modal" data-target="#confirmGeneratePinModal"><b>Buat PIN Baru</b></button>
-                    <a href="{{ route('nasabah.kirim-pin', $model->id) }}" class="btn btn-success btn-block" target="_blank"><b>Kirim PIN</b></a>
+                    {{-- <button class="btn btn-warning btn-block" data-toggle="modal" data-target="#confirmGeneratePinModal"><b>Buat PIN Baru</b></button>
+                    <a href="{{ route('nasabah.kirim-pin', $model->id) }}" class="btn btn-success btn-block" target="_blank"><b>Kirim PIN</b></a> --}}
+                    {{-- tombol transaksi bank sampah dengan mengirim id_nasabah --}}
+                    @if ($model->is_bsp)
+                    <a href="{{ route('transaksi-bank.create', ['id_nasabah' => $model->id]) }}" class="btn btn-block btn-primary"><b>Transaksi BSP</b></a>
+                    @else
+                    <a href="{{ route('transaksi-bank.create', ['id_nasabah' => $model->id]) }}" class="btn btn-block btn-primary disabled"><b>Transaksi BSP</b></a>
+                    @endif
               </div>
               <!-- /.box-body -->
             </div>
@@ -70,15 +76,7 @@
                 <div class="box-header with-border">
                     
                     <h3 class="box-title">Detail Tagihan Layanan PPC (Pelayanan Sampah) Tahun {{ date('Y') }}</h3>
-                    <div class="box-tools">
-                        {{-- tombol transaksi bank sampah dengan mengirim id_nasabah --}}
-                        @if ($model->is_bsp)
-                            <a href="{{ route('transaksi-bank.create', ['id_nasabah' => $model->id]) }}" class="btn btn-block btn-primary"><b>Transaksi BSP</b></a>
-                        @else
-                        <a href="{{ route('transaksi-bank.create', ['id_nasabah' => $model->id]) }}" class="btn btn-block btn-primary disabled"><b>Transaksi BSP</b></a>
-                        @endif
-                        
-                    </div>
+                    
                 </div>
                 <!-- /.box-header -->
                 @php

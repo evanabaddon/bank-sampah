@@ -10,6 +10,7 @@ use App\Models\JenisSampah;
 use App\Models\Nasabah;
 use App\Models\TransaksiBank;
 use Auth;
+use Carbon\Carbon;
 
 class TransaksiBankController extends Controller
 {
@@ -62,7 +63,7 @@ class TransaksiBankController extends Controller
             'method' => 'POST',
             'route' => $this->routePrefix . '.store',
             'button' => 'SIMPAN',
-            'title' => 'Transaksi Bank Sampah',
+            'title' => 'Transaksi BSP',
             'idNasabah' => $id_nasabah, // Variabel ini akan digunakan dalam form
         ];
 

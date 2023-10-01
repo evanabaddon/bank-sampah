@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\JenisLayananController;
 use App\Http\Controllers\KategoriLayananController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\NasabahController;
 use App\Http\Controllers\TagihanController;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,14 @@ Route::prefix('admin')->middleware(['auth', 'auth.admin'])->group(function () {
     Route::resource('kategori-layanan', KategoriLayananController::class);
     Route::resource('tagihan', TagihanController::class);
     Route::resource('transaksi-bank', TransaksiBankController::class);
+    Route::resource('laporan', LaporanController::class);
+    // laporan tagihan di LaporanCOntroller function tagihan
+    Route::get('laporan-tagihan', 'LaporanController@tagihan')->name('laporan.tagihan');
+    // route cetak pdf tagihan
+    Route::get('laporan-tagihan/cetak-pdf', 'LaporanController@cetakPdfTagihan')->name('laporan.tagihan.cetak-pdf');
+    // route cetak excel tagihan
+    Route::get('laporan-tagihan/cetak-excel', 'LaporanController@cetakExcelTagihan')->name('laporan.tagihan.cetak-excel');
+    Route::get('laporan-transaksi-bank', 'LaporanController@transaksiBank')->name('laporan.transaksi-bank');
     Route::get('transaksi-bank/create/{id_nasabah?}', 'TransaksiBankController@create')->name('transaksi-bank.create');
     Route::get('nasabah/{id}/buat-pin', 'App\Http\Controllers\NasabahController@generateNewPin')->name('nasabah.buat-pin');
     Route::get('nasabah/{id}/kirim-pin', 'App\Http\Controllers\NasabahController@kirimPin')->name('nasabah.kirim-pin');

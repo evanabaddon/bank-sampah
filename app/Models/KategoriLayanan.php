@@ -11,4 +11,5 @@ class KategoriLayanan extends Model
     use HasFactory;
     use HasFormatRupiah;
     protected $fillable = ['name', 'harga'];
+    
 }
