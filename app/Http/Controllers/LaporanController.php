@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\LaporanTagihanExport;
 use App\Models\JenisSampah;
 use App\Models\KategoriLayanan;
 use App\Models\Tagihan;
@@ -145,7 +146,7 @@ class LaporanController extends Controller
     public function cetakExcelTagihan(Request $request)
     {
         // Ambil data dari model Tagihan berdasarkan kriteria yang diberikan dalam request
-        $query = Tagihan::query();
+        $query = Tagihan::query()->with('nasabah.kategoriLayanan');
 
         // Filter berdasarkan status jika status tidak kosong
         if ($request->has('status') && !empty($request->status)) {
@@ -189,8 +190,11 @@ class LaporanController extends Controller
             'model' => $data, // Ganti 'data' menjadi 'model'
         ];
 
+        // dd($models);
+
         // Cetak Excel dengan nama file 'laporan-tagihan.xlsx' dan kirim data yang sudah diambil sebelumnya
-        // return Excel::download(new \App\Exports\LaporanTagihanExport($models), 'laporan-tagihan.xlsx');
+        return Excel::download(new LaporanTagihanExport($models), 'laporan-tagihan.xlsx');
+  
     }
     
     public  function transaksiBank(Request $request){
@@ -236,6 +240,56 @@ class LaporanController extends Controller
         ];
 
         return view('laporan.laporan-bank', $models);
+    }
+
+    // function cetak pdf transaksi bank
+    public function cetakPdfTransaksiBank (Request $request){
+        // Ambil data dari model Transaksi Bank berdasarkan kriteria yang diberikan dalam request
+        $query = TransaksiBank::query();
+
+        // Filter berdasarkan bulan jika bulan tidak kosong ambil dari kolom created_at
+        if ($request->has('bulan') && !empty($request->bulan)) {
+            $query->whereMonth('created_at', $request->bulan);
+        }
+
+        // Filter berdasarkan tahun jika tahun tidak kosong ambil dari kolom created_at
+        if ($request->has('tahun') && !empty($request->tahun)) {
+            $query->whereYear('created_at', $request->tahun);
+        }
+
+        $jenisSampah = null;
+
+        // Filter berdasarkan jenis sampah jika jenis sampah tidak kosong
+        if ($request->has('jenis_sampah_id') && !empty($request->jenis_sampah_id)) {
+            $query->whereHas('detailTransaksiBank', function ($q) use ($request, &$jenisSampah) {
+                $q->where('id_jenis_sampah', $request->jenis_sampah_id);
+                $jenisSampah = JenisSampah::find($request->jenis_sampah_id); // Ambil data jenis sampah
+            });
+        }
+
+
+        // Filter berdasarkan nama jikan tabel transaksi bank berelasikan dengan tabel nasabah dengan menggunakan id nasabah
+        if ($request->has('nama') && !empty($request->nama)) {
+            $query->whereHas('nasabah', function ($q) use ($request) {
+                $q->where('name', 'LIKE', '%' . $request->nama . '%');
+            });
+        }
+        // Ekseskusi query dan ambil hasilnya
+        $data = $query->get();
+
+        // Kirim data ke view dengan nama variabel yang benar
+        $models = [
+            'routePrefix' => $this->routePrefix,
+            'title' => 'Laporan Bank',
+            'model' => $data,
+            'jenisSampah' => $jenisSampah,
+        ];
+
+        return view('laporan.laporan-bank-pdf', $models);
+
+        // Cetak PDF dengan nama file 'laporan-bank.pdf' dan kirim data yang sudah diambil sebelumnya
+        $pdf = \PDF::loadView('laporan.laporan-bank-pdf', $models);
+        return $pdf->download('laporan-bank.pdf');
     }
 
     

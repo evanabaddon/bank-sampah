@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Nasabah;
+use App\Models\Saldo;
 use App\Models\Tagihan;
 use Illuminate\Http\Request;
 
@@ -19,13 +20,24 @@ class NotaController extends Controller
         // Retrieve the tagihan (bill) based on the provided tagihan_id
         $tagihan = Tagihan::findOrFail($tagihan_id);
 
-        // Update the status of the tagihan to "lunas" dan update tanggal bayar
+        // Update the status of the tagihan to "lunas" dan update tanggal bayar dan user_id yang melakukan pembayaran
 
         $tagihan->update(
             [
+                'user_id' => auth()->user()->id,
                 'status' => 'lunas',
                 'tanggal_bayar' => now(),
             ]);
+
+        // Mengambil jumlah tagihan yang telah dibayar
+        $jumlahTagihan = $tagihan->jumlah_tagihan;
+
+        // Mengambil saldo perusahaan
+        $saldoPerusahaan = Saldo::first(); // Ambil saldo perusahaan pertama
+
+        // Menambahkan saldo perusahaan sesuai dengan jumlah tagihan yang dibayar
+        $saldoPerusahaan->saldo += $jumlahTagihan;
+        $saldoPerusahaan->save();
 
         // return ke halaman detail nasabah
         return redirect()->route('nasabah.show', ['nasabah' => $tagihan->nasabah_id]);

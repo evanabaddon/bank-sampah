@@ -35,7 +35,7 @@
                     <div class="form-group">
                         <label for="harga" class="col-sm-2 control-label">Harga / Kg</label>
                         <div class="col-sm-10">
-                            {!! Form::text('harga', $model->harga ?  $model->harga : '', ['class'=>'form-control']) !!}
+                            {!! Form::text('harga', $model->harga ?  $model->harga : '', ['class'=>'form-control', 'data-rupiah'=>'true']) !!}
                             <span class="text-danger">{{ $errors->first('harga') }}</span> 
                         </div>
                     </div>

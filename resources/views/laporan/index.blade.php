@@ -16,7 +16,7 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <h4>Laporan Tagihan</h4>
+                    <h4>Laporan Tagihan Sampah</h4>
                     <div class="row">
                         {!! Form::open(['route' => 'laporan.tagihan', 'method' => 'GET']) !!}
                         <div class="col-md-4">
@@ -59,7 +59,7 @@
                         {!! Form::close() !!}
                     </div>
                     <hr>
-                    <h4>Laporan Tagihan</h4>
+                    <h4>Laporan Bank Sampah</h4>
                     <div class="row">
                         {!! Form::open(['route' => 'laporan.transaksi-bank', 'method' => 'GET']) !!}
                         <div class="col-md-4">
@@ -99,9 +99,6 @@
                     </div>
                 </div>
                 <!-- /.box-body -->
-                
-                
-                
             </div>
             <!-- /.box -->
         </div>

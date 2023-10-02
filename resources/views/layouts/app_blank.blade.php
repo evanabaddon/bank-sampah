@@ -163,6 +163,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   }
 
   $(document).ready(function() {
+      
       // Fungsi untuk mengaktifkan format mata uang Rupiah saat mengetik
       $("input[data-rupiah='true']").keyup(function(event) {
           $(this).val(formatRupiah($(this).val()));

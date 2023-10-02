@@ -43,7 +43,7 @@
                                         <td>{{ $item->nasabah->name }}</td>
                                         <td>{{ $item->created_at }}</td>
                                         <td>{{ $item->formatRupiah('total_harga') }}</td>
-                                        <td>{{ $item->operator_name }}</td>
+                                        <td>{{ $item->user ? $item->user->name : 'User Tidak Ditemukan' }}</td>
                                         <td>
                                             {!! Form::open([
                                                 'route' => [ 'nasabah.destroy', $item->id],

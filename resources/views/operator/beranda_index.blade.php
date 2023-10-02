@@ -4,7 +4,7 @@
 <section class="content-header">
     <h1>
         Dashboard
-        <small>Sistem Informasi Ciptakarya</small>
+        <small>Sistem Informasi SmartTrash</small>
     </h1>
 </section>
 <section class="content">

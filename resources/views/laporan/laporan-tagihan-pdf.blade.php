@@ -56,6 +56,7 @@
                 <th>Kategori Layanan</th>
                 <th>Total Tagihan</th>
                 <th>Status</th>
+                <th>Operator</th>
             </tr>
         </thead>
         <tbody>
@@ -75,6 +76,7 @@
                             Terbayar
                         @endif
                     </td>
+                    <td>{{ $item->user ? $item->user->name : 'User Tidak Ditemukan' }}</td>
                 </tr>
             @endforeach
         </tbody>

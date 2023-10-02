@@ -36,6 +36,9 @@
                     @else
                     <a href="{{ route('transaksi-bank.create', ['id_nasabah' => $model->id]) }}" class="btn btn-block btn-primary disabled"><b>Transaksi BSP</b></a>
                     @endif
+                    {{-- tombol penarikan saldo --}}
+                    <a href="{{ route('transaksi-penarikan.create', ['id_nasabah' => $model->id]) }}" class="btn btn-block btn-danger"><b>Penarikan Saldo</b></a>
+                    
               </div>
               <!-- /.box-body -->
             </div>

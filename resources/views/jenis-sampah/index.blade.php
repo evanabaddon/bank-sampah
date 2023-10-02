@@ -29,7 +29,7 @@
                             <tr>
                                 <th>No</th>
                                 <th>Nama</th>
-                                <th>Harga / Bulan</th>
+                                <th>Harga / Kg</th>
                                 <th>Stok (Kg)</th>
                                 <th style="width: 200px">Aksi</th>
                             </tr>

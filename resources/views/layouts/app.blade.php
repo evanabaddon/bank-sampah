@@ -157,8 +157,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <li class="header">TRANSAKSI</li>
         <li class="{{ \Route::is('tagihan.*') ? 'active' : '' }}"><a href="{{ route('tagihan.index') }}"><i class="fa fa-file-text-o"></i> <span>Transaksi PPC</span></a></li>
         <li class="{{ \Route::is('transaksi-bank.*') ? 'active' : '' }}"><a href="{{ route('transaksi-bank.index') }}"><i class="fa fa-university"></i> <span>Transaksi BSP</span></a></li>
+        <li class="{{ \Route::is('transaksi-pengeluaran.*') ? 'active' : '' }}"><a href="{{ route('transaksi-pengeluaran.index') }}"><i class="fa fa-money" aria-hidden="true"></i><span>Transaksi Pengeluaran</span></a></li>
+        <li class="{{ \Route::is('transaksi-penarikan.*') ? 'active' : '' }}"><a href="{{ route('transaksi-penarikan.index') }}"><i class="fa fa-credit-card" aria-hidden="true"></i><span>Transaksi Penarikan</span></a></li>
         <li class="header">LAPORAN</li>
         <li class="{{ \Route::is('laporan.*') ? 'active' : '' }}"><a href="{{ route('laporan.index') }}"><i class="fa fa-files-o"></i> <span>Laporan Transaksi</span></a></li>
+        <li class="{{ \Route::is('neraca-keuangan.*') ? 'active' : '' }}"><a href="{{ route('neraca-keuangan.index') }}"><i class="fa fa-file-text"></i> <span>Neraca Keuangan</span></a></li>
         <li class="header">USER</li>
         <li class="{{ \Route::is('user.*') ? 'active' : '' }}"><a href="{{ route('user.index') }}"><i class="fa fa-user"></i> <span>Data User</span></a></li>
       </ul>
@@ -170,9 +173,38 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    
-
-      @include('flash::message')
+      {{-- if flash message error --}}
+      @if (session('error'))
+      <div class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+          {{ session('error') }}
+      </div>
+      @endif
+      {{-- if flash message success --}}
+      @if (session('success'))
+      <div class="alert alert-success alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <h4><i class="icon fa fa-check"></i> Alert!</h4>
+          {{ session('success') }}
+      </div>
+      @endif
+      {{-- if flash message warning --}}
+      @if (session('warning'))
+      <div class="alert alert-warning alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <h4><i class="icon fa fa-warning"></i> Alert!</h4>
+          {{ session('warning') }}
+      </div>
+      @endif
+      {{-- if flash message info --}}
+      @if (session('info'))
+      <div class="alert alert-info alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <h4><i class="icon fa fa-info"></i> Alert!</h4>
+          {{ session('info') }}
+      </div>
+      @endif
       @yield('content')
 
     
@@ -230,11 +262,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{{ asset('adminlte') }}/bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('adminlte') }}/dist/js/adminlte.min.js"></script>
-<link rel="stylesheet" href="{{ asset('css/cdn.jsdelivr.net_npm_select2@4.1.0-rc.0_dist_css_select2.min.css') }}">
-<script src="{{ asset('js/cdn.jsdelivr.net_npm_select2@4.1.0-rc.0_dist_js_select2.min.js') }}"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{{ asset('js/jquery.mask.min.js') }}"></script>
 
 @yield('scripts')
 <script>
+  
   // Fungsi untuk menghilangkan tanda desimal dan memberi format mata uang Rupiah pada input
   function formatRupiah(angka) {
       var number_string = angka.toString().replace(/[^,\d]/g, ''),

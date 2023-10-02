@@ -1,14 +1,19 @@
-@extends('layouts.app_blank')
+@extends('layouts.app')
 
 @section('content')
-
+<section class="content-header">
+    <h1>
+        Laporan
+        <small>Data Laporan Bank</small>
+    </h1>
+</section>
 <section class="content">
     <div class="row justify-content-center">
         <div class="col-md-12">
-            <div class="">
+            <div class="box">
                 <div class="box-header" style="text-align: center;">
                     <h3 class="box-title">
-                        Laporan Bank Sampah
+                        Laporan Bank Sampah / BSP
                         @if(request('kategori_layanan_id'))
                             - Layanan: {{ $kategoriLayanan->name }}
                         @endif
@@ -68,6 +73,13 @@
                     </div>
                 </div>
                 <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="{{ route('laporan.transaksi.bank.cetak-pdf', request()->all()) }}" class="btn btn-danger" target="_blank"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>  PDF</a>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- /.box -->
         </div>

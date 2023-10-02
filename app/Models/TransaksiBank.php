@@ -27,7 +27,7 @@ class TransaksiBank extends Model
         return $this->belongsTo(Nasabah::class, 'id_nasabah', 'id');
     }
 
-    public function operator()
+    public function user()
     {
         return $this->belongsTo(User::class, 'id_operator');
     }

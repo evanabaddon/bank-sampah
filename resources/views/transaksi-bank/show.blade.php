@@ -28,7 +28,7 @@
                 </tr>
                 <tr>
                     <th>Operator</th>
-                    <td>{{ $transaksiBank->operator->name }}</td>
+                    <td>{{ $transaksiBank->user->name }}</td>
                 </tr>
                 <tr>
                     <th>Detail Transaksi</th>
@@ -47,8 +47,8 @@
                                     <tr>
                                         <td>{{ $detail->jenisSampah->name }}</td>
                                         <td>{{ $detail->berat }}</td>
-                                        <td>{{ $detail->formatRupiah('harga') }}</td>
-                                        <td>{{ $detail->formatRupiah($detail->berat * $detail->harga) }}</td>
+                                        <td>{{ $detail->jenisSampah->formatRupiah('harga') }}</td>
+                                        <td>{{ $detail->formatRupiah($detail->berat * $detail->jenisSampah->harga) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

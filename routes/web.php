@@ -4,7 +4,11 @@ use App\Http\Controllers\JenisLayananController;
 use App\Http\Controllers\KategoriLayananController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\NasabahController;
+use App\Http\Controllers\NeracaKeuanganController;
 use App\Http\Controllers\TagihanController;
+use App\Http\Controllers\TransaksiBankController;
+use App\Http\Controllers\TransaksiPenarikanController;
+use App\Http\Controllers\TransaksiPengeluaranController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,20 +49,25 @@ Route::prefix('admin')->middleware(['auth', 'auth.admin'])->group(function () {
     Route::resource('kategori-layanan', KategoriLayananController::class);
     Route::resource('tagihan', TagihanController::class);
     Route::resource('transaksi-bank', TransaksiBankController::class);
+    Route::resource('transaksi-pengeluaran', TransaksiPengeluaranController::class);
+    Route::resource('transaksi-penarikan', TransaksiPenarikanController::class);
     Route::resource('laporan', LaporanController::class);
-    // laporan tagihan di LaporanCOntroller function tagihan
     Route::get('laporan-tagihan', 'LaporanController@tagihan')->name('laporan.tagihan');
-    // route cetak pdf tagihan
     Route::get('laporan-tagihan/cetak-pdf', 'LaporanController@cetakPdfTagihan')->name('laporan.tagihan.cetak-pdf');
-    // route cetak excel tagihan
     Route::get('laporan-tagihan/cetak-excel', 'LaporanController@cetakExcelTagihan')->name('laporan.tagihan.cetak-excel');
     Route::get('laporan-transaksi-bank', 'LaporanController@transaksiBank')->name('laporan.transaksi-bank');
+    Route::get('laporan-transaksi-bank/cetak-pdf', 'LaporanController@cetakPdfTransaksiBank')->name('laporan.transaksi.bank.cetak-pdf');
+    Route::get('laporan-transaksi-bank/cetak-excel', 'LaporanController@cetakExcelTransaksiBank')->name('laporan.transaksi.bank.cetak-excel');
     Route::get('transaksi-bank/create/{id_nasabah?}', 'TransaksiBankController@create')->name('transaksi-bank.create');
+    Route::get('transaksi-penarikan/create/{id_nasabah?}', 'TransaksiPenarikanController@create')->name('transaksi-penarikan.create');
     Route::get('nasabah/{id}/buat-pin', 'App\Http\Controllers\NasabahController@generateNewPin')->name('nasabah.buat-pin');
     Route::get('nasabah/{id}/kirim-pin', 'App\Http\Controllers\NasabahController@kirimPin')->name('nasabah.kirim-pin');
     Route::get('nota/{tagihan_id}', 'NotaController@print')->name('print.nota');
     Route::get('nota/update-and-print/{tagihan_id}', 'NotaController@updateStatusAndPrint')->name('update.and.print.nota');
     Route::get('nota/kirim-nota/{tagihan_id}', 'NotaController@kirimNota')->name('kirim.nota');
+
+    Route::get('/neraca-keuangan', [NeracaKeuanganController::class, 'index'])->name('neraca-keuangan.index');
+    Route::get('/neraca-keuangan/pdf', 'NeracaKeuanganController@generatePdf')->name('neraca-keuangan.pdf');
 
 });
 

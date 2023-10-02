@@ -35,6 +35,7 @@
                                     <th>Kategori Layanan</th>
                                     <th>Total Tagihan</th>
                                     <th>Status</th>
+                                    <th>Operator</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -55,6 +56,7 @@
                                                 <span class="badge bg-green">Terbayar</span>
                                             @endif
                                         </td>
+                                        <td>{{ $item->user ? $item->user->name : 'User Tidak Ditemukan' }}</td>
                                         <td>
                                             {!! Form::open([
                                                 'route' => [ 'nasabah.destroy', $item->id],
@@ -64,7 +66,6 @@
                                             <div class="btn-group">
                                                 @if ($item && $item->status === 'belum')
                                                     <a href="#" class="btn btn-success" data-toggle="modal" data-target="#confirmModal-{{ $item->id }}"><b>Bayar</b></a>
-                                                    <a href="{{ route('tagihan.edit',  $item->id) }}" class="btn btn-primary">Edit</a>
                                                 @elseif ($item && $item->status === 'lunas')
                                                     <a href="{{ route('print.nota', ['tagihan_id' => $item->id]) }}" class="btn btn-primary" target="_blank">Cetak Nota</a>
                                                     <a href="{{ route('kirim.nota', ['tagihan_id' => $item->id]) }}" class="btn btn-success" target="_blank">Kirim Nota</a>

@@ -13,6 +13,7 @@ class Tagihan extends Model
     // fillable
     protected $fillable = [
         'nasabah_id',
+        'user_id',
         'tanggal_tagihan',
         'tanggal_jatuh_tempo',
         'jumlah_tagihan',
@@ -31,6 +32,17 @@ class Tagihan extends Model
     {
         return $this->belongsTo(Nasabah::class, 'nasabah_id');
     }
+
+    // kategoriLayanan
+    public function kategoriLayanan()
+    {
+        return $this->belongsTo(KategoriLayanan::class, 'kategori_layanan_id');
+    }
     
+    // user
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
 

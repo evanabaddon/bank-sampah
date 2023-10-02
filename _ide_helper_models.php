@@ -71,6 +71,8 @@ namespace App\Models{
  * @property int $harga
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tagihan> $tagihans
+ * @property-read int|null $tagihans_count
  * @method static \Database\Factories\KategoriLayananFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|KategoriLayanan newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|KategoriLayanan newQuery()
@@ -129,9 +131,29 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\Saldo
+ *
+ * @property int $id
+ * @property string $saldo
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Saldo newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Saldo newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Saldo query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Saldo whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Saldo whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Saldo whereSaldo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Saldo whereUpdatedAt($value)
+ */
+	class Saldo extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\Tagihan
  *
  * @property int $id
+ * @property int|null $user_id
  * @property int $nasabah_id
  * @property string $tanggal_tagihan
  * @property string $tanggal_jatuh_tempo
@@ -142,9 +164,11 @@ namespace App\Models{
  * @property string|null $keterangan
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\KategoriLayanan|null $kategoriLayanan
  * @property-read \App\Models\Nasabah|null $nasabah
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Tagihan> $tagihans
  * @property-read int|null $tagihans_count
+ * @property-read \App\Models\User|null $user
  * @method static \Database\Factories\TagihanFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Tagihan newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Tagihan newQuery()
@@ -160,6 +184,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Tagihan whereTanggalJatuhTempo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tagihan whereTanggalTagihan($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Tagihan whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Tagihan whereUserId($value)
  */
 	class Tagihan extends \Eloquent {}
 }
@@ -177,7 +202,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DetailTransaksiBank> $detailTransaksiBank
  * @property-read int|null $detail_transaksi_bank_count
  * @property-read \App\Models\Nasabah|null $nasabah
- * @property-read \App\Models\User|null $operator
+ * @property-read \App\Models\User|null $user
  * @method static \Database\Factories\TransaksiBankFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|TransaksiBank newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|TransaksiBank newQuery()
@@ -190,6 +215,59 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|TransaksiBank whereUpdatedAt($value)
  */
 	class TransaksiBank extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\TransaksiPenarikan
+ *
+ * @property int $id
+ * @property int|null $user_id
+ * @property int $nasabah_id
+ * @property string $jumlah
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Nasabah|null $nasabah
+ * @property-read \App\Models\User|null $user
+ * @method static \Database\Factories\TransaksiPenarikanFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenarikan newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenarikan newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenarikan query()
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenarikan whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenarikan whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenarikan whereJumlah($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenarikan whereNasabahId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenarikan whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenarikan whereUserId($value)
+ */
+	class TransaksiPenarikan extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\TransaksiPengeluaran
+ *
+ * @property int $id
+ * @property string $deskripsi
+ * @property string $jumlah
+ * @property string $tanggal
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int $user_id
+ * @property-read \App\Models\User|null $user
+ * @method static \Database\Factories\TransaksiPengeluaranFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPengeluaran newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPengeluaran newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPengeluaran query()
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPengeluaran whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPengeluaran whereDeskripsi($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPengeluaran whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPengeluaran whereJumlah($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPengeluaran whereTanggal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPengeluaran whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPengeluaran whereUserId($value)
+ */
+	class TransaksiPengeluaran extends \Eloquent {}
 }
 
 namespace App\Models{

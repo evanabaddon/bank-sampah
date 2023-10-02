@@ -26,9 +26,9 @@ class TransaksiBankController extends Controller
      */
     public function index()
     {
-        $transactions = Model::latest()
-        ->join('users', 'transaksi_banks.id_operator', '=', 'users.id') // Join dengan tabel users
-        ->select('transaksi_banks.*', 'users.name as operator_name') // Pilih kolom yang diperlukan
+
+        $transactions = Model::with('user:id,name') // Mengambil relasi user dengan kolom id dan name
+        ->latest()
         ->paginate(50);
 
         $data = [
@@ -91,17 +91,19 @@ class TransaksiBankController extends Controller
 
         // Validasi input
         $this->validate($request, [
-            'id_nasabah' => 'required|exists:nasabahs,id',
-            'jenis_sampah' => 'required|array',
-            'jenis_sampah.*' => 'exists:jenis_sampahs,id',
-            'berat' => 'required|array',
-            'berat.*' => 'numeric|min:0.01',
+                    'id_nasabah' => 'required|exists:nasabahs,id',
+                    'jenis_sampah' => 'required|array',
+                    'jenis_sampah.*' => 'exists:jenis_sampahs,id',
+                    'berat' => 'required|array',
+                    'berat.*' => 'numeric|min:0.01',
         ]);
 
         // Membuat transaksi bank sampah baru
         $transaksi = new TransaksiBank();
         $transaksi->id_nasabah = $request->input('id_nasabah');
         $transaksi->id_operator = $id_operator; // Menyimpan id_operator
+        $transaksi->total_harga = 0; // Inisialisasi total harga
+        $transaksi->save(); // Simpan transaksi bank
 
         // Hitung total harga sesuai dengan logika aplikasi Anda
         $jenisSampahIds = $request->input('jenis_sampah');
@@ -110,29 +112,29 @@ class TransaksiBankController extends Controller
 
         foreach ($jenisSampahIds as $index => $jenisSampahId) {
             $jenisSampah = JenisSampah::find($jenisSampahId);
-            $hargaSampah = JenisSampah::find($jenisSampahId)->harga;
             $berat = $beratSampahs[$index];
-            $subtotal = $hargaSampah * $berat; // Hitung subtotal berdasarkan harga dan berat
-            $totalHarga += $subtotal;
-            // menambah stok jenis sampah
+            $hargaPerKilogram = $jenisSampah->harga; // Harga per kilogram dari jenis sampah
+        
+            // Menghitung harga total berdasarkan berat
+            $totalHargaItem = $hargaPerKilogram * $berat;
+        
+            $totalHarga += $totalHargaItem;
+        
+            // Menambah stok jenis sampah
             $jenisSampah->stok += $berat;
             $jenisSampah->save();
+        
+            // Menyimpan detail transaksi bank sampah
+            $detail = new DetailTransaksiBank();
+            $detail->id_transaksi_bank = $transaksi->id; // Menggunakan id transaksi yang baru disimpan
+            $detail->id_jenis_sampah = $jenisSampahId;
+            $detail->berat = $berat; // Memasukkan berat yang sesuai
+            $detail->harga = $totalHargaItem; // Menggunakan total harga item
+            $detail->save();
         }
 
         $transaksi->total_harga = $totalHarga;
         $transaksi->save();
-
-        // Menyimpan detail transaksi bank sampah
-        foreach ($jenisSampahIds as $index => $jenisSampahId) {
-            $berat = $beratSampahs[$index];
-
-            $detail = new DetailTransaksiBank();
-            $detail->id_transaksi_bank = $transaksi->id;
-            $detail->id_jenis_sampah = $jenisSampahId;
-            $detail->berat = $berat; // Memasukkan berat yang sesuai
-            $detail->harga = $hargaSampah; // Menggunakan harga per kilogram
-            $detail->save();
-        }
 
         // Update saldo nasabah
         $nasabah = Nasabah::find($request->input('id_nasabah'));
@@ -140,6 +142,7 @@ class TransaksiBankController extends Controller
         $nasabah->save();
 
         return redirect()->route($this->routePrefix . '.index')->with('success', 'Transaksi berhasil disimpan');
+
     }
 
 
@@ -152,11 +155,12 @@ class TransaksiBankController extends Controller
      */
     public function show(Model $transaksiBank)
     {
-        $transaksiBank->load('operator', 'nasabah', 'detailTransaksiBank.jenisSampah');
-        // dd($transaksiBank->toArray());
-        
+        $transaksiBank = Model::with(['user', 'nasabah', 'detailTransaksiBank.jenisSampah'])
+            ->find($transaksiBank->id);
+
         return view($this->routePrefix . '.' . $this->viewShow, compact('transaksiBank'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
