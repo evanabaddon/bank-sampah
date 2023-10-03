@@ -12,7 +12,7 @@
         <div class="col-lg-3 col-xs-6">
             <div class="small-box bg-aqua">
                 <div class="inner">
-                    <h3>{{ $jumlahNasabah }}</h3>
+                    <h4 style="font-weight: bold;">{{ $jumlahNasabah }}</h4>
                     <p>Total Nasabah</p>
                 </div>
                 <div class="icon">
@@ -25,7 +25,7 @@
         <div class="col-lg-3 col-xs-6">
             <div class="small-box bg-green">
                 <div class="inner">
-                    <h3>Rp {{ number_format($totalTagihanLunasBulanIni, 0, ',', '.') }}</h3>
+                    <h4 style="font-weight: bold;">Rp {{ number_format($totalTagihanLunasBulanIni, 0, ',', '.') }}</h4>
                     <p>PPC Lunas Bulan Ini</p>
                 </div>
                 <div class="icon">
@@ -38,7 +38,7 @@
         <div class="col-lg-3 col-xs-6">
             <div class="small-box bg-red">
                 <div class="inner">
-                    <h3>Rp {{ number_format($totalTagihanBulanIni, 0, ',', '.') }}</h3>
+                    <h4 style="font-weight: bold;">Rp {{ number_format($totalTagihanBulanIni, 0, ',', '.') }}</h4>
                     <p>PPC Belum Lunas Bulan Ini</p>
                 </div>
                 <div class="icon">
@@ -51,7 +51,7 @@
         <div class="col-lg-3 col-xs-6">
             <div class="small-box bg-yellow">
                 <div class="inner">
-                    <h3>Rp {{ number_format($totalTransaksiBankBulanIni, 0, ',', '.') }}</h3>
+                    <h4 style="font-weight: bold;">Rp {{ number_format($totalTransaksiBankBulanIni, 0, ',', '.') }}</h4>
                     <p>Total Transaksi BSP Bulan Ini</p>
                 </div>
                     <div class="icon">

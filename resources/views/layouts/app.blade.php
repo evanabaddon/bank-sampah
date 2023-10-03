@@ -53,8 +53,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
         }
     }
 
-  </style>
-  <style>
     @media print {
         .box {
             overflow: visible !important;
@@ -69,8 +67,27 @@ scratch. This page gets rid of all links and provides the needed markup only.
             display: none;
         }
     }
+
+    /* Gaya default untuk appBottomMenu */
+    .appBottomMenu {
+        display: none; /* Sembunyikan pada tampilan desktop */
+        position: sticky;
+        bottom: 0;
+        background-color: #fff; 
+    }
+
+    /* Gunakan media query untuk menampilkan appBottomMenu hanya pada tampilan ponsel */
+    @media (max-width: 767px) {
+        .appBottomMenu {
+            display: block; /* Tampilkan pada tampilan ponsel */
+            /* Tambahan gaya lainnya sesuai kebutuhan Anda */
+        }
+    }
+    
   </style>
+
 </head>
+
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
 
@@ -127,6 +144,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       </div>
     </nav>
   </header>
+
   <!-- Left side column. contains the logo and sidebar -->
   <aside class="main-sidebar">
 
@@ -159,6 +177,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <li class="{{ \Route::is('transaksi-bank.*') ? 'active' : '' }}"><a href="{{ route('transaksi-bank.index') }}"><i class="fa fa-university"></i> <span>Transaksi BSP</span></a></li>
         <li class="{{ \Route::is('transaksi-pengeluaran.*') ? 'active' : '' }}"><a href="{{ route('transaksi-pengeluaran.index') }}"><i class="fa fa-money" aria-hidden="true"></i><span>Transaksi Pengeluaran</span></a></li>
         <li class="{{ \Route::is('transaksi-penarikan.*') ? 'active' : '' }}"><a href="{{ route('transaksi-penarikan.index') }}"><i class="fa fa-credit-card" aria-hidden="true"></i><span>Transaksi Penarikan</span></a></li>
+        <li class="{{ \Route::is('transaksi-penjualan.*') ? 'active' : '' }}"><a href="{{ route('transaksi-penjualan.index') }}"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span>Transaksi Penjualan</span></a></li>
         <li class="header">LAPORAN</li>
         <li class="{{ \Route::is('laporan.*') ? 'active' : '' }}"><a href="{{ route('laporan.index') }}"><i class="fa fa-files-o"></i> <span>Laporan Transaksi</span></a></li>
         <li class="{{ \Route::is('neraca-keuangan.*') ? 'active' : '' }}"><a href="{{ route('neraca-keuangan.index') }}"><i class="fa fa-file-text"></i> <span>Neraca Keuangan</span></a></li>
@@ -211,6 +230,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+
+  
 
   <!-- Main Footer -->
   <footer class="main-footer">

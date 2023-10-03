@@ -60,6 +60,7 @@
                                     <th>Keterangan</th>
                                     <th>Debet (Pemasukan)</th>
                                     <th>Kredit (Pengeluaran)</th>
+                                    <th>Saldo</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -70,9 +71,34 @@
                                 @foreach ($pemasukan as $transaksi)
                                 <tr>
                                     <td>{{ $rowNumber++ }}</td>
-                                    <td>{{ $transaksi->tanggal_tagihan }}</td>
-                                    <td>{{ 'Tagihan ' . $transaksi->nasabah->name . ' Bulan ' . date('F Y', strtotime($transaksi->tanggal_tagihan)) }}</td>
-                                    <td>Rp {{ number_format($transaksi->jumlah_tagihan, 2, ',', '.') }}</td>
+                                    <td>
+                                        @if ($transaksi->sumber == 'Tagihan')
+                                        {{ $transaksi->tanggal_tagihan }}
+                                        @elseif ($transaksi->sumber == 'Penjualan')
+                                        {{ $transaksi->tanggal }}
+                                        @else
+                                        N/A
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($transaksi->sumber == 'Tagihan')
+                                        Tagihan {{ optional($transaksi->nasabah)->name }} Bulan {{ date('F Y', strtotime($transaksi->tanggal_bayar)) }}
+                                        @elseif ($transaksi->sumber == 'Penjualan')
+                                        Penjualan Sampah
+                                        @else
+                                        N/A
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($transaksi->sumber == 'Tagihan')
+                                        Rp {{ number_format($transaksi->jumlah_tagihan, 0, ',', '.') }},-
+                                        @elseif ($transaksi->sumber == 'Penjualan')
+                                        Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }},-
+                                        @else
+                                        N/A
+                                        @endif
+                                    </td>
+                                    <td></td>
                                     <td></td>
                                 </tr>
                                 @endforeach
@@ -83,28 +109,23 @@
                                     <td>{{ $transaksi->tanggal }}</td>
                                     <td>{{ $transaksi->deskripsi }}</td>
                                     <td></td>
-                                    <td>Rp {{ number_format($transaksi->jumlah, 2, ',', '.') }}</td>
+                                    <td>Rp {{ number_format($transaksi->jumlah, 0, ',', '.') }},-</td>
+                                    <td></td>
                                 </tr>
                                 @endforeach
                             </tbody>
-                        </table>
-                    
-                        <h4>Total</h4>
-                        <table class="table table-bordered">
-                            <thead>
+                            <tfoot>
                                 <tr>
-                                    <th>Debet (Pemasukan)</th>
-                                    <th>Kredit (Pengeluaran)</th>
-                                    <th>Laba / Rugi</th>
+                                    <th colspan="3">Total</th>
+                                    <th>Rp {{ number_format($totalDebet, 0, ',', '.')  }},-</th>
+                                    <th>Rp {{ number_format($totalKredit, 0, ',', '.') }},-</th>
+                                    <th></th>
                                 </tr>
-                            </thead>
-                            <tbody>
                                 <tr>
-                                    <td>Rp {{ number_format($totalDebet, 2, ',', '.') }}</td>
-                                    <td>Rp {{ number_format($totalKredit, 2, ',', '.') }}</td>
-                                    <td>Rp {{ number_format($totalDebet - $totalKredit, 2, ',', '.') }}</td>
+                                    <th colspan="5">Laba / Rugi</th>
+                                    <th >Rp {{ number_format($saldo, 0, ',', '.') }}</th>
                                 </tr>
-                            </tbody>
+                            </tfoot>
                         </table>
                     @else
                         <h4 style="text-align: center;">Silahkan Pilih Bulan dan Tahun</h4>

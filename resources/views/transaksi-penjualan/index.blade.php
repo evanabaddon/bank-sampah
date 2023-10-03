@@ -3,8 +3,8 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Transaksi Penarikan
-        <small>Data Transaksi Penarikan Saldo</small>
+        Transaksi Penjualan
+        <small>Data Transaksi Penjualan Sampah</small>
     </h1>
 </section>
 <section class="content">
@@ -12,7 +12,7 @@
         <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <a href="{{ route('transaksi-penarikan.create') }}" class="btn btn-primary">Tambah Penarikan</a>
+                    <a href="{{ route('transaksi-penjualan.create') }}" class="btn btn-primary">Tambah Transaksi Penjualan</a>
                     <div class="box-tools">
                         <div class="input-group input-group-sm hidden-xs" style="width: 200px;">
                             <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
@@ -29,7 +29,6 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Nasabah</th>
                                     <th>Tanggal Transaksi</th>
                                     <th>Total Transaksi</th>
                                     <th>Operator</th>
@@ -40,18 +39,17 @@
                                 @forelse ($models as $item)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $item->nasabah->name }}</td>
                                         <td>{{ $item->created_at }}</td>
-                                        <td>{{ $item->formatRupiah('jumlah') }}</td>
+                                        <td>{{ $item->formatRupiah('total_harga') }}</td>
                                         <td>{{ $item->user ? $item->user->name : 'User Tidak Ditemukan' }}</td>
                                         <td>
-                                            
                                             <div class="btn-group">
-                                                <a href="{{ route('transaksi-penarikan.show', ['transaksi_penarikan' => $item->id]) }}" class="btn btn-primary">Detail</a>
+                                                <a href="{{ route('transaksi-penjualan.show', ['transaksi_penjualan' => $item->id]) }}" class="btn btn-primary">Detail</a>
                                                 {{-- spasi --}}
                                                 &nbsp;
                                                 <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#confirmModalDelete-{{ $item->id }}"><b>Hapus</b></a>
                                             </div>
+                                            {!! Form::close() !!}
                                         </td>
                                     </tr>
                                     <!-- Modal Konfirmasi Hapus -->
@@ -65,11 +63,11 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <p>Apakah Anda yakin ingin menghapus transaksi ini? Data penarikan akan terhapus dan saldo nasabah akan dikembalikan</p>
+                                                    <p>Apakah Anda yakin ingin menghapus transaksi ini?</p>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary pull-left" data-dismiss="modal">Tutup</button>
-                                                    <form action="{{ route('transaksi-penarikan.destroy', ['transaksi_penarikan' => $item->id]) }}" method="POST">
+                                                    <form action="{{ route('transaksi-penjualan.destroy', ['transaksi_penjualan' => $item->id]) }}" method="POST">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger">Hapus</button>

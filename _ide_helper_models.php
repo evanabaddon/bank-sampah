@@ -40,6 +40,33 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\DetailTransaksiPenjualan
+ *
+ * @property int $id
+ * @property int $transaksi_penjualan_id
+ * @property int $jenis_sampah_id
+ * @property string $jumlah_kg
+ * @property string $total_harga
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\JenisSampah|null $jenisSampah
+ * @property-read \App\Models\TransaksiPenjualan|null $transaksiPenjualan
+ * @method static \Illuminate\Database\Eloquent\Builder|DetailTransaksiPenjualan newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|DetailTransaksiPenjualan newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|DetailTransaksiPenjualan query()
+ * @method static \Illuminate\Database\Eloquent\Builder|DetailTransaksiPenjualan whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DetailTransaksiPenjualan whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DetailTransaksiPenjualan whereJenisSampahId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DetailTransaksiPenjualan whereJumlahKg($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DetailTransaksiPenjualan whereTotalHarga($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DetailTransaksiPenjualan whereTransaksiPenjualanId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DetailTransaksiPenjualan whereUpdatedAt($value)
+ */
+	class DetailTransaksiPenjualan extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\JenisSampah
  *
  * @property int $id
@@ -268,6 +295,34 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPengeluaran whereUserId($value)
  */
 	class TransaksiPengeluaran extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\TransaksiPenjualan
+ *
+ * @property int $id
+ * @property int|null $user_id
+ * @property string $tanggal
+ * @property string $total_harga
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DetailTransaksiPenjualan> $detailTransaksiPenjualans
+ * @property-read int|null $detail_transaksi_penjualans_count
+ * @property-read \App\Models\JenisSampah|null $jenisSampah
+ * @property-read \App\Models\User|null $user
+ * @method static \Database\Factories\TransaksiPenjualanFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenjualan newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenjualan newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenjualan query()
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenjualan whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenjualan whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenjualan whereTanggal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenjualan whereTotalHarga($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenjualan whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenjualan whereUserId($value)
+ */
+	class TransaksiPenjualan extends \Eloquent {}
 }
 
 namespace App\Models{

@@ -140,6 +140,12 @@ class TransaksiPenarikanController extends Controller
      */
     public function destroy(Model $transaksiPenarikan)
     {
-        //
+        // hapus transaksi penarikan dan kembaikan saldo nasabah
+        $nasabah = Nasabah::findOrFail($transaksiPenarikan->nasabah_id);
+        $nasabah->saldo += $transaksiPenarikan->jumlah;
+        $nasabah->save();
+        $transaksiPenarikan->delete();
+
+        return redirect()->route($this->routePrefix . '.index')->with('success', 'Transaksi penarikan berhasil dihapus');
     }
 }

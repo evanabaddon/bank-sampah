@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tagihan;
 use App\Models\TransaksiPengeluaran;
+use App\Models\TransaksiPenjualan;
 use Illuminate\Http\Request;
 use PDF;
 
@@ -12,35 +13,55 @@ class NeracaKeuanganController extends Controller
     public function index(Request $request)
     {
         // Mendapatkan daftar bulan dan tahun unik dari transaksi
-        $bulan = Tagihan::distinct()->selectRaw('MONTH(tanggal_tagihan) as bulan')->pluck('bulan');
-        $tahun = Tagihan::distinct()->selectRaw('YEAR(tanggal_tagihan) as tahun')->pluck('tahun');
+        $bulan = Tagihan::distinct()
+            ->selectRaw('MONTH(tanggal_bayar) as bulan')
+            ->pluck('bulan');
+
+        $tahun = Tagihan::distinct()
+            ->selectRaw('YEAR(tanggal_bayar) as tahun')
+            ->pluck('tahun');
 
         // Jika ada filter berdasarkan bulan dan tahun
         $bulanSelected = $request->input('bulan');
         $tahunSelected = $request->input('tahun');
 
-        // Inisialisasi query builder untuk transaksi pemasukan (debet) dan transaksi pengeluaran (kredit)
-        $pemasukanQuery = Tagihan::where('status', 'lunas');
-        $pengeluaranQuery = TransaksiPengeluaran::query();
+        // Query builder untuk transaksi pemasukan (debet) dari Tagihan
+        $pemasukanTagihan = Tagihan::where('status', 'lunas')
+            ->whereMonth('tanggal_bayar', $bulanSelected)
+            ->whereYear('tanggal_bayar', $tahunSelected)
+            ->get();
 
-        // Filter transaksi berdasarkan bulan dan tahun jika dipilih
-        if ($bulanSelected && $tahunSelected) {
-            $pemasukanQuery->whereMonth('tanggal_tagihan', $bulanSelected)
-                ->whereYear('tanggal_tagihan', $tahunSelected);
-            $pengeluaranQuery->whereMonth('tanggal', $bulanSelected)
-                ->whereYear('tanggal', $tahunSelected);
-        } else {
-            // Jika bulan dan tahun tidak dipilih, set query builder kosong
-            $pemasukanQuery->whereRaw('1=0'); // Ini akan membuat query kosong
-            $pengeluaranQuery->whereRaw('1=0'); // Ini akan membuat query kosong
-        }
+        // Menambahkan sumber ke transaksi dari Tagihan
+        $pemasukanTagihan->each(function ($item) {
+            $item->sumber = 'Tagihan';
+        });
 
-        // Ambil hasil query builder jika bulan dan tahun sudah dipilih
-        $pemasukan = $bulanSelected && $tahunSelected ? $pemasukanQuery->get() : collect();
-        $pengeluaran = $bulanSelected && $tahunSelected ? $pengeluaranQuery->get() : collect();
+        // Query builder untuk transaksi pemasukan (debet) dari TransaksiPenjualan
+        $pemasukanPenjualan = TransaksiPenjualan::whereMonth('tanggal', $bulanSelected)
+            ->whereYear('tanggal', $tahunSelected)
+            ->get();
+
+        // Menambahkan sumber ke transaksi dari TransaksiPenjualan
+        $pemasukanPenjualan->each(function ($item) {
+            $item->sumber = 'Penjualan';
+        });
+
+        // Filter transaksi pengeluaran berdasarkan bulan dan tahun jika dipilih
+        $pengeluaran = TransaksiPengeluaran::whereMonth('tanggal', $bulanSelected)
+            ->whereYear('tanggal', $tahunSelected)
+            ->get();
+
+        // Gabungkan data pemasukan dari kedua sumber
+        $pemasukan = $pemasukanTagihan->concat($pemasukanPenjualan);
+
+        // Menghitung total debet (pemasukan) dari Tagihan
+        $totalDebetTagihan = $pemasukanTagihan->sum('jumlah_tagihan');
+
+        // Menghitung total debet (pemasukan) dari TransaksiPenjualan
+        $totalDebetPenjualan = $pemasukanPenjualan->sum('total_harga');
 
         // Menghitung total debet (pemasukan) dan kredit (pengeluaran)
-        $totalDebet = $pemasukan->sum('jumlah_tagihan');
+        $totalDebet = $totalDebetTagihan + $totalDebetPenjualan;
         $totalKredit = $pengeluaran->sum('jumlah');
 
         // Menghitung saldo (debet - kredit)
@@ -50,34 +71,60 @@ class NeracaKeuanganController extends Controller
         return view('neraca.index', compact('pemasukan', 'pengeluaran', 'totalDebet', 'totalKredit', 'saldo', 'bulan', 'tahun', 'bulanSelected', 'tahunSelected'));
     }
 
+
+
     public function generatePdf(Request $request)
     {
-        // Mendapatkan data sesuai filter bulan dan tahun
+        // Mendapatkan daftar bulan dan tahun unik dari transaksi
+        $bulan = Tagihan::distinct()
+            ->selectRaw('MONTH(tanggal_bayar) as bulan')
+            ->pluck('bulan');
+
+        $tahun = Tagihan::distinct()
+            ->selectRaw('YEAR(tanggal_bayar) as tahun')
+            ->pluck('tahun');
+
+        // Jika ada filter berdasarkan bulan dan tahun
         $bulanSelected = $request->input('bulan');
         $tahunSelected = $request->input('tahun');
 
-        // Inisialisasi query builder untuk transaksi pemasukan (debet) dan transaksi pengeluaran (kredit)
-        $pemasukanQuery = Tagihan::where('status', 'lunas');
-        $pengeluaranQuery = TransaksiPengeluaran::query();
+        // Query builder untuk transaksi pemasukan (debet) dari Tagihan
+        $pemasukanTagihan = Tagihan::where('status', 'lunas')
+            ->whereMonth('tanggal_bayar', $bulanSelected)
+            ->whereYear('tanggal_bayar', $tahunSelected)
+            ->get();
 
-        // Filter transaksi berdasarkan bulan dan tahun jika dipilih
-        if ($bulanSelected && $tahunSelected) {
-            $pemasukanQuery->whereMonth('tanggal_tagihan', $bulanSelected)
-                ->whereYear('tanggal_tagihan', $tahunSelected);
-            $pengeluaranQuery->whereMonth('tanggal', $bulanSelected)
-                ->whereYear('tanggal', $tahunSelected);
-        } else {
-            // Jika bulan dan tahun tidak dipilih, set query builder kosong
-            $pemasukanQuery->whereRaw('1=0'); // Ini akan membuat query kosong
-            $pengeluaranQuery->whereRaw('1=0'); // Ini akan membuat query kosong
-        }
+        // Menambahkan sumber ke transaksi dari Tagihan
+        $pemasukanTagihan->each(function ($item) {
+            $item->sumber = 'Tagihan';
+        });
 
-        // Ambil hasil query builder jika bulan dan tahun sudah dipilih
-        $pemasukan = $bulanSelected && $tahunSelected ? $pemasukanQuery->get() : collect();
-        $pengeluaran = $bulanSelected && $tahunSelected ? $pengeluaranQuery->get() : collect();
+        // Query builder untuk transaksi pemasukan (debet) dari TransaksiPenjualan
+        $pemasukanPenjualan = TransaksiPenjualan::whereMonth('tanggal', $bulanSelected)
+            ->whereYear('tanggal', $tahunSelected)
+            ->get();
+
+        // Menambahkan sumber ke transaksi dari TransaksiPenjualan
+        $pemasukanPenjualan->each(function ($item) {
+            $item->sumber = 'Penjualan';
+        });
+
+        // Filter transaksi pengeluaran berdasarkan bulan dan tahun jika dipilih
+        $pengeluaran = TransaksiPengeluaran::whereMonth('tanggal', $bulanSelected)
+            ->whereYear('tanggal', $tahunSelected)
+            ->get();
+
+        // Gabungkan data pemasukan dari kedua sumber
+        $pemasukan = $pemasukanTagihan->concat($pemasukanPenjualan);
+
+        // Menghitung total debet (pemasukan) dari Tagihan
+        $totalDebetTagihan = $pemasukanTagihan->sum('jumlah_tagihan');
+
+        // Menghitung total debet (pemasukan) dari TransaksiPenjualan
+        $totalDebetPenjualan = $pemasukanPenjualan->sum('total_harga');
 
         // Menghitung total debet (pemasukan) dan kredit (pengeluaran)
-        $totalDebet = $pemasukan->sum('jumlah_tagihan');
+        $totalDebet = $totalDebetTagihan + $totalDebetPenjualan;
         $totalKredit = $pengeluaran->sum('jumlah');
 
         // Menghitung saldo (debet - kredit)
@@ -101,6 +148,8 @@ class NeracaKeuanganController extends Controller
 
         // Membuat nama bulan dan tahun dalam bahasa Indonesia
         $bulanText = $bulanSelected && $tahunSelected ? $namaBulan[$bulanSelected] . ' ' . $tahunSelected : 'Semua Bulan';
+
+        // return view('neraca.pdf', compact('pemasukan', 'pengeluaran', 'totalDebet', 'totalKredit', 'saldo', 'bulanText', 'bulanSelected', 'tahunSelected'));
 
         // Membuat PDF dari view Blade
         $pdf = PDF::loadView('neraca.pdf', compact('pemasukan', 'pengeluaran', 'totalDebet', 'totalKredit', 'saldo', 'bulanText', 'bulanSelected', 'tahunSelected'));

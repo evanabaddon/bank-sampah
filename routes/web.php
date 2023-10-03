@@ -9,6 +9,7 @@ use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\TransaksiBankController;
 use App\Http\Controllers\TransaksiPenarikanController;
 use App\Http\Controllers\TransaksiPengeluaranController;
+use App\Http\Controllers\TransaksiPenjualanController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,16 +31,15 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::prefix('operator')->middleware(['auth', 'auth.operator'])->group(function () {
-    Route::get('beranda', 'BerandaOperatorController@index')->name('operator.beranda');
-    Route::resource('user', UserController::class);
-});
-
-
 Route::prefix('nasabah')->middleware(['auth', 'auth.nasabah'])->group(function () {
     Route::get('beranda', 'BerandaNasabahController@index')->name('nasabah.beranda');
 });
 
+
+Route::prefix('operator')->middleware(['auth', 'auth.operator'])->group(function () {
+    Route::get('beranda', 'BerandaOperatorController@index')->name('operator.beranda');
+    Route::resource('nasabah', NasabahController::class);
+});
 
 Route::prefix('admin')->middleware(['auth', 'auth.admin'])->group(function () {
     Route::get('beranda', 'BerandaOperatorController@index')->name('operator.beranda');
@@ -51,6 +51,7 @@ Route::prefix('admin')->middleware(['auth', 'auth.admin'])->group(function () {
     Route::resource('transaksi-bank', TransaksiBankController::class);
     Route::resource('transaksi-pengeluaran', TransaksiPengeluaranController::class);
     Route::resource('transaksi-penarikan', TransaksiPenarikanController::class);
+    Route::resource('transaksi-penjualan', TransaksiPenjualanController::class);
     Route::resource('laporan', LaporanController::class);
     Route::get('laporan-tagihan', 'LaporanController@tagihan')->name('laporan.tagihan');
     Route::get('laporan-tagihan/cetak-pdf', 'LaporanController@cetakPdfTagihan')->name('laporan.tagihan.cetak-pdf');
@@ -65,7 +66,6 @@ Route::prefix('admin')->middleware(['auth', 'auth.admin'])->group(function () {
     Route::get('nota/{tagihan_id}', 'NotaController@print')->name('print.nota');
     Route::get('nota/update-and-print/{tagihan_id}', 'NotaController@updateStatusAndPrint')->name('update.and.print.nota');
     Route::get('nota/kirim-nota/{tagihan_id}', 'NotaController@kirimNota')->name('kirim.nota');
-
     Route::get('/neraca-keuangan', [NeracaKeuanganController::class, 'index'])->name('neraca-keuangan.index');
     Route::get('/neraca-keuangan/pdf', 'NeracaKeuanganController@generatePdf')->name('neraca-keuangan.pdf');
 

@@ -20,7 +20,7 @@
                     
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">Nama Nasabah</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-6">
                             {!! Form::select('id_nasabah', $nasabahs, $idNasabah, ['class'=>'form-control select2']) !!}
                             <span class="text-danger">{{ $errors->first('id_nasabah') }}</span> 
                         </div>                        

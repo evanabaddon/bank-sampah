@@ -3,8 +3,8 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Detail Transaksi Bank
-        <small>Data Detail Transaksi Bank Sampah</small>
+        Detail Transaksi Penarikan
+        <small>Data Detail Transaksi Penarikan Saldo</small>
     </h1>
 </section>
 <section class="content">

@@ -3,12 +3,12 @@
 @section('content')
 <section class="content-header">
     <h1>
-        Transaksi BSP
-        <small>Tambah Transaksi BSP</small>
+        Transaksi Penjualan
+        <small>Tambah Transaksi Penjualan Sampah</small>
     </h1>
 </section>
 <section class="content">
-    <div class="row justify-content-center">
+    <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-header with-border">
@@ -17,16 +17,13 @@
                 <!-- /.box-header -->
                 <div class="box-body">
                     {!! Form::model($model, ['route' => $route, 'method' => $method, 'class'=>'form-horizontal']) !!}
-                    
                     <div class="form-group">
-                        <label for="name" class="col-sm-2 control-label">Nama Nasabah</label>
-                        <div class="col-sm-10">
-                            {!! Form::select('id_nasabah', $nasabahs, $idNasabah, ['class'=>'form-control select2']) !!}
-                            <span class="text-danger">{{ $errors->first('id_nasabah') }}</span> 
+                        <label for="tanggal" class="col-sm-2 control-label">Tanggal Transaksi</label>
+                        <div class="col-sm-6">
+                            {!! Form::date('tanggal', null, ['class'=>'form-control']) !!}
+                            <span class="text-danger">{{ $errors->first('tanggal') }}</span> 
                         </div>                        
                     </div>
-                    
-                    
                     <!-- Tabel untuk detail jenis sampah -->
                     <table class="table table-bordered" id="jenisSampahTable">
                         <thead>
@@ -35,30 +32,31 @@
                                 <th>Harga / Kg</th>
                                 <th>Berat (kg)</th>
                                 <th>Subtotal</th>
-                                <th style="width: 50px;">Action</th>
+                                <th style="width: 90px;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>
-                                    <select name="jenis_sampah[]" class="form-control" onchange="updateHarga(this)">
+                                    <select name="jenis_sampah[]" class="form-control">
                                         <option value="">Pilih Jenis Sampah</option>
                                         @foreach($jenisSampahs as $jenisSampahId => $namaJenisSampah)
-                                            <option value="{{ $jenisSampahId }}" data-harga="{{ $hargaSampah[$jenisSampahId] }}">{{ $namaJenisSampah }}</option>
+                                            <option value="{{ $jenisSampahId }}">{{ $namaJenisSampah }}</option>
                                         @endforeach
                                     </select>
                                 </td>
                                 <td>
-                                    <span class="harga"></span>
+                                    {!! Form::text('harga[]', null, ['class'=>'form-control harga', 'data-rupiah' => 'true', 'oninput' => 'updateSubtotal(this)']) !!}
                                 </td>
                                 <td>
-                                    <input type="text" name="berat[]" class="form-control berat" placeholder="Berat" oninput="updateAllSubtotals()">
+                                    <input type="text" name="berat[]" class="form-control berat" placeholder="Berat" oninput="updateSubtotal(this)">
                                 </td>
                                 <td>
-                                    <span class="subtotal">0</span>
+                                    <span class="subtotal">0.00</span>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-success" onclick="addRow()">+</button>
+                                    <!-- Tambahkan tombol "Kurang" -->
                                 </td>
                             </tr>
                         </tbody>
@@ -85,24 +83,37 @@
 </section>
 
 <script>
-    // Variabel untuk menyimpan harga sampah berdasarkan jenis sampah
-    var hargaSampah = {!! json_encode($hargaSampah) !!};
+    // Fungsi untuk menghitung subtotal
+    function updateSubtotal(input) {
+        var row = input.closest('tr');
+        var harga = row.querySelector('.harga').value;
+        var berat = row.querySelector('.berat').value;
+        var subtotal = row.querySelector('.subtotal');
 
+        var subTotalValue = parseFloat(harga.replace(/\D/g, '')) * parseFloat(berat);
+        subtotal.textContent = subTotalValue.toFixed(2);
+
+        updateTotal();
+    }
+
+    // Fungsi untuk menambahkan baris
     function addRow() {
         var jenisSampahTable = document.getElementById("jenisSampahTable");
         var newRow = jenisSampahTable.rows[1].cloneNode(true);
-        
-        // Reset nilai jenis sampah dan berat
-        newRow.cells[0].getElementsByTagName('select')[0].value = '';
-        newRow.cells[2].getElementsByTagName('input')[0].value = '';
-        newRow.cells[3].getElementsByClassName('subtotal')[0].textContent = '0';
-        
-        // Menambahkan baris ke tabel
-        jenisSampahTable.tBodies[0].appendChild(newRow);
-        
-        // Hubungkan event listener untuk perubahan subtotal pada elemen-elemen yang baru
-        newRow.querySelector('input[name="berat[]"]').addEventListener('input', updateAllSubtotals);
-        newRow.querySelector('select[name="jenis_sampah[]"]').addEventListener('change', updateHarga);
+
+        // Reset nilai jenis sampah, harga, dan berat
+        var selectElement = newRow.cells[0].getElementsByTagName('select')[0];
+        selectElement.value = '';
+
+        var inputHarga = newRow.cells[1].querySelector('.harga');
+        inputHarga.value = '';
+
+        var inputBerat = newRow.cells[2].querySelector('.berat');
+        inputBerat.value = '';
+
+        var subtotalSpan = newRow.cells[3].querySelector('.subtotal');
+        subtotalSpan.textContent = '0.00';
+
         // Menambahkan tombol "Kurang"
         var deleteButton = document.createElement('button');
         deleteButton.type = 'button';
@@ -119,7 +130,6 @@
 
         // Aktifkan tombol hapus jika lebih dari satu baris
         updateDeleteButtons();
-
     }
 
     // Fungsi untuk menghapus baris
@@ -130,40 +140,6 @@
         updateTotal();
         // Perbarui tombol hapus
         updateDeleteButtons();
-    }
-
-    // Fungsi untuk mengubah harga berdasarkan jenis sampah yang dipilih
-    function updateHarga(selectElement) {
-        var hargaSpan = selectElement.parentNode.parentNode.querySelector('.harga');
-        var selectedOption = selectElement.options[selectElement.selectedIndex];
-        var jenisSampahId = selectElement.value;
-
-        // Mencari harga berdasarkan jenis sampah yang dipilih
-        var harga = hargaSampah[jenisSampahId];
-
-        // Menampilkan harga
-        hargaSpan.textContent = harga;
-
-        // Memperbarui subtotal saat mengubah jenis sampah
-        updateAllSubtotals();
-    }
-
-    // Fungsi untuk menghitung subtotal di semua baris
-    function updateAllSubtotals() {
-        var beratInputs = document.querySelectorAll('input[name="berat[]"]');
-        var subtotalSpans = document.querySelectorAll('.subtotal');
-        var selectElements = document.querySelectorAll('select[name="jenis_sampah[]"]');
-        
-        beratInputs.forEach(function (beratInput, index) {
-            var subtotalSpan = subtotalSpans[index];
-            var berat = parseFloat(beratInput.value);
-            var jenisSampahId = selectElements[index].value;
-            var hargaSpan = selectElements[index].parentNode.parentNode.querySelector('.harga');
-            var harga = parseFloat(hargaSpan.textContent);
-            var subtotal = berat * harga;
-            subtotalSpan.textContent = subtotal.toFixed(2);
-        });
-        updateTotal();
     }
 
     // Fungsi untuk menghitung total
@@ -194,8 +170,6 @@
             }
         }
     }
-
 </script>
-
 
 @endsection
