@@ -18,7 +18,7 @@ class Admin
     {
         if ($request->user()->akses == 'admin') {
             return $next($request);
-        }
+        } 
         abort(403, 'Akses khusus admin');
     }
 }

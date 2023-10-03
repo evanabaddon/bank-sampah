@@ -7,10 +7,8 @@ use App\Models\Tagihan;
 use App\Models\TransaksiBank;
 use DB;
 
-class BerandaOperatorController extends Controller
+class BerandaAdminController extends Controller
 {
-    
-
     public function index()
     {
         // hitung jumlah nasabah
@@ -20,6 +18,8 @@ class BerandaOperatorController extends Controller
         
         // hitung total tagihan lunas bulan ini
         $totalTagihanLunasBulanIni = Tagihan::where('status', 'lunas')->whereMonth('tanggal_jatuh_tempo', date('m'))->sum('jumlah_tagihan');
+
+        // dd($totalTagihanLunasBulanIni);
         
         // hitung total transaksi bank bulan ini
         $totalTransaksiBankBulanIni = TransaksiBank::whereMonth('created_at', date('m'))->sum('total_harga');
@@ -47,6 +47,6 @@ class BerandaOperatorController extends Controller
         ->orderByRaw('MIN(created_at) ASC') // Urutkan berdasarkan tanggal minimum dalam setiap grup
         ->get();
 
-        return view('operator.beranda_index', compact('jumlahNasabah', 'totalTagihanBulanIni', 'totalTagihanLunasBulanIni', 'totalTransaksiBankBulanIni', 'dataTransaksi', 'dataTransaksiBSP', 'nasabahTerakhir'));
+        return view('admin.beranda_index', compact('jumlahNasabah', 'totalTagihanBulanIni', 'totalTagihanLunasBulanIni', 'totalTransaksiBankBulanIni', 'dataTransaksi', 'dataTransaksiBSP', 'nasabahTerakhir'));
     }
 }

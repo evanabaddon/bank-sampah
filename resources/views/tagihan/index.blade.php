@@ -35,6 +35,7 @@
                                     <th>Kategori Layanan</th>
                                     <th>Total Tagihan</th>
                                     <th>Status</th>
+                                    <th>Tanggal Bayar</th>
                                     <th>Operator</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -56,6 +57,7 @@
                                                 <span class="badge bg-green">Terbayar</span>
                                             @endif
                                         </td>
+                                        <td>{{ $item->tanggal_bayar }}</td>
                                         <td>{{ $item->user ? $item->user->name : 'User Tidak Ditemukan' }}</td>
                                         <td>
                                             {!! Form::open([

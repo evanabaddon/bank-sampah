@@ -20,7 +20,7 @@ class UserController extends Controller
     public function index()
     {
 
-        return view('operator.' . $this->viewIndex, [
+        return view('admin.' . $this->viewIndex, [
             'models' => Model::where('akses', '<>', 'nasabah')
                 ->latest()
                 ->paginate(50),
@@ -43,7 +43,7 @@ class UserController extends Controller
             'button' => 'SIMPAN',
             'title' => 'User'
         ];
-        return view('operator.' . $this->viewCreate, $data);
+        return view('admin.' . $this->viewCreate, $data);
     }
 
     /**
@@ -98,7 +98,7 @@ class UserController extends Controller
         ];
         // tampilkan nama dalam $data
    
-        return view('operator.' . $this->viewEdit,$data);
+        return view('admin.' . $this->viewEdit,$data);
     }
 
     /**

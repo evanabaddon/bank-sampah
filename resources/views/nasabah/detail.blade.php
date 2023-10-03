@@ -32,12 +32,17 @@
                     <a href="{{ route('nasabah.kirim-pin', $model->id) }}" class="btn btn-success btn-block" target="_blank"><b>Kirim PIN</b></a> --}}
                     {{-- tombol transaksi bank sampah dengan mengirim id_nasabah --}}
                     @if ($model->is_bsp)
-                    <a href="{{ route('transaksi-bank.create', ['id_nasabah' => $model->id]) }}" class="btn btn-block btn-primary"><b>Transaksi BSP</b></a>
+                        <a href="{{ route('transaksi-bank.create', ['id_nasabah' => $model->id]) }}" class="btn btn-block btn-primary"><b>Transaksi BSP</b></a>
                     @else
-                    <a href="{{ route('transaksi-bank.create', ['id_nasabah' => $model->id]) }}" class="btn btn-block btn-primary disabled"><b>Transaksi BSP</b></a>
+                        <a href="{{ route('transaksi-bank.create', ['id_nasabah' => $model->id]) }}" class="btn btn-block btn-primary disabled"><b>Transaksi BSP</b></a>
                     @endif
-                    {{-- tombol penarikan saldo --}}
-                    <a href="{{ route('transaksi-penarikan.create', ['id_nasabah' => $model->id]) }}" class="btn btn-block btn-danger"><b>Penarikan Saldo</b></a>
+                    {{-- tombol penarikan saldo jika saldo lebih dari 0 --}}
+                    @if ($model->saldo > 0)
+                        <a href="{{ route('transaksi-penarikan.create', ['id_nasabah' => $model->id]) }}" class="btn btn-block btn-danger"><b>Penarikan Saldo</b></a>
+                    @else
+                        <a href="{{ route('transaksi-penarikan.create', ['id_nasabah' => $model->id]) }}" class="btn btn-block btn-danger disabled"><b>Penarikan Saldo</b></a>
+                    @endif
+                    
                     
               </div>
               <!-- /.box-body -->

@@ -166,23 +166,31 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <!-- Sidebar Menu -->
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">UTAMA</li>
-        <li class="{{ \Route::is('operator.beranda') ? 'active' : '' }}"><a href="{{ route('operator.beranda') }}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-        <li class="header">MASTER DATA</li>
-        <li class="{{ \Route::is('kategori-layanan.*') ? 'active' : '' }}"><a href="{{ route('kategori-layanan.index') }}"><i class="fa fa-exchange"></i> <span>Kategori Layanan</span></a></li>
-        <li class="{{ \Route::is('jenis-sampah.*') ? 'active' : '' }}"><a href="{{ route('jenis-sampah.index') }}"><i class="fa fa-trash-o"></i> <span>Jenis Sampah</span></a></li>
-        <li class="{{ \Route::is('nasabah.*') ? 'active' : '' }}"><a href="{{ route('nasabah.index') }}"><i class="fa fa-group"></i> <span>Nasabah</span></a></li>
-        {{-- transasi --}}
-        <li class="header">TRANSAKSI</li>
-        <li class="{{ \Route::is('tagihan.*') ? 'active' : '' }}"><a href="{{ route('tagihan.index') }}"><i class="fa fa-file-text-o"></i> <span>Transaksi PPC</span></a></li>
-        <li class="{{ \Route::is('transaksi-bank.*') ? 'active' : '' }}"><a href="{{ route('transaksi-bank.index') }}"><i class="fa fa-university"></i> <span>Transaksi BSP</span></a></li>
-        <li class="{{ \Route::is('transaksi-pengeluaran.*') ? 'active' : '' }}"><a href="{{ route('transaksi-pengeluaran.index') }}"><i class="fa fa-money" aria-hidden="true"></i><span>Transaksi Pengeluaran</span></a></li>
-        <li class="{{ \Route::is('transaksi-penarikan.*') ? 'active' : '' }}"><a href="{{ route('transaksi-penarikan.index') }}"><i class="fa fa-credit-card" aria-hidden="true"></i><span>Transaksi Penarikan</span></a></li>
-        <li class="{{ \Route::is('transaksi-penjualan.*') ? 'active' : '' }}"><a href="{{ route('transaksi-penjualan.index') }}"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span>Transaksi Penjualan</span></a></li>
-        <li class="header">LAPORAN</li>
-        <li class="{{ \Route::is('laporan.*') ? 'active' : '' }}"><a href="{{ route('laporan.index') }}"><i class="fa fa-files-o"></i> <span>Laporan Transaksi</span></a></li>
-        <li class="{{ \Route::is('neraca-keuangan.*') ? 'active' : '' }}"><a href="{{ route('neraca-keuangan.index') }}"><i class="fa fa-file-text"></i> <span>Neraca Keuangan</span></a></li>
-        <li class="header">USER</li>
-        <li class="{{ \Route::is('user.*') ? 'active' : '' }}"><a href="{{ route('user.index') }}"><i class="fa fa-user"></i> <span>Data User</span></a></li>
+        @if(Auth::user()->akses == 'operator')
+          <li class="{{ \Route::is('operator.beranda') ? 'active' : '' }}"><a href="{{ route('operator.beranda') }}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+          <li class="header">MASTER DATA</li>
+          <li class="{{ \Route::is('nasabah.*') ? 'active' : '' }}"><a href="{{ route('nasabah.index') }}"><i class="fa fa-group"></i> <span>Nasabah</span></a></li>
+          <li class="header">TRANSAKSI</li>
+          <li class="{{ \Route::is('tagihan.*') ? 'active' : '' }}"><a href="{{ route('tagihan.index') }}"><i class="fa fa-file-text-o"></i> <span>Transaksi PPC</span></a></li>
+          <li class="{{ \Route::is('transaksi-bank.*') ? 'active' : '' }}"><a href="{{ route('transaksi-bank.index') }}"><i class="fa fa-university"></i> <span>Transaksi BSP</span></a></li>
+        @elseif(Auth::user()->akses == 'admin')
+          <li class="{{ \Route::is('admin.beranda') ? 'active' : '' }}"><a href="{{ route('admin.beranda') }}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+          <li class="header">MASTER DATA</li>
+          <li class="{{ \Route::is('kategori-layanan.*') ? 'active' : '' }}"><a href="{{ route('kategori-layanan.index') }}"><i class="fa fa-exchange"></i> <span>Kategori Layanan</span></a></li>
+          <li class="{{ \Route::is('jenis-sampah.*') ? 'active' : '' }}"><a href="{{ route('jenis-sampah.index') }}"><i class="fa fa-trash-o"></i> <span>Jenis Sampah</span></a></li>
+          <li class="{{ \Route::is('nasabah.*') ? 'active' : '' }}"><a href="{{ route('nasabah.index') }}"><i class="fa fa-group"></i> <span>Nasabah</span></a></li>
+          <li class="header">TRANSAKSI</li>
+          <li class="{{ \Route::is('tagihan.*') ? 'active' : '' }}"><a href="{{ route('tagihan.index') }}"><i class="fa fa-file-text-o"></i> <span>Transaksi PPC</span></a></li>
+          <li class="{{ \Route::is('transaksi-bank.*') ? 'active' : '' }}"><a href="{{ route('transaksi-bank.index') }}"><i class="fa fa-university"></i> <span>Transaksi BSP</span></a></li>
+          <li class="{{ \Route::is('transaksi-pengeluaran.*') ? 'active' : '' }}"><a href="{{ route('transaksi-pengeluaran.index') }}"><i class="fa fa-money" aria-hidden="true"></i><span>Transaksi Pengeluaran</span></a></li>
+          <li class="{{ \Route::is('transaksi-penarikan.*') ? 'active' : '' }}"><a href="{{ route('transaksi-penarikan.index') }}"><i class="fa fa-credit-card" aria-hidden="true"></i><span>Transaksi Penarikan</span></a></li>
+          <li class="{{ \Route::is('transaksi-penjualan.*') ? 'active' : '' }}"><a href="{{ route('transaksi-penjualan.index') }}"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span>Transaksi Penjualan</span></a></li>
+          <li class="header">LAPORAN</li>
+          <li class="{{ \Route::is('laporan.*') ? 'active' : '' }}"><a href="{{ route('laporan.index') }}"><i class="fa fa-files-o"></i> <span>Laporan Transaksi</span></a></li>
+          <li class="{{ \Route::is('neraca-keuangan.*') ? 'active' : '' }}"><a href="{{ route('neraca-keuangan.index') }}"><i class="fa fa-file-text"></i> <span>Neraca Keuangan</span></a></li>
+          <li class="header">USER</li>
+          <li class="{{ \Route::is('user.*') ? 'active' : '' }}"><a href="{{ route('user.index') }}"><i class="fa fa-user"></i> <span>Data User</span></a></li>
+        @endif
       </ul>
       <!-- /.sidebar-menu -->
     </section>

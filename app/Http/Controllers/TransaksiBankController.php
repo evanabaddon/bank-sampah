@@ -27,9 +27,19 @@ class TransaksiBankController extends Controller
     public function index()
     {
 
-        $transactions = Model::with('user:id,name') // Mengambil relasi user dengan kolom id dan name
-        ->latest()
-        ->paginate(50);
+        // Mendapatkan pengguna yang saat ini login
+        $currentUser = Auth::user();
+
+        // Query builder untuk mengambil data transaksi berdasarkan user_id
+        $transactionQuery = Model::latest();
+
+        // Jika pengguna adalah admin, maka tampilkan semua data
+        if (!$currentUser || $currentUser->akses == 'admin') {
+            $transactions = $transactionQuery->paginate(50);
+        } else {
+            // Jika bukan admin, filter data berdasarkan user_id
+            $transactions = $transactionQuery->where('id_operator', $currentUser->id)->paginate(50);
+        }
 
         $data = [
             'models' => $transactions,

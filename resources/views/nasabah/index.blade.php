@@ -12,10 +12,12 @@
         <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <a href="{{ route('nasabah.create') }}" class="btn btn-primary">Tambah Nasabah</a>
+                    @if(Auth::user()->akses == 'admin')
+                        <a href="{{ route('nasabah.create') }}" class="btn btn-primary">Tambah Nasabah</a>
+                    @endif
                     <div class="box-tools">
-                        <div class="input-group input-group-sm hidden-xs" style="width: 200px;">
-                            <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
+                        <div class="input-group input-group-sm" style="width: 200px;">
+                            <input type="text" name="table_search" class="form-control pull-right" placeholder="Cari Nasabah">
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                             </div>

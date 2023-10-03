@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Tagihan as Model;
 use App\Http\Requests\StoreTagihanRequest;
 use App\Http\Requests\UpdateTagihanRequest;
+use Auth;
 
 class TagihanController extends Controller
 {
@@ -22,12 +23,25 @@ class TagihanController extends Controller
      */
     public function index()
     {
-        // tagihan with nasabah with kategori layanan
-        $models = Model::with('nasabah.kategoriLayanan')->latest()->paginate(50);
-        // ubah format tanggal tagihan dan tanggal jatuh tempo menjadi format Indonesia menggunakan Carbon
+        // Mendapatkan pengguna yang saat ini login
+        $currentUser = Auth::user();
+
+        // Query builder untuk mengambil data tagihan berdasarkan user_id
+        $tagihanQuery = Model::with('nasabah.kategoriLayanan')->latest();
+
+        // Jika pengguna adalah admin, maka tampilkan semua data
+        if (!$currentUser || $currentUser->akses == 'admin') {
+            $models = $tagihanQuery->paginate(50);
+        } else {
+            // Jika bukan admin, filter data berdasarkan user_id
+            $models = $tagihanQuery->where('user_id', $currentUser->id)->paginate(50);
+        }
+
+        // Ubah format tanggal tagihan dan tanggal jatuh tempo menjadi format Indonesia menggunakan Carbon
         foreach ($models as $model) {
             $model->tanggal_tagihan = Carbon::parse($model->tanggal_tagihan)->translatedFormat('d F Y');
             $model->tanggal_jatuh_tempo = Carbon::parse($model->tanggal_jatuh_tempo)->translatedFormat('d F Y');
+            $model->tanggal_bayar = Carbon::parse($model->tanggal_bayar)->translatedFormat('d F Y');
         }
 
         $data = [
@@ -35,6 +49,7 @@ class TagihanController extends Controller
             'routePrefix' => $this->routePrefix,
             'title' => 'Tagihan'
         ];
+
         return view('tagihan.' . $this->viewIndex, $data);
     }
 

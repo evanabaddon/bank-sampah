@@ -130,7 +130,7 @@
                   </g>
                 </svg>
               </span>
-              <span class="app-brand-text demo menu-text fw-bolder ms-2">SampahApp</span>
+              <span class="app-brand-text demo menu-text fw-bolder ms-2">SmartTrash</span>
             </a>
 
             <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
@@ -148,35 +148,17 @@
                 <div data-i18n="Analytics">Dashboard</div>
               </a>
             </li>
+            <!-- / Dashboard -->
             <!-- Menu Master -->
             <li class="menu-header small text-uppercase"><span class="menu-header-text">Master Data</span></li>
-            <!-- Cards -->
-            <li class="menu-item {{ \Route::is('kategori-layanan.*') ? 'active' : '' }}">
-              <a href="{{ route('kategori-layanan.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-collection"></i>
-                <div data-i18n="Basic">Kategori Layanan</div>
-              </a>
-            </li>
-            <li class="menu-item {{ \Route::is('nasabah.*') ? 'active' : '' }}">
+            <li class="menu-item {{ \Route::is('nasabah.index') ? 'active' : '' }}">
               <a href="{{ route('nasabah.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-collection"></i>
-                <div data-i18n="Basic">Nasabah</div>
+                <i class="menu-icon tf-icons bx bx-user-circle"></i>
+                <div data-i18n="Boxicons">Nasabah</div>
               </a>
             </li>
-            <li class="menu-item {{ \Route::is('jenis-sampah.*') ? 'active' : '' }}">
-              <a href="{{ route('jenis-sampah.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-collection"></i>
-                <div data-i18n="Basic">Jenis Sampah</div>
-              </a>
-            </li>
+            <!-- Cards -->
             <!-- Menu User -->
-            <li class="menu-header small text-uppercase"><span class="menu-header-text">User</span></li>
-            <li class="menu-item {{ \Route::is('user.*') ? 'active' : '' }}">
-              <a href="{{ route('user.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-user"></i>
-                <div data-i18n="Basic">User</div>
-              </a>
-            </li>
             <li class="menu-item">
               <a href="{{ route('logout') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-log-out-circle"></i>
@@ -202,33 +184,8 @@
             </div>
 
             <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-              <!-- Search -->
-              <div class="navbar-nav align-items-center">
-                <div class="nav-item d-flex align-items-center">
-                  <i class="bx bx-search fs-4 lh-0"></i>
-                  <input
-                    type="text"
-                    class="form-control border-0 shadow-none"
-                    placeholder="Search..."
-                    aria-label="Search..."
-                  />
-                </div>
-              </div>
-              <!-- /Search -->
-
               <ul class="navbar-nav flex-row align-items-center ms-auto">
-                <!-- Place this tag where you want the button to render. -->
-                <li class="nav-item lh-1 me-3">
-                  <a
-                    class="github-button"
-                    href="https://github.com/themeselection/sneat-html-admin-template-free"
-                    data-icon="octicon-star"
-                    data-size="large"
-                    data-show-count="true"
-                    aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
-                    >Star</a
-                  >
-                </li>
+                <!-- Notifications -->
 
                 <!-- User -->
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
@@ -247,8 +204,8 @@
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <span class="fw-semibold d-block">John Doe</span>
-                            <small class="text-muted">Admin</small>
+                            <span class="fw-semibold d-block">{{ Auth::user()->name }}</span>
+                            <small class="text-muted">{{ Auth::user()->email }}</small>
                           </div>
                         </div>
                       </a>
@@ -269,19 +226,10 @@
                       </a>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#">
-                        <span class="d-flex align-items-center align-middle">
-                          <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                          <span class="flex-grow-1 align-middle">Billing</span>
-                          <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
-                        </span>
-                      </a>
-                    </li>
-                    <li>
                       <div class="dropdown-divider"></div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="auth-login-basic.html">
+                      <a class="dropdown-item" href="{{ route('logout') }}">
                         <i class="bx bx-power-off me-2"></i>
                         <span class="align-middle">Log Out</span>
                       </a>
