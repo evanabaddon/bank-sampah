@@ -28,6 +28,8 @@
                     <b>Saldo</b> <a class="pull-right">{{ $model->formatRupiah('saldo') }}</a>
                   </li>
                 </ul>
+                    {{-- tombol cetak kartu anggota --}}
+                    <a href="{{ route('nasabah.cetakKartu', $model->id) }}" class="btn btn-primary btn-block" target="_blank"><b>Cetak Kartu Anggota</b></a>
                     {{-- <button class="btn btn-warning btn-block" data-toggle="modal" data-target="#confirmGeneratePinModal"><b>Buat PIN Baru</b></button>
                     <a href="{{ route('nasabah.kirim-pin', $model->id) }}" class="btn btn-success btn-block" target="_blank"><b>Kirim PIN</b></a> --}}
                     {{-- tombol transaksi bank sampah dengan mengirim id_nasabah --}}

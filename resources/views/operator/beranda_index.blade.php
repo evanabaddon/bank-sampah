@@ -6,35 +6,6 @@
 </section>
 <section class="content">
     <div class="row">
-        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-            <div class="info-box">
-                <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">CPU Traffic</span>
-                    <span class="info-box-number">90<small>%</small></span>
-                </div> 
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-            <div class="info-box">
-                <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">CPU Traffic</span>
-                    <span class="info-box-number">90<small>%</small></span>
-                </div> 
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-            <div class="info-box">
-                <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">CPU Traffic</span>
-                    <span class="info-box-number">90<small>%</small></span>
-                </div> 
-            </div>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-md-4">
             <div class="box box-success">
                 <div class="box-header with-border">
@@ -74,19 +45,23 @@
                                 <th>RT</th>
                                 <th>RW</th>
                                 <th>No. HP</th>
-                                <th>Saldo</th>
+                                <th>Jenis Layanan</th>
+                                <th>Total Tagihan</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($nasabahTerakhir as $key => $nasabah)
+                            @foreach ($dataTagihan as $key => $dataTagihan)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    <td>{{ $nasabah->name }}</td>
-                                    <td>{{ $nasabah->alamat }}</td>
-                                    <td>{{ $nasabah->rt }}</td>
-                                    <td>{{ $nasabah->rw }}</td>
-                                    <td>{{ $nasabah->nohp }}</td>
-                                    <td>{{ $nasabah->formatRupiah('saldo') }}</td>
+                                    <td>{{ $dataTagihan->nasabah->name }}</td>
+                                    <td>{{ $dataTagihan->nasabah->alamat }}</td>
+                                    <td>{{ $dataTagihan->nasabah->rt }}</td>
+                                    <td>{{ $dataTagihan->nasabah->rw }}</td>
+                                    <td>{{ $dataTagihan->nasabah->nohp }}</td>
+                                    <td>{{ $dataTagihan->nasabah->kategoriLayanan->name }}</td>
+                                    <td>{{ $dataTagihan->formatRupiah('jumlah_tagihan') }}</td>
+                                    <td><span class="label label-danger">Belum Terbayar</span></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -119,23 +94,23 @@
                             <tr>
                                 <th>No</th>
                                 <th>Nama</th>
-                                <th>Alamat</th>
                                 <th>RT</th>
                                 <th>RW</th>
                                 <th>No. HP</th>
+                                <th>Total Transaksi</th>
                                 <th>Saldo</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($nasabahTerakhir as $key => $nasabah)
+                            @foreach ($dataTransaksiBSP as $key => $dataTransaksiBank)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    <td>{{ $nasabah->name }}</td>
-                                    <td>{{ $nasabah->alamat }}</td>
-                                    <td>{{ $nasabah->rt }}</td>
-                                    <td>{{ $nasabah->rw }}</td>
-                                    <td>{{ $nasabah->nohp }}</td>
-                                    <td>{{ $nasabah->formatRupiah('saldo') }}</td>
+                                    <td>{{ $dataTransaksiBank->nasabah->name }}</td>
+                                    <td>{{ $dataTransaksiBank->nasabah->rt }}</td>
+                                    <td>{{ $dataTransaksiBank->nasabah->rw }}</td>
+                                    <td>{{ $dataTransaksiBank->nasabah->nohp }}</td>
+                                    <td>{{ $dataTransaksiBank->formatRupiah('total_harga') }}</td>
+                                    <td>{{ $dataTransaksiBank->nasabah->formatRupiah('saldo') }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

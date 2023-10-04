@@ -46,6 +46,8 @@ Route::prefix('operator')->middleware(['auth', 'auth.operator'])->group(function
     Route::resource('transaksi-bank', TransaksiBankController::class);
     Route::get('transaksi-bank/create/{id_nasabah?}', 'TransaksiBankController@create')->name('transaksi-bank.create');
     Route::get('validasi-qr/{kodenasabah}', 'BerandaOperatorController@validasiQr')->name('validasi-qr');
+    Route::get('nasabah/cetak-kartu/{id}', 'NasabahController@cetakKartu')->name('nasabah.cetakKartu');
+
 });
 
 Route::prefix('admin')->middleware(['auth', 'auth.admin'])->group(function () {
@@ -67,8 +69,8 @@ Route::prefix('admin')->middleware(['auth', 'auth.admin'])->group(function () {
     Route::get('nasabah/{id}/buat-pin', 'App\Http\Controllers\NasabahController@generateNewPin')->name('nasabah.buat-pin');
     Route::get('nasabah/{id}/kirim-pin', 'App\Http\Controllers\NasabahController@kirimPin')->name('nasabah.kirim-pin');
     Route::get('nota/kirim-nota/{tagihan_id}', 'NotaController@kirimNota')->name('kirim.nota');
-    Route::get('/neraca-keuangan', [NeracaKeuanganController::class, 'index'])->name('neraca-keuangan.index');
-    Route::get('/neraca-keuangan/pdf', 'NeracaKeuanganController@generatePdf')->name('neraca-keuangan.pdf');
+    Route::get('neraca-keuangan', [NeracaKeuanganController::class, 'index'])->name('neraca-keuangan.index');
+    Route::get('neraca-keuangan/pdf', 'NeracaKeuanganController@generatePdf')->name('neraca-keuangan.pdf');
 
 });
 

@@ -1,12 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Storage;
 use App\Models\KategoriLayanan;
 use Illuminate\Http\Request;
 use App\Models\Nasabah as Model;
 use Carbon\Carbon;
-use Illuminate\Pagination\Paginator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class NasabahController extends Controller
@@ -91,7 +89,6 @@ class NasabahController extends Controller
         flash('Data Berhasil Disimpan');
         return redirect()->route('nasabah.index');
     }
-
 
     /**
      * Display the specified resource.
@@ -253,5 +250,13 @@ class NasabahController extends Controller
         return redirect()->away($whatsappUrl)->withHeaders(['target' => '_blank', 'rel' => 'noopener noreferrer']);
     }
     
+    // Cetak kartu nasabah
+    public function cetakKartu($id) {
+        // Temukan nasabah berdasarkan ID
+        $nasabah = Model::findOrFail($id);
+        
+        // Kirim data nasabah ke tampilan nasabah.kartu
+        return view('nasabah.kartu', ['nasabah' => $nasabah]);
+    }
 
 }

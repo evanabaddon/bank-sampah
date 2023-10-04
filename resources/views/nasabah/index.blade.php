@@ -78,8 +78,10 @@
                                             ]) !!}
                                             <div class="btn-group">
                                                 <a href="{{ route('nasabah.show', $item->id) }}" class="btn btn-primary btn-sm"><i class="fa fa-info"></i> Detail</a>
-                                                <a href="{{ route('nasabah.edit', $item->id) }}" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Edit</a>
-                                                <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
+                                                @if(Auth::user()->akses == 'admin')
+                                                    <a href="{{ route('nasabah.edit', $item->id) }}" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Edit</a>
+                                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</button>
+                                                @endif
                                             </div>
                                             {!! Form::close() !!}
                                         </td>
