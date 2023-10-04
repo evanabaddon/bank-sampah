@@ -4,7 +4,7 @@
 <section class="content-header">
     <h1>
         Laporan
-        <small>Data Laporan Bank</small>
+        <small>Data Penjualan Sampah</small>
     </h1>
 </section>
 <section class="content">
@@ -13,15 +13,12 @@
             <div class="box">
                 <div class="box-header" style="text-align: center;">
                     <h3 class="box-title">
-                        Laporan Bank Sampah / BSP
+                        Laporan Penjualan Sampah
                         @if(request('bulan'))
                             - Bulan: {{ \Carbon\Carbon::parse('2023-' . request('bulan') . '-01')->translatedFormat('F') }}
                         @endif
                         @if(request('tahun'))
                             - Tahun: {{ request('tahun') }}
-                        @endif
-                        @if(request('nama'))
-                            - Nama Nasabah: {{ request('nama') }}
                         @endif
                         @if(request('jenis_sampah_id'))
                             - Jenis Sampah: {{ $jenisSampah->name }}
@@ -37,7 +34,6 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Nasabah</th>
                                     <th>Tanggal Transaksi</th>
                                     <th>Jenis Sampah</th>
                                     <th>Total Transaksi</th>
@@ -47,11 +43,10 @@
                                 @forelse ($model as $item)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $item->nasabah->name }}</td>
-                                        <td>{{ $item->created_at }}</td>
+                                        <td>{{ strftime('%d %B %Y', strtotime($item->tanggal)) }}</td>
                                         <td>
-                                            @foreach ($item->detailTransaksiBank as $detailTransaction)
-                                                {{ $detailTransaction->jenisSampah->name }}: {{ $detailTransaction->berat }} kg<br>
+                                            @foreach ($item->detailTransaksiPenjualans as $detailTransaction)
+                                                {{ $detailTransaction->jenisSampah->name }}: {{ $detailTransaction->jumlah_kg }} kg x {{ $detailTransaction->formatRupiah('total_harga') }}<br>
                                             @endforeach
                                         </td>
                                         <td>{{ $item->formatRupiah('total_harga') }}</td>
@@ -71,7 +66,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <a href="{{ route('laporan.index') }}" class="btn btn-default">Kembali</a>
-                            <a href="{{ route('laporan.transaksi.bank.cetak-pdf', request()->all()) }}" class="btn btn-danger" target="_blank"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>  PDF</a>
+                            <a href="{{ route('laporan.transaksi.penjualan.cetak-pdf', request()->all()) }}" class="btn btn-danger" target="_blank"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>  PDF</a>
                         </div>
                     </div>
                 </div>

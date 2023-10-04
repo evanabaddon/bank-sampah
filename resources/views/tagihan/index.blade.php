@@ -24,7 +24,7 @@
                 <!-- /.box-header -->
                 <div class="box-body table-responsive">
                     <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -37,7 +37,7 @@
                                     <th>Status</th>
                                     <th>Tanggal Bayar</th>
                                     <th>Operator</th>
-                                    <th>Aksi</th>
+                                    <th style="width: 200px">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -67,7 +67,7 @@
                                             ]) !!}
                                             <div class="btn-group">
                                                 @if ($item && $item->status === 'belum')
-                                                    <a href="#" class="btn btn-success" data-toggle="modal" data-target="#confirmModal-{{ $item->id }}"><b>Bayar</b></a>
+                                                    <a href="#" class="btn btn-block btn-success" data-toggle="modal" data-target="#confirmModal-{{ $item->id }}"><b>Bayar</b></a>
                                                 @elseif ($item && $item->status === 'lunas')
                                                     <a href="{{ route('print.nota', ['tagihan_id' => $item->id]) }}" class="btn btn-primary" target="_blank">Cetak Nota</a>
                                                     <a href="{{ route('kirim.nota', ['tagihan_id' => $item->id]) }}" class="btn btn-success" target="_blank">Kirim Nota</a>

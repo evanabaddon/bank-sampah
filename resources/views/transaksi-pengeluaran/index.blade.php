@@ -25,7 +25,7 @@
                 <!-- /.box-header -->
                 <div class="box-body table-responsive">
                     <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
                                     <th>No</th>

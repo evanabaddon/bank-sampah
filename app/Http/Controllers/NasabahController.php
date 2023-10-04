@@ -6,6 +6,7 @@ use App\Models\KategoriLayanan;
 use Illuminate\Http\Request;
 use App\Models\Nasabah as Model;
 use Carbon\Carbon;
+use Illuminate\Pagination\Paginator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class NasabahController extends Controller
@@ -103,11 +104,17 @@ class NasabahController extends Controller
         // Ambil data nasabah berdasarkan id
         $model = Model::with('kategoriLayanan')->findOrFail($id);
 
-        // ubah format tanggal dan waktu terdaftar menjadi format Indonesia menggunakan Carbon kolom created_at
-        
         
         // Ambil data tagihan hanya untuk tahun berjalan
-        $tagihans = $model->tagihans()->whereYear('tanggal_tagihan', now()->year)->get();
+        // $tagihans = $model->tagihans()->whereYear('tanggal_tagihan', now()->year)->get();
+
+        // Ambil data tagihan untuk semua tahun
+        $tagihans = $model->tagihans()->get();
+
+        // kelompokkan tagihan berdasarkan tahun
+        $tagihans = $tagihans->groupBy(function ($item, $key) {
+            return Carbon::parse($item->tanggal_tagihan)->format('Y');
+        });
 
         // ubah format tanggal tagihan dan tanggal jatuh tempo menjadi format Indonesia menggunakan Carbon
         foreach ($tagihans as $tagihan) {
@@ -123,6 +130,7 @@ class NasabahController extends Controller
         ];
         
         return view('nasabah.' . $this->viewShow, $data);;
+
     }
 
     /**

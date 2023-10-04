@@ -21,6 +21,19 @@ class NeracaKeuanganController extends Controller
             ->selectRaw('YEAR(tanggal_bayar) as tahun')
             ->pluck('tahun');
 
+        // $tahunMin pada tabel smua tabel ambil dari created_at
+        $tahunMin = Tagihan::min('created_at');
+
+        // ambil tahun dari $tahunMin
+        $tahunMin = date('Y', strtotime($tahunMin));
+
+        // $tahunMax pada tabel smua tabel ambil dari created_at
+        $tahunMax = Tagihan::max('created_at');
+
+        // ambil tahun dari $tahunMax
+        $tahunMax = date('Y', strtotime($tahunMax));
+        
+
         // Jika ada filter berdasarkan bulan dan tahun
         $bulanSelected = $request->input('bulan');
         $tahunSelected = $request->input('tahun');
@@ -68,7 +81,7 @@ class NeracaKeuanganController extends Controller
         $saldo = $totalDebet - $totalKredit;
 
         // Mengirim data ke view neraca.blade.php
-        return view('neraca.index', compact('pemasukan', 'pengeluaran', 'totalDebet', 'totalKredit', 'saldo', 'bulan', 'tahun', 'bulanSelected', 'tahunSelected'));
+        return view('neraca.index', compact('pemasukan', 'pengeluaran', 'totalDebet', 'totalKredit', 'saldo', 'bulan', 'tahun', 'bulanSelected', 'tahunSelected', 'tahunMin', 'tahunMax'));
     }
 
 

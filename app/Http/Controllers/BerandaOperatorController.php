@@ -6,6 +6,7 @@ use App\Models\Nasabah;
 use App\Models\Tagihan;
 use App\Models\TransaksiBank;
 use DB;
+use Illuminate\Http\Request;
 
 class BerandaOperatorController extends Controller
 {
@@ -49,4 +50,32 @@ class BerandaOperatorController extends Controller
 
         return view('operator.beranda_index', compact('jumlahNasabah', 'totalTagihanBulanIni', 'totalTagihanLunasBulanIni', 'totalTransaksiBankBulanIni', 'dataTransaksi', 'dataTransaksiBSP', 'nasabahTerakhir'));
     }
+
+    public function validasiQr($kodenasabah)
+    {
+        // Cari user dengan kode nasabah dari hasil scan
+        $nasabah = Nasabah::where('kodenasabah', $kodenasabah)->first();
+
+        // Jika nasabah ditemukan
+        if ($nasabah) {
+            // Redirect ke halaman nasabah dengan ID nasabah
+            // kirim id nasabah sebagai parameter
+            return response()->json([
+                'status' => 'success',
+                'nasabah' => $nasabah->id
+            ]);
+
+            // return redirect()->route('nasabah.show', ['nasabah' => $nasabah->id]);
+        } else {
+            // Nasabah tidak ditemukan, mungkin tampilkan pesan kesalahan
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Nasabah tidak ditemukan'
+            ]);
+
+            // return redirect()->back()->with('error', 'Nasabah tidak ditemukan');
+        }
+    }
+
+
 }

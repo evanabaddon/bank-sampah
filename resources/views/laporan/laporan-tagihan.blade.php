@@ -80,6 +80,7 @@
                 <div class="box-footer">
                     <div class="row">
                         <div class="col-md-6">
+                            <a href="{{ route('laporan.index') }}" class="btn btn-default">Kembali</a>
                             <a href="{{ route('laporan.tagihan.cetak-pdf', request()->all()) }}" class="btn btn-danger" target="_blank"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>  PDF</a>
                             {{-- <a href="{{ route('laporan.tagihan.cetak-excel', request()->all()) }}" class="btn btn-success" target="_blank"><i class="fa fa-file-excel-o"></i>  Excel</a> --}}
                         </div>

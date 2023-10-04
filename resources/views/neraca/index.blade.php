@@ -18,7 +18,7 @@
                                 {!! Form::selectMonth('bulan', request('bulan'), ['class'=>'form-control', 'placeholder'=>'Pilih Bulan']) !!}
                             </div>
                             <div class="col-md-2" style="margin-top: 10px;">
-                                {!! Form::selectRange('tahun', date('Y'), date('Y') + 1, request('tahun'), ['class' => 'form-control', 'placeholder'=>'Pilih Tahun']) !!}
+                                {!! Form::selectRange('tahun', $tahunMin, $tahunMax, request('tahun'), ['class' => 'form-control', 'placeholder'=>'Pilih Tahun']) !!}
                             </div>
                             <div class="col-md-2" style="margin-top: 10px;">
                                 <button type="submit" class="btn btn-block btn-primary">Filter</button>

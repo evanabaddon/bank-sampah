@@ -78,14 +78,21 @@
               <!-- /.box-body -->
             </div>
             <!-- /.box -->
-          </div>
+        </div>
         <div class="col-md-9">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    
-                    <h3 class="box-title">Detail Tagihan Layanan PPC (Pelayanan Sampah) Tahun {{ date('Y') }}</h3>
-                    
+                    <h3 class="box-title">Detail Tagihan Tahun {{ now()->year }}</h3>
+                    <div class="box-tools">
+                        <div class="input-group input-group-sm" style="width: 200px;">
+                            {!! Form::select('tahun_tagian', [], null, ['class'=>'form-control']) !!}
+                            <div class="input-group-btn">
+                                <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                
                 <!-- /.box-header -->
                 @php
                     $tagihans = $model->tagihans ?? collect();
@@ -159,12 +166,11 @@
                                 </div>
                             @endfor
                         </tbody>
-                    </table>
+                    </table> 
                 </div>
                 
                 <!-- /.box-body -->
                 <div class="box-footer">
-                    
                 </div>
             </div>
             <!-- /.box -->
