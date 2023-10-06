@@ -100,10 +100,34 @@
             @foreach ($pengeluaran as $transaksi)
             <tr>
                 <td>{{ $rowNumber++ }}</td>
-                <td>{{ $transaksi->tanggal }}</td>
-                <td>{{ $transaksi->deskripsi }}</td>
+                <td>
+                    @if ($transaksi->sumber == 'Transaksi Pengeluaran')
+                    {{ $transaksi->tanggal }}
+                    @elseif ($transaksi->sumber == 'Transaksi Bank')
+                    {{ $transaksi->created_at->format('Y-m-d') }}
+                    @else
+                    N/A
+                    @endif
+                </td>
+                <td>
+                    @if ($transaksi->sumber == 'Transaksi Pengeluaran')
+                    {{ $transaksi->deskripsi }}
+                    @elseif ($transaksi->sumber == 'Transaksi Bank')
+                    Transaksi BSP {{ optional($transaksi->nasabah)->name }}
+                    @else
+                    N/A
+                    @endif
+                </td>
                 <td></td>
-                <td>Rp {{ number_format($transaksi->jumlah, 0, ',', '.') }},-</td>
+                <td>
+                    @if ($transaksi->sumber == 'Transaksi Pengeluaran')
+                    Rp {{ number_format($transaksi->jumlah, 0, ',', '.') }},-
+                    @elseif ($transaksi->sumber == 'Transaksi Bank')
+                    Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }},-
+                    @else
+                    N/A
+                    @endif
+                </td>
                 <td></td>
             </tr>
             @endforeach

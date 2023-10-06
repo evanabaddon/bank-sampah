@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tagihan;
+use App\Models\TransaksiBank;
 use App\Models\TransaksiPengeluaran;
 use App\Models\TransaksiPenjualan;
 use Illuminate\Http\Request;
@@ -60,10 +61,28 @@ class NeracaKeuanganController extends Controller
         });
 
         // Filter transaksi pengeluaran berdasarkan bulan dan tahun jika dipilih
-        $pengeluaran = TransaksiPengeluaran::whereMonth('tanggal', $bulanSelected)
+        $pengeluaranTransaksi = TransaksiPengeluaran::whereMonth('tanggal', $bulanSelected)
             ->whereYear('tanggal', $tahunSelected)
             ->get();
 
+        // Menambahkan sumber ke transaksi pengeluaran dari Transaksi Pengeluaran
+        $pengeluaranTransaksi->each(function ($item) {
+            $item->sumber = 'Transaksi Pengeluaran';
+        });
+
+        // filter transaksi BSP berdasarkan bulan dan tahun jika dipilih
+        $pengeluaranBSP = TransaksiBank::whereMonth('created_at', $bulanSelected)
+            ->whereYear('created_at', $tahunSelected)
+            ->get();
+        
+        // menambahkan sumber ke transaksi pengeluaran dari Transaksi Bank
+        $pengeluaranBSP->each(function ($item) {
+            $item->sumber = 'Transaksi Bank';
+        });
+
+        // gabung data pengeluaran dari kedua sumber
+        $pengeluaran = $pengeluaranTransaksi->concat($pengeluaranBSP);
+        
         // Gabungkan data pemasukan dari kedua sumber
         $pemasukan = $pemasukanTagihan->concat($pemasukanPenjualan);
 
@@ -75,7 +94,15 @@ class NeracaKeuanganController extends Controller
 
         // Menghitung total debet (pemasukan) dan kredit (pengeluaran)
         $totalDebet = $totalDebetTagihan + $totalDebetPenjualan;
-        $totalKredit = $pengeluaran->sum('jumlah');
+
+        // Menghitung total pengeluaran dari Transaksi Pengeluaran
+        $totalKreditTransaksi = $pengeluaranTransaksi->sum('jumlah');
+
+        // Menghitung total pengeluaran dari Transaksi Bank
+        $totalKreditBSP = $pengeluaranBSP->sum('total_harga');
+
+        // Menghitung total pengeluaran
+        $totalKredit = $totalKreditTransaksi + $totalKreditBSP;
 
         // Menghitung saldo (debet - kredit)
         $saldo = $totalDebet - $totalKredit;
@@ -96,6 +123,19 @@ class NeracaKeuanganController extends Controller
         $tahun = Tagihan::distinct()
             ->selectRaw('YEAR(tanggal_bayar) as tahun')
             ->pluck('tahun');
+
+        // $tahunMin pada tabel smua tabel ambil dari created_at
+        $tahunMin = Tagihan::min('created_at');
+
+        // ambil tahun dari $tahunMin
+        $tahunMin = date('Y', strtotime($tahunMin));
+
+        // $tahunMax pada tabel smua tabel ambil dari created_at
+        $tahunMax = Tagihan::max('created_at');
+
+        // ambil tahun dari $tahunMax
+        $tahunMax = date('Y', strtotime($tahunMax));
+        
 
         // Jika ada filter berdasarkan bulan dan tahun
         $bulanSelected = $request->input('bulan');
@@ -123,10 +163,28 @@ class NeracaKeuanganController extends Controller
         });
 
         // Filter transaksi pengeluaran berdasarkan bulan dan tahun jika dipilih
-        $pengeluaran = TransaksiPengeluaran::whereMonth('tanggal', $bulanSelected)
+        $pengeluaranTransaksi = TransaksiPengeluaran::whereMonth('tanggal', $bulanSelected)
             ->whereYear('tanggal', $tahunSelected)
             ->get();
 
+        // Menambahkan sumber ke transaksi pengeluaran dari Transaksi Pengeluaran
+        $pengeluaranTransaksi->each(function ($item) {
+            $item->sumber = 'Transaksi Pengeluaran';
+        });
+
+        // filter transaksi BSP berdasarkan bulan dan tahun jika dipilih
+        $pengeluaranBSP = TransaksiBank::whereMonth('created_at', $bulanSelected)
+            ->whereYear('created_at', $tahunSelected)
+            ->get();
+        
+        // menambahkan sumber ke transaksi pengeluaran dari Transaksi Bank
+        $pengeluaranBSP->each(function ($item) {
+            $item->sumber = 'Transaksi Bank';
+        });
+
+        // gabung data pengeluaran dari kedua sumber
+        $pengeluaran = $pengeluaranTransaksi->concat($pengeluaranBSP);
+        
         // Gabungkan data pemasukan dari kedua sumber
         $pemasukan = $pemasukanTagihan->concat($pemasukanPenjualan);
 
@@ -138,7 +196,15 @@ class NeracaKeuanganController extends Controller
 
         // Menghitung total debet (pemasukan) dan kredit (pengeluaran)
         $totalDebet = $totalDebetTagihan + $totalDebetPenjualan;
-        $totalKredit = $pengeluaran->sum('jumlah');
+
+        // Menghitung total pengeluaran dari Transaksi Pengeluaran
+        $totalKreditTransaksi = $pengeluaranTransaksi->sum('jumlah');
+
+        // Menghitung total pengeluaran dari Transaksi Bank
+        $totalKreditBSP = $pengeluaranBSP->sum('total_harga');
+
+        // Menghitung total pengeluaran
+        $totalKredit = $totalKreditTransaksi + $totalKreditBSP;
 
         // Menghitung saldo (debet - kredit)
         $saldo = $totalDebet - $totalKredit;

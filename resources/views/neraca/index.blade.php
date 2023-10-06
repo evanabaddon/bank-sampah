@@ -27,7 +27,6 @@
                     </div>
                 </div>
                 <div class="box-body table-responsive">
-                    
                     @if ($bulanSelected && $tahunSelected)
                         @php
                         $namaBulan = [
@@ -45,13 +44,13 @@
                             12 => 'Desember',
                         ];
                         @endphp
-                    
-                        @if (isset($namaBulan[$bulanSelected]))
-                            <h4>Neraca Keuangan Bulan: {{ $namaBulan[$bulanSelected] }} Tahun: {{ $tahunSelected }}</h4>
-                        @else
-                            <h4>Neraca Keuangan Bulan: {{ $bulanSelected }} Tahun: {{ $tahunSelected }}</h4>
-                        @endif
-
+                
+                        @php
+                        $bulanText = isset($namaBulan[$bulanSelected]) ? $namaBulan[$bulanSelected] : $bulanSelected;
+                        @endphp
+                
+                        <h4>Neraca Keuangan Bulan: {{ $bulanText }} Tahun: {{ $tahunSelected }}</h4>
+                
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -67,7 +66,7 @@
                                 @php
                                 $rowNumber = 1;
                                 @endphp
-                    
+                
                                 @foreach ($pemasukan as $transaksi)
                                 <tr>
                                     <td>{{ $rowNumber++ }}</td>
@@ -102,14 +101,38 @@
                                     <td></td>
                                 </tr>
                                 @endforeach
-                    
+                                
                                 @foreach ($pengeluaran as $transaksi)
                                 <tr>
                                     <td>{{ $rowNumber++ }}</td>
-                                    <td>{{ $transaksi->tanggal }}</td>
-                                    <td>{{ $transaksi->deskripsi }}</td>
+                                    <td>
+                                        @if ($transaksi->sumber == 'Transaksi Pengeluaran')
+                                        {{ $transaksi->tanggal }}
+                                        @elseif ($transaksi->sumber == 'Transaksi Bank')
+                                        {{ $transaksi->created_at->format('Y-m-d') }}
+                                        @else
+                                        N/A
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($transaksi->sumber == 'Transaksi Pengeluaran')
+                                        {{ $transaksi->deskripsi }}
+                                        @elseif ($transaksi->sumber == 'Transaksi Bank')
+                                        Transaksi BSP {{ optional($transaksi->nasabah)->name }}
+                                        @else
+                                        N/A
+                                        @endif
+                                    </td>
                                     <td></td>
-                                    <td>Rp {{ number_format($transaksi->jumlah, 0, ',', '.') }},-</td>
+                                    <td>
+                                        @if ($transaksi->sumber == 'Transaksi Pengeluaran')
+                                        Rp {{ number_format($transaksi->jumlah, 0, ',', '.') }},-
+                                        @elseif ($transaksi->sumber == 'Transaksi Bank')
+                                        Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }},-
+                                        @else
+                                        N/A
+                                        @endif
+                                    </td>
                                     <td></td>
                                 </tr>
                                 @endforeach
@@ -123,7 +146,7 @@
                                 </tr>
                                 <tr>
                                     <th colspan="5">Laba / Rugi</th>
-                                    <th >Rp {{ number_format($saldo, 0, ',', '.') }}</th>
+                                    <th>Rp {{ number_format($saldo, 0, ',', '.') }}</th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -131,6 +154,7 @@
                         <h4 style="text-align: center;">Silahkan Pilih Bulan dan Tahun</h4>
                     @endif
                 </div>
+                
                 <div class="box-footer">
                     <div class="row">
                         <div class="col-md-6">
