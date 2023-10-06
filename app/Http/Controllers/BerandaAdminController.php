@@ -23,38 +23,29 @@ class BerandaAdminController extends Controller
         // hitung total tagihan lunas bulan ini
         $totalTagihanLunasBulanIni = Tagihan::where('status', 'lunas')->whereMonth('tanggal_jatuh_tempo', date('m'))->sum('jumlah_tagihan');
         
-        // // hitung total transaksi bank bulan ini
-        // $totalTransaksiBankBulanIni = TransaksiBank::whereMonth('created_at', date('m'))->sum('total_harga');
-        
         // tampilkan 10 nasabah terakhir
         $nasabahTerakhir = Nasabah::orderBy('created_at', 'desc')->limit(10)->get();
-
-        // $dataTransaksi = Tagihan::select(
-        //     DB::raw("DATE_FORMAT(tanggal_jatuh_tempo, '%M %Y') as bulan_tahun"),
-        //     DB::raw("COUNT(*) as jumlah_transaksi"),
-        //     DB::raw("SUM(CASE WHEN status = 'lunas' THEN jumlah_tagihan ELSE 0 END) as total_tagihan_lunas"),
-        //     DB::raw("SUM(CASE WHEN status = 'belum' THEN jumlah_tagihan ELSE 0 END) as total_tagihan_belum_lunas")
-        // )
-        // ->whereYear('tanggal_jatuh_tempo', date('Y')) // Filter data untuk satu tahun
-        // ->groupBy('bulan_tahun')
-        // ->orderBy('bulan_tahun')
-        // ->get();
-
-        // $dataTransaksiBSP = TransaksiBank::select(
-        //     DB::raw("DATE_FORMAT(created_at, '%M %Y') as bulan_tahun"),
-        //     DB::raw("SUM(total_harga) as total_transaksi_bsp")
-        // )
-        // ->whereYear('created_at', 2023) // Filter data untuk tahun 2023
-        // ->groupBy('bulan_tahun')
-        // ->orderByRaw('MIN(created_at) ASC') // Urutkan berdasarkan tanggal minimum dalam setiap grup
-        // ->get();
 
         // Buat array bulan pada tahun ini dengan bahasa Indonesia, sperti januari, februari, maret, dst
         $dataBulan = [];
         for ($i = 1; $i <= 12; $i++) {
             $dataBulan[] = date('F', mktime(0, 0, 0, $i, 1));
         }
-    
+        
+        $namaBulan = [
+            'Januari',
+            'Februari',
+            'Maret',
+            'April',
+            'Mei',
+            'Juni',
+            'Juli',
+            'Agustus',
+            'September',
+            'Oktober',
+            'November',
+            'Desember',
+        ]; 
         
         // hitung transaksi bank bulan ini
         $totalTransaksiBankBulanIni = TransaksiBank::whereMonth('created_at', date('m'))->sum('total_harga');
@@ -186,9 +177,8 @@ class BerandaAdminController extends Controller
             'prosentasePemasukan',
             'prosentasePengeluaran',
             'prosentaseLabaRugi',
-            'dataBulan',
             'dataPemasukan',
-            'dataPengeluaran'
+            'dataPengeluaran',
         ));
     }
 }
