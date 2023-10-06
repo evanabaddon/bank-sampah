@@ -132,38 +132,61 @@
                         {!! Form::close() !!}
                     </div>
                     <hr>
-                    <h4>Laporan Penjualan Sampah</h4>
                     <div class="row">
-                        {!! Form::open(['route' => 'laporan.transaksi-penjualan', 'method' => 'GET']) !!}
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label for="jenis_sampah_id" class="control-label">Jenis Sampah</label>
-                                {!! Form::select('jenis_sampah_id', $jenisSampahs->pluck('name', 'id'), null, ['class'=>'form-control', 'id' => 'jenis_sampah', 'placeholder' => 'Pilih Jenis Sampah']) !!}  
-                                    <span class="text-danger">{{ $errors->first('jenis_sampah_id') }}</span>
+                        <div class="col-md-7">
+                            <h4>Laporan Penjualan Sampah</h4>
+                            <div class="row">
+                                {!! Form::open(['route' => 'laporan.transaksi-penjualan', 'method' => 'GET']) !!}
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="jenis_sampah_id" class="control-label">Jenis Sampah</label>
+                                        {!! Form::select('jenis_sampah_id', $jenisSampahs->pluck('name', 'id'), null, ['class'=>'form-control', 'id' => 'jenis_sampah', 'placeholder' => 'Pilih Jenis Sampah']) !!}  
+                                            <span class="text-danger">{{ $errors->first('jenis_sampah_id') }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="bulan" class="control-label">Bulan</label>
+                                        {!! Form::selectMonth('bulan', request('bulan'), ['class'=>'form-control', 'placeholder'=>'Pilih Bulan']) !!}
+                                        <span class="text-danger">{{ $errors->first('bulan') }}</span> 
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="tahun" class="control-label" >Tahun</label>
+                                        {!! Form::selectRange('tahun', $tahunBankMin, $tahunBankMax, request('tahun'), ['class' => 'form-control', 'placeholder'=>'Pilih Tahun']) !!}
+                                        <span class="text-danger">{{ $errors->first('tahun') }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group" style="margin-top: 25px;">
+                                        <button type="submit" class="btn btn-primary">Tampil</button>
+                                    </div>
+                                </div>
+                                {!! Form::close() !!}
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label for="bulan" class="control-label">Bulan</label>
-                                {!! Form::selectMonth('bulan', request('bulan'), ['class'=>'form-control', 'placeholder'=>'Pilih Bulan']) !!}
-                                <span class="text-danger">{{ $errors->first('bulan') }}</span> 
+                        <div class="col-md-5">
+                            <h4>Laporan Stok Sampah</h4>
+                            <div class="row">
+                                {!! Form::open(['route' => 'laporan.stok', 'method' => 'GET']) !!}
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label for="jenis_sampah_id" class="control-label">Jenis Sampah</label>
+                                        {!! Form::select('jenis_sampah_id', $jenisSampahs->pluck('name', 'id'), null, ['class'=>'form-control', 'id' => 'jenis_sampah', 'placeholder' => 'Pilih Jenis Sampah']) !!}  
+                                            <span class="text-danger">{{ $errors->first('jenis_sampah_id') }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-2">
+                                    <div class="form-group" style="margin-top: 25px;">
+                                        <button type="submit" class="btn btn-primary">Tampil</button>
+                                    </div>
+                                </div>
+                                {!! Form::close() !!}
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label for="tahun" class="control-label" >Tahun</label>
-                                {!! Form::selectRange('tahun', $tahunBankMin, $tahunBankMax, request('tahun'), ['class' => 'form-control', 'placeholder'=>'Pilih Tahun']) !!}
-                                <span class="text-danger">{{ $errors->first('tahun') }}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-1">
-                            <div class="form-group" style="margin-top: 25px;">
-                                <button type="submit" class="btn btn-primary">Tampil</button>
-                            </div>
-                        </div>
-                        {!! Form::close() !!}
                     </div>
-                    
                 </div>
                 <!-- /.box-body -->
             </div>

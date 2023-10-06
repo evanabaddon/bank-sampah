@@ -423,7 +423,6 @@ class LaporanController extends Controller
             $query->whereYear('created_at', $request->tahun);
         }
 
-
         // Filter berdasarkan nama jikan tabel transaksi bank berelasikan dengan tabel nasabah dengan menggunakan id nasabah
         if ($request->has('nama') && !empty($request->nama)) {
             $query->whereHas('nasabah', function ($q) use ($request) {
@@ -441,5 +440,65 @@ class LaporanController extends Controller
         ];
 
         return view('laporan.laporan-penarikan', $models);
+    }
+
+    // function laporan stok berdasarkan request dari index
+    public function stokSampah(Request $request)
+    {
+        // Ambil data dari model Jenis Sampah berdasarkan kriteria yang diberikan dalam request
+        $query = JenisSampah::query();
+
+        $jenisSampah = [];
+
+        // Filter berdasarkan jenis sampah jika jenis sampah tidak kosong
+        if ($request->has('jenis_sampah_id') && !empty($request->jenis_sampah_id)) {
+            $query->where('id', $request->jenis_sampah_id);
+            $jenisSampah = JenisSampah::find($request->jenis_sampah_id); // Ambil data jenis sampah
+        }
+
+        // Ekseskusi query dan ambil hasilnya
+        $data = $query->get();
+
+        // Kirim data ke view dengan nama variabel yang benar
+        $models = [
+            'routePrefix' => $this->routePrefix,
+            'title' => 'Laporan Stock Sampah',
+            'jenisSampah' => $jenisSampah,
+            'model' => $data,
+        ];
+ 
+         return view('laporan.laporan-stok', $models);
+    }
+
+    // function cetak pdf stok sampah
+    public function cetakPdfStokSampah(Request $request)
+    {
+        // Ambil data dari model Jenis Sampah berdasarkan kriteria yang diberikan dalam request
+        $query = JenisSampah::query();
+
+        $jenisSampah = [];
+
+        // Filter berdasarkan jenis sampah jika jenis sampah tidak kosong
+        if ($request->has('jenis_sampah_id') && !empty($request->jenis_sampah_id)) {
+            $query->where('id', $request->jenis_sampah_id);
+            $jenisSampah = JenisSampah::find($request->jenis_sampah_id); // Ambil data jenis sampah
+        }
+
+        // Ekseskusi query dan ambil hasilnya
+        $data = $query->get();
+
+        // Kirim data ke view dengan nama variabel yang benar
+        $models = [
+            'routePrefix' => $this->routePrefix,
+            'title' => 'Laporan Stock Sampah',
+            'jenisSampah' => $jenisSampah,
+            'model' => $data,
+        ];
+ 
+        // return view('laporan.laporan-stok-pdf', $models);
+
+        // Cetak PDF dengan nama file 'laporan-stok.pdf' dan kirim data yang sudah diambil sebelumnya
+        $pdf = \PDF::loadView('laporan.laporan-stok-pdf', $models);
+        return $pdf->download('laporan-stok.pdf');
     }
 }
