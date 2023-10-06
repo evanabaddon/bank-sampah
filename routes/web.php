@@ -4,6 +4,7 @@ use App\Http\Controllers\KategoriLayananController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\NasabahController;
 use App\Http\Controllers\NeracaKeuanganController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\TransaksiBankController;
 use App\Http\Controllers\TransaksiPenarikanController;
@@ -39,6 +40,7 @@ Route::prefix('operator')->middleware(['auth', 'auth.operator'])->group(function
     Route::get('beranda', 'BerandaOperatorController@index')->name('operator.beranda');
     Route::resource('nasabah', NasabahController::class);
     Route::resource('tagihan', TagihanController::class);
+    Route::resource('setting', SettingController::class);
     Route::get('nota/{tagihan_id}', 'NotaController@print')->name('print.nota');
     Route::get('nota/update-and-print/{tagihan_id}', 'NotaController@updateStatusAndPrint')->name('update.and.print.nota');
     Route::resource('transaksi-penarikan', TransaksiPenarikanController::class);

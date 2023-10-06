@@ -16,12 +16,14 @@
                         <a href="{{ route('nasabah.create') }}" class="btn btn-primary">Tambah Nasabah</a>
                     @endif
                     <div class="box-tools">
+                        {!! Form::open(['route' => $routePrefix . '.index', 'method' => 'GET']) !!}
                         <div class="input-group input-group-sm" style="width: 200px;">
-                            <input type="text" name="table_search" class="form-control pull-right" placeholder="Cari Nasabah">
+                            <input type="text" name="q" class="form-control pull-right" placeholder="Cari Nasabah">
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                             </div>
                         </div>
+                        {!! Form::close() !!}
                     </div>
                 </div>
                 <!-- /.box-header -->

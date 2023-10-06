@@ -190,6 +190,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <li class="{{ \Route::is('neraca-keuangan.*') ? 'active' : '' }}"><a href="{{ route('neraca-keuangan.index') }}"><i class="fa fa-file-text"></i> <span>Neraca Keuangan</span></a></li>
           <li class="header">USER</li>
           <li class="{{ \Route::is('user.*') ? 'active' : '' }}"><a href="{{ route('user.index') }}"><i class="fa fa-user"></i> <span>Data User</span></a></li>
+          <li class="header">PENGATURAN</li>
+          <li class="{{ \Route::is('setting.*') ? 'active' : '' }}"><a href="{{ route('setting.create') }}"><i class="fa fa-cogs"></i> <span>Pengaturan</span></a></li>
         @endif
       </ul>
       <!-- /.sidebar-menu -->

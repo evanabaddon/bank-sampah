@@ -61,6 +61,13 @@ class NotaController extends Controller
         // footer pesan. ambil dari env nama aplikasi
         $footer = env('APP_NAME');
 
+        // cek nomor hp nasabah, jika didepan ada 08 maka ganti dengan 628
+        if (substr($nasabah->nohp, 0, 2) == '08') {
+            $nasabah->nohp = '628' . substr($nasabah->nohp, 2);
+        } else {
+            $nasabah->nohp = $nasabah->nohp;
+        }
+
         // Format URL untuk mengirim pesan ke WhatsApp nasabah dengan status tagihan lunas
         $whatsappUrl = 'https://api.whatsapp.com/send?phone=' . $nasabah->nohp . '&text=Tagihan%20anda%20dengan%20nomor%20tagihan%20' . $nomor_tagihan . '%20Bulan%20'. $bulan_tagihan. '%20telah%20lunas.%20Terima%20kasih. *' . $footer . '*.';
     

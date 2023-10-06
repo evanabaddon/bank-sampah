@@ -70,6 +70,9 @@
                 <h3 class="box-title">Grafik Transaksi PPC Dalam 1 Tahun</h3>
               </div>
               <div class="box-body">
+                <p class="text-center">
+                    <strong>Periode: Tahun {{ date('Y') }}</strong>
+                </p>
                 <div class="chart">
                   <canvas id="chartPpc" style="height:250px"></canvas>
                 </div>
@@ -85,6 +88,9 @@
                 <h3 class="box-title">Grafik Transaksi BSP Dalam 1 Tahun</h3>
               </div>
               <div class="box-body">
+                <p class="text-center">
+                    <strong>Periode: Tahun {{ date('Y') }}</strong>
+                  </p>
                 <div class="chart">
                   <canvas id="chartBsp" style="height:250px"></canvas>
                 </div>
@@ -94,7 +100,83 @@
             <!-- /.box -->
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title">Rekap Tahun Laba / Rugi Ini</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <p class="text-center">
+                    <strong>Periode: Tahun {{ date('Y') }}</strong>
+                  </p>
 
+                  <div class="chart">
+                    <!-- Sales Chart Canvas -->
+                    <canvas id="rekapChart" style="height: 180px;"></canvas>
+                  </div>
+                  <!-- /.chart-responsive -->
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- ./box-body -->
+            <div class="box-footer">
+              <div class="row">
+                <div class="col-sm-4 col-xs-6">
+                  <div class="description-block border-right">
+                    @if($prosentasePemasukan > 0)
+                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i>
+                    @else
+                        <span class="description-percentage text-red"><i class="fa fa-caret-down"></i>
+                    @endif
+                    {{ $prosentasePemasukan }} %</span>
+                    <h5 class="description-header">Rp {{ number_format($pemasukanBulanIni, 0, ',', '.') }}</h5>
+                    <span class="description-text">PEMASUKAN BULAN INI</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 col-xs-6">
+                  <div class="description-block border-right">
+                    @if($prosentasePengeluaran > 0)
+                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i>
+                    @else
+                        <span class="description-percentage text-red"><i class="fa fa-caret-down"></i>
+                    @endif
+                    {{ $prosentasePengeluaran }} %</span>
+                    <h5 class="description-header">Rp {{ number_format($pengeluaranBulanIni, 0, ',', '.') }}</h5>
+                    <span class="description-text">PENGELUARAN BULAN INI</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 col-xs-6">
+                  <div class="description-block">
+                    @if($prosentaseLabaRugi > 0)
+                        <span class="description-percentage text-green"><i class="fa fa-caret-up"></i>
+                    @else
+                        <span class="description-percentage text-red"><i class="fa fa-caret-down"></i>
+                    @endif
+                    {{ $prosentaseLabaRugi }} %</span>
+                    <h5 class="description-header">Rp {{ number_format($labaRugiBulanIni, 0, ',', '.') }}</h5>
+                    <span class="description-text">LABA / RUGI BULAN INI</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- /.box-footer -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="box box-info">
@@ -146,130 +228,156 @@
             <!-- /.box -->
         </div>
     </div>
+    
 </section>
+
 <script>
-    // Data transaksi per bulan dari model Tagihan
-    var dataTransaksi = @json($dataTransaksi);
+    var ctx = document.getElementById('chartPpc').getContext('2d');
+    
+    // Data pemasukan dan pengeluaran
+    var pemasukanData = [<?= implode(",", $dataTagihanLunas); ?>];
+    var pengeluaranData = [<?= implode(",", $dataTagihanBelumLunas); ?>];
+    var dataBulan = [<?= '"' . implode('","', $dataBulan) . '"'; ?>];
 
-    // Ekstrak label bulan dan jumlah transaksi dari data
-    var labels = dataTransaksi.map(function(item) {
-        return item.bulan_tahun;
-    });
-    var totalTagihanLunas = dataTransaksi.map(function(item) {
-        return item.total_tagihan_lunas;
-    });
-    var totalTagihanBelumLunas = dataTransaksi.map(function(item) {
-        return item.total_tagihan_belum_lunas;
-    });
-
-    var data = {
-        labels: labels,
-        datasets: [
-            {
-                label: "Total Tagihan Lunas",
-                backgroundColor: "rgba(0, 123, 255, 0.6)",
-                borderColor: "rgba(0, 123, 255, 1)",
-                borderWidth: 1,
-                data: totalTagihanLunas
-            },
-            {
-                label: "Total Tagihan Belum Lunas",
-                backgroundColor: "rgba(255, 0, 0, 0.6)",
-                borderColor: "rgba(255, 0, 0, 1)",
-                borderWidth: 1,
-                data: totalTagihanBelumLunas
-            }
-        ]
-    };
-
-    var areaChartCanvas = document.getElementById("chartPpc").getContext("2d");
-
-    var areaChart = new Chart(areaChartCanvas, {
+    var chart = new Chart(ctx, {
         type: 'line',
-        data: data,
+        data: {
+            labels: dataBulan,
+            datasets: [
+                {
+                    label: 'Tagihan Lunas',
+                    data: pemasukanData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    fill: true,
+                },
+                {
+                    label: 'Tagihan Belum Lunas',
+                    data: pengeluaranData,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    fill: true,
+                },
+            ],
+        },
         options: {
-            maintainAspectRatio: false,
-            responsive: true,
             scales: {
                 x: {
-                    grid: {
-                        display: false
-                    }
+                    type: 'category',
+                    title: {
+                        display: true,
+                        text: 'Tanggal'
+                    },
                 },
                 y: {
                     beginAtZero: true,
-                    grid: {
+                    title: {
                         display: true,
-                        color: "#f3f3f3",
-                        zeroLineColor: "#f3f3f3"
+                        text: 'Jumlah'
                     }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: true
                 }
             }
         }
     });
-
 </script>
+
 <script>
-    // Data transaksi BSP per bulan
-    var dataTransaksiBSP = @json($dataTransaksiBSP);
+    var ctx = document.getElementById('chartBsp').getContext('2d');
+    
+    // Data pemasukan dan pengeluaran
+    var dataTransaksiBSP = [<?= implode(",", $dataTransaksiBSP); ?>];
+    var dataBulan = [<?= '"' . implode('","', $dataBulan) . '"'; ?>];
 
-    // Ekstrak label bulan dan total transaksi BSP dari data
-    var labelsBSP = dataTransaksiBSP.map(function(item) {
-        return item.bulan_tahun;
-    });
-    var totalTransaksiBSP = dataTransaksiBSP.map(function(item) {
-        return item.total_transaksi_bsp;
-    });
-
-    var dataBSP = {
-        labels: labelsBSP,
-        datasets: [
-            {
-                label: "Total Transaksi BSP",
-                backgroundColor: "rgba(0, 123, 255, 0.6)",
-                borderColor: "rgba(0, 123, 255, 1)",
-                borderWidth: 1,
-                data: totalTransaksiBSP
-            }
-        ]
-    };
-
-    var chartBSPCanvas = document.getElementById("chartBsp").getContext("2d");
-
-    var chartBSP = new Chart(chartBSPCanvas, {
+    var chart = new Chart(ctx, {
         type: 'bar',
-        data: dataBSP,
+        data: {
+            labels: dataBulan,
+            datasets: [
+                {
+                    label: 'Transaksi BSP',
+                    data: dataTransaksiBSP,
+                    backgroundColor: 'rgba(75, 192, 192, 1)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    fill: true,
+                },
+            ],
+        },
         options: {
-            maintainAspectRatio: false,
-            responsive: true,
             scales: {
                 x: {
-                    grid: {
-                        display: false
-                    }
+                    type: 'category',
+                    title: {
+                        display: true,
+                        text: 'Tanggal'
+                    },
                 },
                 y: {
                     beginAtZero: true,
-                    grid: {
+                    title: {
                         display: true,
-                        color: "#f3f3f3",
-                        zeroLineColor: "#f3f3f3"
+                        text: 'Jumlah'
                     }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: true
                 }
             }
         }
     });
+</script>
 
+<script>
+    var ctx = document.getElementById('rekapChart').getContext('2d');
+    
+    // Data pemasukan dan pengeluaran
+    var pemasukanData = [<?= implode(",", $dataPemasukan); ?>];
+    var pengeluaranData = [<?= implode(",", $dataPengeluaran); ?>];
+    var dataBulan = [<?= '"' . implode('","', $dataBulan) . '"'; ?>];
+
+
+    
+    var chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dataBulan,
+            datasets: [
+                {
+                    label: 'Pemasukan',
+                    data: pemasukanData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    fill: true,
+                },
+                {
+                    label: 'Pengeluaran',
+                    data: pengeluaranData,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    fill: true,
+                },
+            ],
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'category',
+                    title: {
+                        display: true,
+                        text: 'Tanggal'
+                    },
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Jumlah'
+                    }
+                }
+            }
+        }
+    });
 </script>
 @endsection
 

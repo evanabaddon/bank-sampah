@@ -17,10 +17,14 @@ class KategoriLayananController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
 
-        $modes = Model::latest()->paginate(50);
+        if($request->filled('q')){
+            $modes = Model::search($request->q)->paginate(50);
+        } else{
+            $modes = Model::latest()->paginate(50);
+        }
         $data = 
             [
               'models' => $modes,

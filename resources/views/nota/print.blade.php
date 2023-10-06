@@ -1,127 +1,163 @@
-<style type="text/css">
-	body {
-		margin: 0;
-		padding: 0;
-		background: #ffffff;
-	}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bukti Bayar</title>
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Open Sans', sans-serif;
+        }
 
-	div,
-	p,
-	a,
-	li,
-	td {
-		-webkit-text-size-adjust: none;
-	}
+        .container {
+            max-width: 220px;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-	body {
-		width: 88mm;
-		height: 100%;
-		background-color: #ffffff;
-		margin: 0;
-		padding: 0;
-		-webkit-font-smoothing: antialiased;
+        .logo {
+            text-align: center;
+        }
 
-	}
+        .logo img {
+            width: 50px;
+            height: 50px;
+        }
 
-	p {
-		padding: 0 !important;
-		margin-top: 0 !important;
-		margin-right: 0 !important;
-		margin-bottom: 0 !important;
-		margin- left: 0 !important;
-	}
+        .header {
+            text-align: center;
+        }
 
-	.visibleMobile {
-		display: none;
-	}
+        .header strong {
+            font-size: 14px;
+        }
 
-	.hiddenMobile {
-		display: block;
-	}
-</style>
+        .invoice-number {
+            font-size: 10px;
+        }
 
-<!-- Header -->
-<table width="100%" border="0" cellpadding='2' cellspacing="2" align="center" bgcolor="#ffffff" style="padding-top:4px;">
-	<tbody>
-		<tr>
-			<td style="font-size: 12px; color: #5b5b5b; font-family: 'Open Sans', sans-serif; line-height: 18px; vertical-align: bottom; text-align: center;">
-				<strong style="font-size:16px;">Bumdesa Pringgondani</strong>
-				<br>Desa Sukoanyar Kec. Pakis, Kab. Malang
-			</td>
-		</tr>
-		<tr>
-			<td height="2" colspan="0" style="border-bottom:1px solid #e4e4e4 "></td>
-		</tr>
-	</tbody>
-</table>
+        .invoice-number strong {
+            font-size: 12px;
+        }
 
-<table width="100%" border="0" cellpadding="0" cellspacing="2" align="center">
-	<tbody>
-		<tr>
-			<td colspan="100" style="font-size: 14px; color: #5b5b5b; font-family: 'Open Sans', sans-serif; line-height: 18px; vertical-align: bottom; text-align: center;">
-				<strong>Bukti Bayar</strong>
-				<br>INVOICE: {{  'PPC/' . $tagihan->id . '/' . $tagihan->nasabah_id  . '/' . date('my', strtotime($tagihan->tanggal_tagihan)) }}
-			</td>
-		</tr>
-		<tr>
-			<td style="font-size: 12px; color: #5b5b5b; font-family: 'Open Sans', sans-serif; line-height: 18px; vertical-align: bottom; text-align: left;">
-				Petugas : {{ auth()->user()->name }}
-				<br>
-			</td>
-			<td style="font-size: 12px; color: #5b5b5b; font-family: 'Open Sans', sans-serif; line-height:18px; vertical-align: top; text-align: right;">
-				<br>Tanggal: {{ now()->format('d F Y') }}
-			</td>
-		</tr>
-		<tr>
-			<td height="2" colspan="100" style="padding-top:15px;border-bottom:1px solid #e4e4e4 "></td>
-		</tr>
-	</tbody>
-</table>
+        .invoice-info {
+            display: flex;
+            justify-content: space-between;
+        }
 
-<!-- /Header -->
+        .invoice-info p {
+            font-size: 8px;
+        }
 
-<!-- Table Total -->
-<table width="100%" border="0 " cellpadding="0" cellspacing="2" align="center" style="padding: 12px 0px 5px 2px">
-	<tbody>
-		<tr>
-			<td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 16px; vertical-align: top; text-align:left; ">
-				Biaya Layanan {{ $tagihan->nasabah->name }}
-			</td>
-			<td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e; line-height: 16px; vertical-align: top; text-align:right; white-space:nowrap; " width="100 ">
-				{{ 'Rp. ' . number_format($tagihan->jumlah_tagihan, 0, ',', '.') . ',-'; }}
-			</td>
-		</tr>
+        .table {
+            width: 100%;
+            margin-top: 10px;
+        }
 
-		<tr>
-			<td height="2" colspan="100" style="padding-top:8px;border-bottom:1px solid #e4e4e4 "></td>
-		</tr>
-	</tbody>
-</table>
-<!-- /Table Total -->
+        .table th, .table td {
+            border: 1px solid #e4e4e4;
+            padding: 4px;
+            text-align: left;
+            font-size: 8px;
+        }
 
-<!-- Stempel Lunas -->
-<div style="text-align: center;">
-	<img src="https://png.pngtree.com/png-vector/20230811/ourmid/pngtree-paid-off-stamp-in-red-color-vector-png-image_9127590.png" alt="Stempel Lunas" width="150" height="150">
-</div>
-<!-- /Stempel Lunas -->
+        .table th {
+            background-color: #f5f5f5;
+        }
 
-<!-- Customer sign -->
-<table width="100%" border="0" cellpadding='2' cellspacing="2" align="center" bgcolor="#ffffff" style="padding-top:4px;">
-	<tbody>
-		<tr>
-			<td style="font-size: 12px; color: #5b5b5b; font-family: 'Open Sans', sans-serif; line-height: 18px; vertical-align: bottom; text-align: center;">
-				<strong style="font-size:16px;">Terimakasih</strong>
-				<br>Telah Menggunakan Layanan Kami
-				<br><strong>Bumdesa Pringgondani</strong>
-				<br>Telp. +62 8121 6029 645
-				<br>www.bumdespringgondani.com
-			</td>
-		</tr>
-	</tbody>
-</table>
+        .stempel {
+            text-align: center;
+        }
 
+        .stempel img {
+            width: 100px;
+            height: 100px;
+        }
+
+        .customer-info {
+            text-align: center;
+        }
+
+        .customer-info strong {
+            font-size: 10px;
+        }
+
+        .customer-info p {
+            font-size: 8px;
+            margin-top: 0px;
+        }
+
+        .customer-info a {
+            text-decoration: none;
+			color: #000;
+        }
+
+        .customer-info a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Container -->
+    <div class="container">
+        <!-- Logo -->
+        <div class="logo">
+            <img src="{{ asset(''.settings()->get('app_logo')) }}" alt="Logo">
+        </div>
+
+        <!-- Header -->
+        <div class="header">
+            <strong>{{ settings('app_name') }}</strong>
+            <p style="font-size: 8px; margin: 0px" class="mt-0">{{ settings('app_address') }}</p>
+        </div>
+
+        <!-- Invoice Info -->
+        <div class="invoice-info">
+            <p>Petugas : {{ auth()->user()->name }}</p>
+            <p>Tanggal: {{ now()->format('d F Y') }}</p>
+        </div>
+
+        <!-- Invoice Number -->
+        <div class="invoice-number">
+			<strong>Bukti Bayar</strong>
+            <p>INVOICE: {{ 'PPC/' . $tagihan->id . '/' . $tagihan->nasabah_id  . '/' . date('my', strtotime($tagihan->tanggal_tagihan)) }}</p>
+        </div>
+
+        <!-- Table Total -->
+        <table class="table">
+            <tr>
+                <th>Deskripsi</th>
+                <th>Total</th>
+            </tr>
+            <tr>
+                <td>Tagihan {{ $tagihan->nasabah->name .' Bulan ' . date('m', strtotime($tagihan->tanggal_tagihan)) }}</td>
+                <td>{{ 'Rp. ' . number_format($tagihan->jumlah_tagihan, 0, ',', '.') . ',-' }}</td>
+            </tr>
+        </table>
+
+        <!-- Stempel Lunas -->
+        <div class="stempel">
+            <img src="https://png.pngtree.com/png-vector/20230811/ourmid/pngtree-paid-off-stamp-in-red-color-vector-png-image_9127590.png" alt="Stempel Lunas">
+        </div>
+
+        <!-- Customer Info -->
+        <div class="customer-info">
+            <strong>Terimakasih</strong>
+            <p>Telah Menggunakan Layanan Kami</p>
+            <strong>{{ settings('app_name') }}</strong>
+            <p>Telp. {{ settings('app_phone') }}</p>
+            <p><a href="{{ settings('app_website') }}">{{ settings('app_website') }}</a></p>
+        </div>
+    </div>
+    <!-- /Container -->
+</body>
 <script>
     window.onload = function() {
         window.print();
     }
 </script>
+</html>

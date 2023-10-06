@@ -20,13 +20,17 @@ class NasabahController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
 
-        $modes = Model::with('kategoriLayanan')->latest()->paginate(50);
+        if($request->filled('q')){
+            $models = Model::search($request->q)->with('kategoriLayanan')->paginate(50);
+        } else{
+            $models = Model::with('kategoriLayanan')->latest()->paginate(50);
+        }
         $data = 
             [
-              'models' => $modes,
+              'models' => $models,
               'routePrefix' => $this->routePrefix,
               'title' => 'Nasabah'
             ];

@@ -5,11 +5,14 @@ namespace App\Models;
 use App\Traits\HasFormatRupiah;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Nasabah extends Model
 {
     use HasFactory;
     use HasFormatRupiah;
+    use SearchableTrait;
+
     protected $fillable = [
         'name',
         'kodenasabah',
@@ -22,6 +25,17 @@ class Nasabah extends Model
         'kategori_layanan_id',
         'saldo',
         'pin',
+    ];
+
+    protected $searchable = [
+        'columns' => [
+            'name' => 10,
+            'kodenasabah' => 10,
+            'nohp' => 10,
+            'alamat' => 10,
+            'rt' => 10,
+            'rw' => 10,
+        ],
     ];
 
     public function kategoriLayanan()
