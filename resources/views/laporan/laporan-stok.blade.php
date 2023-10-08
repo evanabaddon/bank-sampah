@@ -4,7 +4,7 @@
 <section class="content-header">
     <h1>
         Laporan
-        <small>Data Penjualan Sampah</small>
+        <small>Data Stok Sampah</small>
     </h1>
 </section>
 <section class="content">
@@ -13,7 +13,7 @@
             <div class="box">
                 <div class="box-header" style="text-align: center;">
                     <h3 class="box-title">
-                        Laporan Penjualan Sampah
+                        Laporan Stok Sampah
                         @if(request('jenis_sampah_id'))
                             - Jenis Sampah: {{ $jenisSampah->name }}
                         @endif

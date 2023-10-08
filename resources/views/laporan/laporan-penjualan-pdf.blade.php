@@ -2,33 +2,29 @@
 <html>
 <head>
     <style>
-        /* Gaya CSS untuk laporan PDF */
-        /* Misalnya, Anda dapat mengatur ukuran font, warna teks, dll. sesuai kebutuhan Anda */
+        /* Gaya CSS Anda untuk laporan PDF */
         body {
             font-family: Arial, sans-serif;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
+        /* Menambahkan aturan CSS untuk mode landscape */
+        @page {
+            size: landscape;
         }
-        h1 {
-            font-size: 24px;
-            text-align: center;
+        h3 {
+            font-size: 16px; /* Ukuran font untuk judul (header) h3 */
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        table, th, td {
-            border: 1px solid #000;
+            font-size: 12px; /* Ukuran font untuk tabel */
         }
         th, td {
+            border: 1px solid #ccc;
             padding: 8px;
             text-align: left;
         }
-        .right-align {
-            text-align: right;
+        th {
+            background-color: #f2f2f2;
         }
     </style>
 </head>

@@ -167,6 +167,8 @@ class LaporanController extends Controller
             'model' => $data, // Ganti 'data' menjadi 'model'
         ];
 
+        // return view('laporan.laporan-tagihan-pdf', $models);
+
         // Cetak PDF dengan nama file 'laporan-tagihan.pdf' dan kirim data yang sudah diambil sebelumnya
         $pdf = \PDF::loadView('laporan.laporan-tagihan-pdf', $models);
         return $pdf->download('laporan-tagihan.pdf');
@@ -440,6 +442,45 @@ class LaporanController extends Controller
         ];
 
         return view('laporan.laporan-penarikan', $models);
+    }
+
+    // function cetak pdf transaksi penarikan
+    public function cetakPdfTransaksiPenarikan(Request $request)
+    {
+        // Ambil data dari model Transaksi Bank berdasarkan kriteria yang diberikan dalam request
+        $query = TransaksiPenarikan::query();
+
+        // Filter berdasarkan bulan jika bulan tidak kosong ambil dari kolom created_at
+        if ($request->has('bulan') && !empty($request->bulan)) {
+            $query->whereMonth('created_at', $request->bulan);
+        }
+
+        // Filter berdasarkan tahun jika tahun tidak kosong ambil dari kolom created_at
+        if ($request->has('tahun') && !empty($request->tahun)) {
+            $query->whereYear('created_at', $request->tahun);
+        }
+
+        // Filter berdasarkan nama jikan tabel transaksi bank berelasikan dengan tabel nasabah dengan menggunakan id nasabah
+        if ($request->has('nama') && !empty($request->nama)) {
+            $query->whereHas('nasabah', function ($q) use ($request) {
+                $q->where('name', 'LIKE', '%' . $request->nama . '%');
+            });
+        }
+        // Ekseskusi query dan ambil hasilnya
+        $data = $query->get();
+
+        // Kirim data ke view dengan nama variabel yang benar
+        $models = [
+            'routePrefix' => $this->routePrefix,
+            'title' => 'Laporan Tagihan',
+            'model' => $data,
+        ];
+
+        // return view('laporan.laporan-penarikan-pdf', $models);
+
+        // Cetak PDF dengan nama file 'laporan-stok.pdf' dan kirim data yang sudah diambil sebelumnya
+        $pdf = \PDF::loadView('laporan.laporan-penarikan-pdf', $models);
+        return $pdf->download('laporan-penarikan.pdf');
     }
 
     // function laporan stok berdasarkan request dari index

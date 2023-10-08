@@ -67,7 +67,7 @@ Route::prefix('admin')->middleware(['auth', 'auth.admin'])->group(function () {
     Route::get('laporan-transaksi-penjualan', 'LaporanController@transaksiPenjualan')->name('laporan.transaksi-penjualan');
     Route::get('laporan-transaksi-penjualan/cetak-pdf', 'LaporanController@cetakPdfTransaksiPenjualan')->name('laporan.transaksi.penjualan.cetak-pdf');
     Route::get('laporan-transaksi-penarikan', 'LaporanController@transaksiPenarikan')->name('laporan.transaksi-penarikan');
-    Route::get('laporan-transaksi-penarikan/cetak-pdf', 'LaporanController@cetakPdfTransaksiPenarikan')->name('laporan.transaksi.penarikan.cetak-pdf');
+    Route::get('laporan-transaksi-penarikan/cetak-pdf', 'LaporanController@cetakPdfTransaksiPenarikan')->name('laporan.transaksi-penarikan.cetak-pdf');
     Route::get('laporan-stok', 'LaporanController@stokSampah')->name('laporan.stok');
     Route::get('laporan-stok/cetak-pdf', 'LaporanController@cetakPdfStokSampah')->name('laporan.stok.cetak-pdf');
     Route::get('nasabah/{id}/buat-pin', 'App\Http\Controllers\NasabahController@generateNewPin')->name('nasabah.buat-pin');

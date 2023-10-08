@@ -4,7 +4,7 @@
 <section class="content-header">
     <h1>
         Laporan
-        <small>Data Laporan Tagihan</small>
+        <small>Data Laporan Penarikan</small>
     </h1>
 </section>
 <section class="content">
@@ -13,18 +13,15 @@
             <div class="box">
                 <div class="box-header" style="text-align: center;">
                     <h3 class="box-title">
-                        Laporan Tagihan / PPC
-                        @if(request('kategori_layanan_id'))
-                            - Layanan: {{ $kategoriLayanan->name }}
-                        @endif
-                        @if(request('status'))
-                            - Status: {{ request('status') }}
+                        Laporan Penarikan
+                        @if(request('nama'))
+                            - Nasabah : {{ request('nama') }}
                         @endif
                         @if(request('bulan'))
-                            - Bulan: {{ \Carbon\Carbon::parse('2023-' . request('bulan') . '-01')->translatedFormat('F') }}
+                            - Bulan : {{ \Carbon\Carbon::parse('2023-' . request('bulan') . '-01')->translatedFormat('F') }}
                         @endif
                         @if(request('tahun'))
-                            - Tahun: {{ request('tahun') }}
+                            - Tahun : {{ request('tahun') }}
                         @endif
                     </h3>
                 </div>
@@ -67,7 +64,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <a href="{{ route('laporan.index') }}" class="btn btn-default">Kembali</a>
-                            <a href="{{ route('laporan.tagihan.cetak-pdf', request()->all()) }}" class="btn btn-danger" target="_blank"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>  PDF</a>
+                            <a href="{{ route('laporan.transaksi-penarikan.cetak-pdf', request()->all()) }}" class="btn btn-danger" target="_blank"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>  PDF</a>
                             {{-- <a href="{{ route('laporan.tagihan.cetak-excel', request()->all()) }}" class="btn btn-success" target="_blank"><i class="fa fa-file-excel-o"></i>  Excel</a> --}}
                         </div>
                     </div>
