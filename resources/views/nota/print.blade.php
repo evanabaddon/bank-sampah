@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bukti Bayar</title>
     <style type="text/css">
+        html, body {
+			height: 100%;
+			margin: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+        
         body {
             margin: 0;
             padding: 0;
@@ -141,7 +149,7 @@
 
         <!-- Stempel Lunas -->
         <div class="stempel">
-            <img src="https://png.pngtree.com/png-vector/20230811/ourmid/pngtree-paid-off-stamp-in-red-color-vector-png-image_9127590.png" alt="Stempel Lunas">
+            <img src="{{ asset(''.settings()->get('app_stempel')) }}" alt="Stempel Lunas">
         </div>
 
         <!-- Customer Info -->

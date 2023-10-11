@@ -162,6 +162,34 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\Pengepul
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $alamat
+ * @property int $no_hp
+ * @property int $user_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TransaksiPenjualan> $transaksiPenjualan
+ * @property-read int|null $transaksi_penjualan_count
+ * @method static \Database\Factories\PengepulFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengepul newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengepul newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengepul query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengepul whereAlamat($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengepul whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengepul whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengepul whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengepul whereNoHp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengepul whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pengepul whereUserId($value)
+ */
+	class Pengepul extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\Saldo
  *
  * @property int $id
@@ -307,6 +335,7 @@ namespace App\Models{
  *
  * @property int $id
  * @property int|null $user_id
+ * @property int|null $id_pengepul
  * @property string $tanggal
  * @property string $total_harga
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -314,6 +343,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DetailTransaksiPenjualan> $detailTransaksiPenjualans
  * @property-read int|null $detail_transaksi_penjualans_count
  * @property-read \App\Models\JenisSampah|null $jenisSampah
+ * @property-read \App\Models\Pengepul|null $pengepul
  * @property-read \App\Models\User|null $user
  * @method static \Database\Factories\TransaksiPenjualanFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenjualan newModelQuery()
@@ -321,6 +351,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenjualan query()
  * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenjualan whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenjualan whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenjualan whereIdPengepul($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenjualan whereTanggal($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenjualan whereTotalHarga($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TransaksiPenjualan whereUpdatedAt($value)

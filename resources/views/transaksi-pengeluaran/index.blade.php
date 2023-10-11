@@ -50,12 +50,9 @@
                                                 'method' => 'DELETE',
                                                 'onsubmit' => 'return confirm("Yakin ingin menghapus data ini?")'
                                             ]) !!}
-                                            <div class="btn-group">
-                                                <a href="{{ route('transaksi-pengeluaran.show', ['transaksi_pengeluaran' => $item->id]) }}" class="btn btn-primary">Detail</a>
-                                                {{-- spasi --}}
-                                                &nbsp;
+                                            
                                                 <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#confirmModalDelete-{{ $item->id }}"><b>Hapus</b></a>
-                                            </div>
+                                            
                                             {!! Form::close() !!}
                                         </td>
                                     </tr>

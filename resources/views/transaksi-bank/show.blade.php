@@ -20,7 +20,7 @@
                 </tr>
                 <tr>
                     <th>Tanggal Transaksi</th>
-                    <td>{{ $transaksiBank->created_at }}</td>
+                    <td>{{ \Carbon\Carbon::parse($transaksiBank->created_at)->translatedFormat('d F Y') }}</td>
                 </tr>
                 <tr>
                     <th>Total Transaksi</th>

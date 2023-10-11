@@ -11,7 +11,8 @@ class TransaksiPenarikan extends Model
     use HasFactory;
     use HasFormatRupiah;
     
-    protected $table = 'transaksi_penarikans'; // Sesuaikan dengan nama tabel Anda
+    protected $table = 'transaksi_penarikans'; // Define table name
+    protected $dates = ['created_at']; // Define Carbon column names
 
     protected $fillable = [
         'nasabah_id',

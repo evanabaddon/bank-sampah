@@ -16,6 +16,7 @@ class SettingController extends Controller
     public function store(Request $request)
     {
         $datasetting = $request->except('_token');
+
         
         // Upload file app_logo
         if ($request->hasFile('app_logo')) {

@@ -201,6 +201,10 @@
             <div class="box box-info">
                 <div class="box-header with-border">
                     <h3 class="box-title">10 Nasabah Terakhir</h3>
+                    <div class="box-tools">
+                        {{-- button "semua nasabah" --}}
+                        <a href="{{ route('nasabah.index') }}" class="btn btn-primary btn-sm">Semua Nasabah</a>
+                    </div>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body table-responsive">

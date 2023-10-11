@@ -6,6 +6,7 @@ use App\Models\TransaksiPenarikan as Model;
 use App\Http\Requests\StoreTransaksiPenarikanRequest;
 use App\Http\Requests\UpdateTransaksiPenarikanRequest;
 use App\Models\Nasabah;
+use Carbon\Carbon;
 
 class TransaksiPenarikanController extends Controller
 {
@@ -24,6 +25,11 @@ class TransaksiPenarikanController extends Controller
         $model = Model::with('user:id,name') // Mengambil relasi user dengan kolom id dan name
         ->latest()
         ->paginate(50);
+
+        // foreach ($model as $transaction) {
+        //     $transaction->created_at = $transaction->created_at->translatedFormat('d F Y H:i:s');
+        // }
+
 
         $data = [
             'models' => $model,
@@ -45,6 +51,7 @@ class TransaksiPenarikanController extends Controller
         // Get nasabah when is_bsp = 1
         $nasabahs = Nasabah::where('is_bsp', 1)->pluck('name', 'id')->all();
 
+       
         // Define additional data
         $data = [
             'model' => new Model(),

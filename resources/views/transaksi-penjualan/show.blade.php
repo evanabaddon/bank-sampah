@@ -20,9 +20,8 @@
                     <td>{{ $transaksiPenjualan->tanggal }}</td>
                 </tr>
                 <tr>
-                    <th>Total Transaksi</th>
-                    <td>{{ $transaksiPenjualan->formatRupiah('total_harga') }}</td>
-                </tr>
+                    <th>Pengepul</th>
+                    <td>{{ $transaksiPenjualan->pengepul ? $transaksiPenjualan->pengepul->name : '-' }}</td>
                 <tr>
                     <th>Operator</th>
                     <td>{{ $transaksiPenjualan->user->name }}</td>
@@ -58,6 +57,10 @@
                             <p>Tidak ada detail transaksi.</p>
                         @endif
                     </td>
+                </tr>
+                <tr>
+                    <th>Total Transaksi</th>
+                    <td>{{ $transaksiPenjualan->formatRupiah('total_harga') }}</td>
                 </tr>
             </table>
         </div>

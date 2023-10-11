@@ -17,6 +17,7 @@ class TransaksiPenjualan extends Model
         'jumlah_kg',
         'total_harga',
         'user_id',
+        'id_pengepul'
     ];
 
     // Definisikan relasi dengan model JenisSampah jika diperlukan
@@ -32,6 +33,12 @@ class TransaksiPenjualan extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class); // Gantilah User::class dengan nama model user yang sebenarnya
+        return $this->belongsTo(User::class); // relasi ke model User
+    }
+
+    // relasi ke pengepul
+    public function pengepul()
+    {
+        return $this->belongsTo(Pengepul::class, 'id_pengepul', 'id'); // relasi ke model Pengepul
     }
 }

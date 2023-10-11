@@ -85,14 +85,14 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">Detail Tagihan Tahun {{ now()->year }}</h3>
-                    <div class="box-tools">
+                    {{-- <div class="box-tools">
                         <div class="input-group input-group-sm" style="width: 200px;">
                             {!! Form::select('tahun_tagian', [], null, ['class'=>'form-control']) !!}
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
                 
                 <!-- /.box-header -->

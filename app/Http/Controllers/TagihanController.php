@@ -6,7 +6,9 @@ use Carbon\Carbon;
 use App\Models\Tagihan as Model;
 use App\Http\Requests\StoreTagihanRequest;
 use App\Http\Requests\UpdateTagihanRequest;
+use App\Models\KategoriLayanan;
 use Auth;
+use Illuminate\Http\Request;
 
 class TagihanController extends Controller
 {
@@ -21,8 +23,32 @@ class TagihanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        // Mendapatkan daftar bulan dan tahun unik dari transaksi
+        $bulan = Model::distinct()
+            ->selectRaw('MONTH(tanggal_bayar) as bulan')
+            ->pluck('bulan');
+
+        $tahun = Model::distinct()
+            ->selectRaw('YEAR(tanggal_bayar) as tahun')
+            ->pluck('tahun');
+
+        // kategori layanan pluck name and id
+        $kategoriLayanan = KategoriLayanan::pluck('name', 'id');
+
+        // $tahunMin pada tabel smua tabel ambil dari created_at
+        $tahunMin = Model::min('created_at');
+
+        // ambil tahun dari $tahunMin
+        $tahunMin = date('Y', strtotime($tahunMin));
+
+        // $tahunMax pada tabel smua tabel ambil dari created_at
+        $tahunMax = Model::max('created_at');
+
+        // ambil tahun dari $tahunMax
+        $tahunMax = date('Y', strtotime($tahunMax));
+
         // Mendapatkan pengguna yang saat ini login
         $currentUser = Auth::user();
 
@@ -31,11 +57,72 @@ class TagihanController extends Controller
 
         // Jika pengguna adalah admin, maka tampilkan semua data
         if (!$currentUser || $currentUser->akses == 'admin') {
+            // filter data berasarkan bulan
+            if (request()->filled('bulan') && !request()->filled('tahun')) {
+                $models = $tagihanQuery->whereMonth('tanggal_tagihan', request('bulan'))->paginate(50);
+            }
+
+            // filter data berasarkan tahun
+            if (!request()->filled('tahun') && request()->filled('tahun')) {
+                $models = $tagihanQuery->whereYear('tanggal_tagihan', request('tahun'))->paginate(50);
+            }
+
+            // filter data berasarkan status
+            if (request()->filled('status')) {
+                $models = $tagihanQuery->where('status', request('status'))->paginate(50);
+            }
+
+            // filter data berasarkan kategori layanan
+            if (request()->filled('kategori_layanan_id')) {
+                $models = $tagihanQuery->whereHas('nasabah', function ($query) {
+                    $query->where('kategori_layanan_id', request('kategori_layanan_id'));
+                })->paginate(50);
+            }
+
+            // filter data berasarkan nama nasabah
+            if (request()->filled('q')) {
+                $models = $tagihanQuery->whereHas('nasabah', function ($query) {
+                    $query->where('name', 'like', '%' . request('q') . '%');
+                })->paginate(50);
+            }
+
             $models = $tagihanQuery->paginate(50);
-        } else {
-            // Jika bukan admin, filter data berdasarkan user_id
-            $models = $tagihanQuery->where('user_id', $currentUser->id)->paginate(50);
-        }
+        } else  {
+            
+
+            // Jika bukan admin, filter data dengan status belum tanpa user_id atau filter data dengan status lunas dengan user_id, atau filter data berdasarakan pencarian nama nasabah dengan status belum tanpa user_id atau filter data berdasarakan pencarian nama nasabah dengan status lunas dengan user_id
+            if (request()->filled('q')) {
+                $models = $tagihanQuery->where(function ($query) use ($currentUser) {
+                    $query->where('status', 'belum')->whereNull('user_id')->whereHas('nasabah', function ($query) {
+                        $query->where('name', 'like', '%' . request('q') . '%');
+                    });
+                })->orWhere(function ($query) use ($currentUser) {
+                    $query->where('status', 'lunas')->where('user_id', $currentUser->id)->whereHas('nasabah', function ($query) {
+                        $query->where('name', 'like', '%' . request('q') . '%');
+                    });
+                })->paginate(50);
+            }
+
+            // Jika bukan admin, request status belum filter data dengan status belum tanpa user_id
+            if (request()->filled('status') && request('status') == 'belum') {
+                $models = $tagihanQuery->where('status', 'belum')->whereNull('user_id')->paginate(50);
+            }
+
+            // Jika bukan admin, request status lunas filter data dengan status lunas dengan user_id
+            if ( request('status') == 'lunas') {
+                $models = $tagihanQuery->where('status', 'lunas')->where('user_id', $currentUser->id)->paginate(50);
+            }
+
+            // Jika bukan admin, filter data dengan status belum tanpa user_id atau filter data dengan status lunas dengan user_id
+            $models = $tagihanQuery->where(function ($query) use ($currentUser) {
+                $query->where('status', 'belum')->whereNull('user_id');
+            })->orWhere(function ($query) use ($currentUser) {
+                $query->where('status', 'lunas')->where('user_id', $currentUser->id);
+            })->paginate(50);
+            
+        } 
+
+        
 
         // Ubah format tanggal tagihan dan tanggal jatuh tempo menjadi format Indonesia menggunakan Carbon
         foreach ($models as $model) {
@@ -46,6 +133,11 @@ class TagihanController extends Controller
 
         $data = [
             'models' => $models,
+            'bulan' => $bulan,
+            'tahunMin' => $tahunMin,
+            'tahunMax' => $tahunMax,
+            'tahun' => $tahun,
+            'kategoriLayanan' => $kategoriLayanan,
             'routePrefix' => $this->routePrefix,
             'title' => 'Tagihan'
         ];
@@ -136,4 +228,5 @@ class TagihanController extends Controller
     {
         //
     }
+
 }

@@ -39,8 +39,8 @@
                                     <th class="d-none d-sm-table-cell">Alamat</th>
                                     <th>RT</th>
                                     <th>RW</th>
-                                    <th>Layanan BSP (Bank Sampah)</th>
-                                    <th>Layanan PPC (Pelayanan Sampah)</th>
+                                    <th>Layanan BSP</th>
+                                    <th>Layanan PPC</th>
                                     <th>Kategori Layanan</th>
                                     <th>Saldo</th>
                                     <th>Aksi</th>

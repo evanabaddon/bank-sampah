@@ -41,7 +41,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item->nasabah->name }}</td>
-                                        <td>{{ $item->created_at }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('d F Y') }}</td>
                                         <td>{{ $item->formatRupiah('total_harga') }}</td>
                                         <td>{{ $item->user ? $item->user->name : 'User Tidak Ditemukan' }}</td>
                                         <td>

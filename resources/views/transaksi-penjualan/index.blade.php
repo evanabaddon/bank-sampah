@@ -30,6 +30,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Tanggal Transaksi</th>
+                                    <th>Pengepul</th>
                                     <th>Total Transaksi</th>
                                     <th>Operator</th>
                                     <th>Aksi</th>
@@ -39,7 +40,8 @@
                                 @forelse ($models as $item)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $item->created_at }}</td>
+                                        <td>{{ $item->tanggal }}</td>
+                                        <td>{{ $item->pengepul ? $item->pengepul->name : 'Pengepul Tidak Ditemukan' }}</td>
                                         <td>{{ $item->formatRupiah('total_harga') }}</td>
                                         <td>{{ $item->user ? $item->user->name : 'User Tidak Ditemukan' }}</td>
                                         <td>

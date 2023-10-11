@@ -5,7 +5,9 @@ use App\Models\TransaksiPenjualan as Model;
 use App\Http\Requests\StoreTransaksiPenjualanRequest;
 use App\Http\Requests\UpdateTransaksiPenjualanRequest;
 use App\Models\JenisSampah;
+use App\Models\Pengepul;
 use App\Models\Saldo;
+use Carbon\Carbon;
 
 class TransaksiPenjualanController extends Controller
 {
@@ -21,9 +23,14 @@ class TransaksiPenjualanController extends Controller
      */
     public function index()
     {
-        $transactions = Model::with('user:id,name') // Mengambil relasi user dengan kolom id dan name
+        $transactions = Model::with('user:id,name', 'pengepul:id,name') // Mengambil relasi user dengan kolom id dan name
         ->latest()
         ->paginate(50);
+
+        // ubah format tanggal transaksi menjadi format Indonesia menggunakan Carbon
+        foreach ($transactions as $transaction) {
+            $transaction->tanggal = Carbon::parse($transaction->tanggal)->translatedFormat('d F Y');
+        }
 
         $data = [
             'models' => $transactions,
@@ -44,6 +51,9 @@ class TransaksiPenjualanController extends Controller
         // mengambil data dari table jenis sampah
         $jenisSampahs = JenisSampah::pluck('name', 'id')->all();
 
+        // mengabil data pengepul
+        $pengepuls = Pengepul::pluck('name', 'id')->all();
+
         $data = [
             'model' => new Model(),
             'method' => 'POST',
@@ -51,6 +61,7 @@ class TransaksiPenjualanController extends Controller
             'routePrefix' => $this->routePrefix,
             'title' => 'Transaksi Penjualan Sampah',
             'jenisSampahs' => $jenisSampahs,
+            'pengepuls' => $pengepuls,
         ];
         return view('transaksi-penjualan.' . $this->viewCreate, $data);
     }
@@ -104,6 +115,7 @@ class TransaksiPenjualanController extends Controller
             'tanggal' => $request->input('tanggal'),
             'total_harga' => $totalHarga, // Gunakan total harga yang telah dihitung
             'user_id' => auth()->user()->id, // Ambil id user yang sedang login
+            'id_pengepul' => $request->input('id_pengepul'),
         ]);
 
         // update tabel saldo
@@ -136,9 +148,12 @@ class TransaksiPenjualanController extends Controller
      */
     public function show(Model $transaksiPenjualan)
     {
-        $transaksiPenjualan = Model::with(['user', 'detailtransaksiPenjualans.jenisSampah'])
+        $transaksiPenjualan = Model::with(['user', 'detailtransaksiPenjualans.jenisSampah', 'pengepul'])
         ->find($transaksiPenjualan->id);
-        // dd($transaksiPenjualan->detailTransaksiPenjualans);
+
+        // ubah format tanggal transaksi menjadi format Indonesia menggunakan Carbon
+        $transaksiPenjualan->tanggal = Carbon::parse($transaksiPenjualan->tanggal)->translatedFormat('d F Y');
+
         return view($this->routePrefix . '.' . $this->viewShow, compact('transaksiPenjualan'));
     }
 
@@ -173,6 +188,11 @@ class TransaksiPenjualanController extends Controller
      */
     public function destroy(Model $transaksiPenjualan)
     {
+        // kembalikan saldo
+        $saldo = Saldo::first();
+        $saldo->saldo -= $transaksiPenjualan->total_harga;
+        $saldo->save();
+
         // kembalikan stok jenis sampah yang telah dijual
         foreach ($transaksiPenjualan->detailTransaksiPenjualans as $detailTransaksiPenjualan) {
             $jenisSampah = JenisSampah::find($detailTransaksiPenjualan->jenis_sampah_id);

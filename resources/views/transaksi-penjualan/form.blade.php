@@ -24,6 +24,13 @@
                             <span class="text-danger">{{ $errors->first('tanggal') }}</span> 
                         </div>                        
                     </div>
+                    <div class="form-group">
+                        <label for="id_pengepul" class="col-sm-2 control-label">Pengepul Sampah</label>
+                        <div class="col-sm-6">
+                            {!! Form::select('id_pengepul', $pengepuls, null, ['class'=>'form-control select2']) !!}
+                            <span class="text-danger">{{ $errors->first('id_pengepul') }}</span> 
+                        </div>                        
+                    </div>
                     <!-- Tabel untuk detail jenis sampah -->
                     <table class="table table-bordered" id="jenisSampahTable">
                         <thead>

@@ -11,15 +11,37 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="box box-info">
-                <div class="box-header with-border">
-                    <div class="box-tools">
-                        <div class="input-group input-group-sm hidden-xs" style="width: 200px;">
-                            <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
-                            <div class="input-group-btn">
-                                <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                <div class="box-header with-border"> 
+                    <div class="row">
+                        {!! Form::open(['route' => $routePrefix . '.index', 'method' => 'GET']) !!}
+                            <div class="col-sm-3">
+                                <input type="text" name="q" class="form-control pull-right" placeholder="Cari Nasabah" value="{{ request('q') }}">
                             </div>
-                        </div>
-                    </div>
+                            @if(Auth::user()->role == 'admin')
+                                <div class="col-sm-2">
+                                    {!! Form::selectMonth('bulan', request('bulan'), ['class'=>'form-control', 'placeholder'=>'Pilih Bulan']) !!}
+                                </div>
+                                <div class="col-sm-2">
+                                    {!! Form::selectRange('tahun', $tahunMin, $tahunMax, request('tahun'), ['class' => 'form-control', 'placeholder'=>'Pilih Tahun']) !!}
+                                </div>
+                            
+                                <div class="col-sm-2">
+                                    {!! Form::select('kategori_layanan_id', $kategoriLayanan, request('kategori_layanan_id'), ['class' => 'form-control', 'placeholder'=>'Pilih Kategori Layanan']) !!}
+                                </div>
+                                <div class="col-sm-2">
+                                    <select name="status" class="form-control pull-left">
+                                        <option value="">Status</option>
+                                        <option value="belum" {{ request('status') == 'belum' ? 'selected' : '' }}>Belum Bayar</option>
+                                        <option value="lunas" {{ request('status') == 'lunas' ? 'selected' : '' }}>Terbayar</option>
+                                    </select>
+                                </div>
+                            @endif
+                            <div class="col-sm-1">
+                                <button type="submit" class="btn btn-block btn-primary"><i class="fa fa-filter"></i>  Filter</button>
+                            </div>
+                        {!! Form::close() !!}
+                    </div> 
+                    
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body table-responsive">
@@ -67,6 +89,7 @@
                                             ]) !!}
                                             <div class="btn-group">
                                                 @if ($item && $item->status === 'belum')
+                                                    
                                                     <a href="#" class="btn btn-block btn-success" data-toggle="modal" data-target="#confirmModal-{{ $item->id }}"><b>Bayar</b></a>
                                                 @elseif ($item && $item->status === 'lunas')
                                                     <a href="{{ route('print.nota', ['tagihan_id' => $item->id]) }}" class="btn btn-primary" target="_blank">Cetak Nota</a>
@@ -100,7 +123,7 @@
                                     </div>
                                 @empty
                                     <tr>
-                                        <td class="text-center" colspan="9">Data tidak ada</td>
+                                        <td class="text-center" colspan="11">Data tidak ada</td>
                                     </tr>
                                 @endforelse
                             </tbody>
