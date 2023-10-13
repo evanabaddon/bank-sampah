@@ -78,10 +78,10 @@ class TransaksiPenarikanController extends Controller
         $nasabah = Nasabah::findOrFail($request->id_nasabah);
         if ($nasabah->saldo < $request->jumlah) {
             // flash error saldo tidak cukup
+            flash()->addError('Saldo tidak cukup');
+
             return redirect()->back()->with('error', 'Saldo tidak cukup');
         }
-
-        // dd flash error
 
 
         // kurangi saldo nasabah
@@ -94,6 +94,9 @@ class TransaksiPenarikanController extends Controller
         $model->jumlah = $request->jumlah;
         $model->user_id = auth()->user()->id;
         $model->save();
+
+        // flash
+        flash()->addSuccess('Data Berhasil Disimpan');
 
         return redirect()->route($this->routePrefix . '.index')->with('success', 'Transaksi penarikan berhasil disimpan');
     }
@@ -152,6 +155,9 @@ class TransaksiPenarikanController extends Controller
         $nasabah->saldo += $transaksiPenarikan->jumlah;
         $nasabah->save();
         $transaksiPenarikan->delete();
+
+        // flash
+        flash()->addSuccess('Data Berhasil Dihapus');
 
         return redirect()->route($this->routePrefix . '.index')->with('success', 'Transaksi penarikan berhasil dihapus');
     }

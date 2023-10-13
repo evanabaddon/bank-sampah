@@ -41,7 +41,8 @@ class SettingController extends Controller
         }
 
         Settings::set($datasetting);
-        return back()->with('success', 'Pengaturan berhasil disimpan');
+        
+        return back()->with('success', 'Pengaturan berhasil disimpan')->with('success', 'Pengaturan berhasil disimpan');
     }
 
 

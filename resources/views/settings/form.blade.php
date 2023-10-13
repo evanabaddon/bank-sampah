@@ -41,7 +41,7 @@
                     <div class="form-group">
                         <label for="app_phone" class="col-sm-2 control-label">Telepon</label>
                         <div class="col-sm-10">
-                            {!! Form::text('app_phone', settings()->get('app_phone'), ['class'=>'form-control']) !!}
+                            {!! Form::number('app_phone', settings()->get('app_phone'), ['class'=>'form-control']) !!}
                             <span class="text-danger">{{ $errors->first('app_phone') }}</span> 
                         </div>
                     </div>

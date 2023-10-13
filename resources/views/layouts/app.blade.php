@@ -203,38 +203,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-      {{-- if flash message error --}}
-      @if (session('error'))
-      <div class="alert alert-danger alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-          <h4><i class="icon fa fa-ban"></i> Alert!</h4>
-          {{ session('error') }}
-      </div>
-      @endif
-      {{-- if flash message success --}}
-      @if (session('success'))
-      <div class="alert alert-success alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-          <h4><i class="icon fa fa-check"></i> Alert!</h4>
-          {{ session('success') }}
-      </div>
-      @endif
-      {{-- if flash message warning --}}
-      @if (session('warning'))
-      <div class="alert alert-warning alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-          <h4><i class="icon fa fa-warning"></i> Alert!</h4>
-          {{ session('warning') }}
-      </div>
-      @endif
-      {{-- if flash message info --}}
-      @if (session('info'))
-      <div class="alert alert-info alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-          <h4><i class="icon fa fa-info"></i> Alert!</h4>
-          {{ session('info') }}
-      </div>
-      @endif
+      
       @yield('content')
 
     

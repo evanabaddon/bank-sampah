@@ -90,8 +90,7 @@ class NasabahController extends Controller
         $requestData['kodenasabah'] = $kodeNasabah;
 
         Model::create($requestData);
-        flash('Data Berhasil Disimpan');
-        return redirect()->route('nasabah.index');
+        return redirect()->route('nasabah.index')->with('success', 'Nasabah Berhasil Ditambahkan');
     }
 
     /**
@@ -201,8 +200,7 @@ class NasabahController extends Controller
     
         $model->save();
     
-        flash('Data Berhasil Diubah');
-        return redirect()->route('nasabah.index');
+        return redirect()->route('nasabah.index')->with('success', 'Nasabah Berhasil Diubah');
     }
 
     /**
@@ -219,8 +217,7 @@ class NasabahController extends Controller
             return back();
         }
         $model->delete();
-        flash('Data berhasil dihapus');
-        return back();
+        return back()->with('success', 'Nasabah Berhasil Dihapus');
     }
 
     public function generatePin() {
@@ -234,17 +231,15 @@ class NasabahController extends Controller
         
         // Simpan pin baru ke dalam database
         $model->update(['pin' => $newPin]);
-    
-        flash('PIN Baru berhasil dibuat: ' . $newPin);
-        return redirect()->route('nasabah.show', $id);
+        
+        return redirect()->route('nasabah.show', $id)->with('success', 'PIN Baru berhasil dibuat: ' . $newPin);
     }
     
     public function kirimPin(Request $request, $id) {
         $model = Model::findOrFail($id);
         
         if (!$model->pin) {
-            flash('Belum ada PIN yang dibuat untuk nasabah ini.');
-            return redirect()->route('nasabah.show', $id);
+            return redirect()->route('nasabah.show', $id)->with('error', 'Belum ada PIN yang dibuat untuk nasabah ini.');
         }
     
         // Format URL untuk mengirim pesan ke WhatsApp

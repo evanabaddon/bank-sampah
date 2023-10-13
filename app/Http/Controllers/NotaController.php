@@ -46,7 +46,7 @@ class NotaController extends Controller
         $saldoPerusahaan->save();
 
         // return ke halaman detail nasabah
-        return redirect()->route('nasabah.show', ['nasabah' => $tagihan->nasabah_id]);
+        return redirect()->route('nasabah.show', ['nasabah' => $tagihan->nasabah_id])->with('success', 'Pembayaran berhasil dilakukan.');
     }
 
     // fungsi kirim nota ke whatsapp nasabah
@@ -93,7 +93,5 @@ class NotaController extends Controller
         // dd($whatsappUrl);
         // Redirect ke URL WhatsApp dengan membuka tab baru
         return redirect()->away($whatsappUrl)->withHeaders(['target' => '_blank',]);
-
-
     }
 }

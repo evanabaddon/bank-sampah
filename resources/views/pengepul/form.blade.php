@@ -42,7 +42,7 @@
                     <div class="form-group">
                         <label for="no_hp" class="col-sm-2 control-label">No HP Pengepul</label>
                         <div class="col-sm-10">
-                            {!! Form::text('no_hp', $model->no_hp ?  $model->no_hp : '', ['class'=>'form-control']) !!}
+                            {!! Form::number('no_hp', $model->no_hp ?  $model->no_hp : '', ['class'=>'form-control']) !!}
                             <span class="text-danger">{{ $errors->first('no_hp') }}</span> 
                         </div>
                     </div>

@@ -66,8 +66,8 @@ class UserController extends Controller
         $requestData['password'] = bcrypt($requestData['password']);
         $requestData['email_verified_at'] = now();
         Model::create($requestData);
-        flash('Data Berhasil Disimpan');
-        return redirect()->route('user.index');
+
+        return redirect()->route('user.index')->with('success', 'User Berhasil Ditambahkan');
     }
 
     /**
@@ -127,8 +127,8 @@ class UserController extends Controller
         }
         $model->fill($requestData);
         $model->save();
-        flash('Data Berhasil Diubah');
-        return redirect()->route('user.index');
+
+        return redirect()->route('user.index')->with('success', 'User Berhasil Diubah');
     }
 
     /**
@@ -141,11 +141,10 @@ class UserController extends Controller
     {
         $model= Model::findOrFail($id);
         if ($model-> email=='admin@admin.com') {
-            flash('Data tidak bisa dihapus',$level='danger');
-            return back();
+            return back()->with('error', 'Data tidak bisa dihapus');
         }
         $model->delete();
-        flash('Data berhasil dihapus');
-        return back();
+        
+        return back()->with('success', 'User Berhasil Dihapus');
     }
 }

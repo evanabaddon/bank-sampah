@@ -214,8 +214,8 @@ class TagihanController extends Controller
         $model = Model::findOrFail($tagihan->id);
         $model->fill($request);
         $model->save();
-        flash('Data Berhasil Diubah');
-        return redirect()->route('tagihan.index');
+        
+        return redirect()->route('tagihan.index')->with('success', 'Tagihan berhasil diubah');
     }
 
     /**

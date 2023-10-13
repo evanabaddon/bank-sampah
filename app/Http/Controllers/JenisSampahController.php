@@ -62,8 +62,8 @@ class JenisSampahController extends Controller
             ]
         );
         Model::create($requestData);
-        flash('Data Berhasil Disimpan');
-        return redirect()->route('jenis-sampah.index');
+
+        return redirect()->route('jenis-sampah.index')->with('success', 'Jenis Sampah Berhasil Ditambahkan');
     }
 
     /**
@@ -112,8 +112,8 @@ class JenisSampahController extends Controller
         $model = Model::findOrFail($id);
         $model->fill($requestData);
         $model->save();
-        flash('Data Berhasil Diubah');
-        return redirect()->route('jenis-sampah.index');
+
+        return redirect()->route('jenis-sampah.index')->with('success', 'Jenis Sampah Berhasil Diubah');
     }
 
     /**
@@ -126,11 +126,9 @@ class JenisSampahController extends Controller
     {
         $model= Model::findOrFail($id);
         if ($model-> email=='admin@admin.com') {
-            flash('Data tidak bisa dihapus',$level='danger');
-            return back();
+            return back()->with('error', 'Data tidak bisa dihapus');
         }
         $model->delete();
-        flash('Data berhasil dihapus');
-        return back();
+        return back()->with('success', 'Jenis Sampah Berhasil Dihapus');
     }
 }

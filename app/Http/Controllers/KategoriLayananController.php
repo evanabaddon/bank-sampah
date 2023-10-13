@@ -66,8 +66,8 @@ class KategoriLayananController extends Controller
             ]
         );
         Model::create($requestData);
-        flash('Data Berhasil Disimpan');
-        return redirect()->route('kategori-layanan.index');
+
+        return redirect()->route('kategori-layanan.index')->with('success', 'Kategori Layanan Berhasil Ditambahkan');
     }
 
     /**
@@ -116,8 +116,7 @@ class KategoriLayananController extends Controller
         $model = Model::findOrFail($id);
         $model->fill($requestData);
         $model->save();
-        flash('Data Berhasil Diubah');
-        return redirect()->route('kategori-layanan.index');
+        return redirect()->route('kategori-layanan.index')->with('success', 'Kategori Layanan Berhasil Diubah');
     }
 
     /**
@@ -134,7 +133,6 @@ class KategoriLayananController extends Controller
             return back();
         }
         $model->delete();
-        flash('Data berhasil dihapus');
-        return back();
+        return back()->with('success', 'Kategori Layanan Berhasil Dihapus');
     }
 }

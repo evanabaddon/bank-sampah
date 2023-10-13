@@ -84,6 +84,9 @@ class TransaksiPengeluaranController extends Controller
         $saldoPerusahaan->saldo -= $transaksiPengeluaran->jumlah; // Mengurangkan saldo perusahaan sesuai dengan jumlah pengeluaran
         $saldoPerusahaan->save();
 
+        // flash
+        flash()->addSuccess('Data Berhasil Disimpan');
+
         // Redirect ke halaman yang sesuai
         return redirect()->route($this->routePrefix . '.index')->with('success', 'Transaksi berhasil disimpan');
     }
@@ -136,6 +139,9 @@ class TransaksiPengeluaranController extends Controller
         $saldoPerusahaan->save();
         // Hapus data transaksi pengeluaran
         $transaksiPengeluaran->delete();
+
+        // flash
+        flash()->addSuccess('Data Berhasil Dihapus');
 
         return redirect()->route($this->routePrefix . '.index')->with('success', 'Transaksi berhasil dihapus');
     }

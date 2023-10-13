@@ -205,7 +205,7 @@ class TransaksiPenjualanController extends Controller
 
         // Hapus data detail transaksi penjualan
         $transaksiPenjualan->detailTransaksiPenjualans()->delete();
-
+        
         return redirect()->route($this->routePrefix . '.index')->with('success', 'Berhasil menghapus data transaksi penjualan');
     }
 }

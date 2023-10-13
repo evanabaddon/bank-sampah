@@ -153,11 +153,10 @@ class PengepulController extends Controller
         // Hapus data dari database
         $model= Model::findOrFail($id);
         if ($model-> email=='admin@admin.com') {
-            flash('Data tidak bisa dihapus',$level='danger');
-            return back();
+            return back()->with('success', 'Pengepul berhasil dihapus');
         }
         $model->delete();
-        flash('Data berhasil dihapus');
-        return back();
+       
+        return back()->with('success', 'Pengepul berhasil dihapus');
     }
 }
