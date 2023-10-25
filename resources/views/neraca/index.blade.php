@@ -72,9 +72,9 @@
                                     <td>{{ $rowNumber++ }}</td>
                                     <td>
                                         @if ($transaksi->sumber == 'Tagihan')
-                                        {{ $transaksi->tanggal_tagihan }}
+                                        {{ \Carbon\Carbon::parse($transaksi->tanggal_tagihan)->translatedFormat('d F Y') }}
                                         @elseif ($transaksi->sumber == 'Penjualan')
-                                        {{ $transaksi->tanggal }}
+                                        {{ \Carbon\Carbon::parse($transaksi->tanggal )->translatedFormat('d F Y') }}
                                         @else
                                         N/A
                                         @endif
@@ -107,9 +107,9 @@
                                     <td>{{ $rowNumber++ }}</td>
                                     <td>
                                         @if ($transaksi->sumber == 'Transaksi Pengeluaran')
-                                        {{ $transaksi->tanggal }}
+                                        {{ \Carbon\Carbon::parse($transaksi->tanggal)->translatedFormat('d F Y') }}
                                         @elseif ($transaksi->sumber == 'Transaksi Bank')
-                                        {{ $transaksi->created_at->format('Y-m-d') }}
+                                        {{ \Carbon\Carbon::parse($transaksi->created_at)->translatedFormat('d F Y') }}
                                         @else
                                         N/A
                                         @endif

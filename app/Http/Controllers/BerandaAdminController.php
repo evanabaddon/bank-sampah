@@ -1,19 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Nasabah;
 use App\Models\Tagihan;
 use App\Models\TransaksiBank;
 use App\Models\TransaksiPengeluaran;
 use App\Models\TransaksiPenjualan;
-use DateTime;
-use DB;
 
 class BerandaAdminController extends Controller
 {
     public function index()
     {
+        
         // hitung jumlah nasabah
         $jumlahNasabah = Nasabah::count();
 

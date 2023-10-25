@@ -29,8 +29,8 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Nasabah</th>
                                     <th>Tanggal Transaksi</th>
+                                    <th>Nama Nasabah</th>
                                     <th>Total Transaksi</th>
                                     <th>Operator</th>
                                     <th>Aksi</th>
@@ -40,8 +40,8 @@
                                 @forelse ($models as $item)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('d F Y') }}</td>
                                         <td>{{ $item->nasabah->name }}</td>
-                                        <td>{{ $item->created_at }}</td>
                                         <td>{{ $item->formatRupiah('jumlah') }}</td>
                                         <td>{{ $item->user ? $item->user->name : 'User Tidak Ditemukan' }}</td>
                                         <td>

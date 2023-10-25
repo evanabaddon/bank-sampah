@@ -29,8 +29,8 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Keterangan</th>
                                     <th>Tanggal Transaksi</th>
+                                    <th>Keterangan</th>
                                     <th>Total Transaksi</th>
                                     <th>Operator</th>
                                     <th>Aksi</th>
@@ -40,8 +40,8 @@
                                 @forelse ($models as $item)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d F Y') }}</td>
                                         <td>{{ $item->deskripsi }}</td>
-                                        <td>{{ $item->tanggal }}</td>
                                         <td>{{ $item->formatRupiah('jumlah') }}</td>
                                         <td>{{ $item->user->name }}</td>
                                         <td>

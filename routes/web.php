@@ -37,7 +37,8 @@ Route::get('/', function () {
         }
 });
 
-Route::get('/', 'WelcomeController@index');
+// redirect / to /login
+Route::redirect('/', '/login');
 
 Auth::routes();
 
