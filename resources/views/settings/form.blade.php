@@ -58,7 +58,7 @@
                             {!! Form::file('app_logo', ['class'=>'form-control', 'enctype' => 'multipart/form-data', 'accept' => 'image/*']) !!}
                             <span class="text-danger">{{ $errors->first('app_logo') }}</span> 
                             @if(settings()->get('app_logo'))
-                                <img src="{{ asset(''.settings()->get('app_logo')) }}" alt="" class="img-responsive" width="100">
+                                <img src="{{ asset('images/'.settings()->get('app_logo')) }}" alt="" class="img-responsive" width="100">
                             @endif
                         </div>
                     </div>
@@ -68,7 +68,7 @@
                             {!! Form::file('app_stempel', ['class'=>'form-control', 'enctype' => 'multipart/form-data', 'accept' => 'image/*']) !!}
                             <span class="text-danger">{{ $errors->first('app_stempel') }}</span> 
                             @if(settings()->get('app_stempel'))
-                                <img src="{{ asset(''.settings()->get('app_stempel')) }}" alt="" class="img-responsive" width="100">
+                                <img src="{{ asset('images/'.settings()->get('app_stempel')) }}" alt="" class="img-responsive" width="100">
                             @endif
                         </div>
                     </div>

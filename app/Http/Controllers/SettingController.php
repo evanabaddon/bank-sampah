@@ -24,9 +24,17 @@ class SettingController extends Controller
             $request->validate([
                 'app_logo' => 'image|mimes:jpeg,png,jpg|max:2048'
             ]);
-        
-            $path = $request->file('app_logo')->store('public/logo');
-            $datasetting['app_logo'] = Storage::url($path);
+
+            // save image to root/public/logo folder
+            // $path = $request->file('app_logo')->store('public/logo');
+
+            // move image to public_path() / logo folder
+            $file = $request->file('app_logo');
+            $filename = $request->file('app_logo')->getClientOriginalName();
+            $file->move(public_path('images'), $filename);
+            
+            $datasetting['app_logo'] = $filename;
+
         }
 
         // upload app_stempel
@@ -36,8 +44,12 @@ class SettingController extends Controller
                 'app_stempel' => 'image|mimes:jpeg,png,jpg|max:2048'
             ]);
         
-            $path = $request->file('app_stempel')->store('public/stempel');
-            $datasetting['app_stempel'] = Storage::url($path);
+            // move image to public_path() / logo folder
+            $file = $request->file('app_stempel');
+            $filename = $request->file('app_stempel')->getClientOriginalName();
+            $file->move(public_path('images'), $filename);
+            
+            $datasetting['app_stempel'] = $filename;
         }
 
         Settings::set($datasetting);

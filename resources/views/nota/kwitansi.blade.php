@@ -114,7 +114,7 @@
     <div class="container">
         <!-- Logo -->
         <div class="logo">
-            <img src="{{ asset(''.settings()->get('app_logo')) }}" alt="Logo">
+            <img src="{{ asset('images/'.settings()->get('app_logo')) }}" alt="Logo">
         </div>
 
         <!-- Header -->
@@ -149,7 +149,7 @@
 
         <!-- Stempel Lunas -->
         <div class="stempel">
-            <img src="{{ asset(''.settings()->get('app_stempel')) }}" alt="Stempel Lunas">
+            <img src="{{ asset('images/'.settings()->get('app_stempel')) }}" alt="Stempel Lunas">
         </div>
 
         <!-- Customer Info -->

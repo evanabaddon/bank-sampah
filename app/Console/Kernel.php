@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('generate:monthly-bill')->monthlyOn(1, '00:00');
+        
     }
 
     /**
