@@ -52,4 +52,37 @@ class LoginController extends Controller
         }
     }
 
+    public function loginApi(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            if ($user->akses == 'admin') {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Login Berhasil',
+                    'user' => $user,
+                    'token' => $user->createToken('nApp')->plainTextToken,
+                ], 200);
+            } elseif ($user->akses == 'operator') {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Login Berhasil',
+                    'user' => $user,
+                    'token' => $user->createToken('nApp')->plainTextToken,
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Anda tidak memiliki hak akses',
+                ], 401);
+            }
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Login Gagal',
+            ], 401);
+        }
+    }
+
 }

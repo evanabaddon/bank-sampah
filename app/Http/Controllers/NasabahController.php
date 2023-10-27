@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\KategoriLayanan;
 use Illuminate\Http\Request;
 use App\Models\Nasabah as Model;
+use App\Models\Tagihan;
 use Carbon\Carbon;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -104,9 +105,18 @@ class NasabahController extends Controller
         // Ambil data nasabah berdasarkan id
         $model = Model::with('kategoriLayanan')->findOrFail($id);
 
-        
-        // Ambil data tagihan hanya untuk tahun berjalan
-        // $tagihans = $model->tagihans()->whereYear('tanggal_tagihan', now()->year)->get();
+        $tahunTagihan = request()->input('tahun_tagihan', now()->year); // Ambil tahun dari parameter URL atau gunakan tahun saat ini
+        $tagihans = $model->tagihans()
+            ->whereYear('tanggal_tagihan', $tahunTagihan)
+            ->get();
+
+        // Ambil semua tahun tagihan
+        $tahuns = $model->tagihans()
+            ->selectRaw('YEAR(tanggal_tagihan) AS tahun')
+            ->groupBy('tahun')
+            ->orderBy('tahun', 'desc')
+            ->get();
+
 
         // Ambil data tagihan untuk semua tahun
         $tagihans = $model->tagihans()->get();
@@ -126,11 +136,44 @@ class NasabahController extends Controller
         $data = [
             'model' => $model,
             'tagihans' => $tagihans, // Pass data tagihan ke tampilan
+            'tahuns' => $tahuns,
+            'tahunTagihan' => $tahunTagihan,
             'title' => 'Nasabah'
         ];
         
         return view('nasabah.' . $this->viewShow, $data);;
 
+    }
+
+    public function show1($id)
+    {
+        // Ambil data nasabah berdasarkan id
+        $model = Model::with('kategoriLayanan')->findOrFail($id);
+
+        // Ambil semua tahun tagihan
+        $tahuns = $model->tagihans()
+            ->selectRaw('YEAR(tanggal_tagihan) AS tahun')
+            ->groupBy('tahun')
+            ->orderBy('tahun', 'desc')
+            ->get();
+
+
+        // Buat array untuk data tagihan
+        $tagihanData = [];
+
+        foreach ($tagihans as $tagihan) {
+            $tagihanData[] = [
+                'bulan' => date('F', strtotime($tagihan->tanggal_tagihan)),
+                'tanggal_tagihan' => Carbon::parse($tagihan->tanggal_tagihan)->translatedFormat('d F Y'),
+                'tanggal_jatuh_tempo' => Carbon::parse($tagihan->tanggal_jatuh_tempo)->translatedFormat('d F Y'),
+                'jumlah_tagihan' => $tagihan->formatRupiah('jumlah_tagihan'),
+                'status' => $tagihan->status,
+                'tanggal_bayar' => $tagihan->tanggal_bayar ?: '-',
+                'id' => $tagihan->id,
+            ];
+        }
+
+        return view('nasabah.' . $this->viewShow, compact('model', 'tahuns', 'tahunTagihan', 'tagihans'));
     }
 
     /**

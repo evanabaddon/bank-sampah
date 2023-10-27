@@ -55,6 +55,13 @@ class TagihanController extends Controller
         // Query builder untuk mengambil data tagihan berdasarkan user_id
         $tagihanQuery = Model::with('nasabah.kategoriLayanan')->latest();
 
+         // Tambahkan orderBy ke query builder untuk mengurutkan berdasarkan tanggal tagihan
+        $tagihanQuery->orderBy('tanggal_tagihan', 'asc');
+
+        // ambil data RT dari nasabah
+        $rt = $tagihanQuery->get()->pluck('nasabah.rt')->unique();
+
+
         // Jika pengguna adalah admin, maka tampilkan semua data
         if (!$currentUser || $currentUser->akses == 'admin') {
             // filter data berasarkan bulan
@@ -86,10 +93,16 @@ class TagihanController extends Controller
                 })->paginate(50);
             }
 
-            $models = $tagihanQuery->paginate(50);
+            // filter data berdasarkan RT nasabah
+            if (request()->filled('rt')) {
+                $models = $tagihanQuery->whereHas('nasabah', function ($query) {
+                    $query->where('rt', request('rt'));
+                })->paginate(50);
+            }
+
+            $models = $tagihanQuery->paginate(10);
         } else  {
             
-
             // Jika bukan admin, filter data dengan status belum tanpa user_id atau filter data dengan status lunas dengan user_id, atau filter data berdasarakan pencarian nama nasabah dengan status belum tanpa user_id atau filter data berdasarakan pencarian nama nasabah dengan status lunas dengan user_id
             if (request()->filled('q')) {
                 $models = $tagihanQuery->where(function ($query) use ($currentUser) {
@@ -122,8 +135,6 @@ class TagihanController extends Controller
             
         } 
 
-        
-
         // Ubah format tanggal tagihan dan tanggal jatuh tempo menjadi format Indonesia menggunakan Carbon
         foreach ($models as $model) {
             $model->tanggal_tagihan = Carbon::parse($model->tanggal_tagihan)->translatedFormat('d F Y');
@@ -137,12 +148,22 @@ class TagihanController extends Controller
             'tahunMin' => $tahunMin,
             'tahunMax' => $tahunMax,
             'tahun' => $tahun,
+            'rt' => $rt,
             'kategoriLayanan' => $kategoriLayanan,
             'routePrefix' => $this->routePrefix,
             'title' => 'Tagihan'
         ];
 
         return view('tagihan.' . $this->viewIndex, $data);
+    }
+
+    public function bayarMasal(Request $request)
+    {
+        $tagihanIds = $request->input('tagihan_ids');
+
+        dd($tagihanIds);
+        
+        return redirect()->route('tagihan.index')->with('success', 'Pembayaran masal berhasil.');
     }
 
     /**

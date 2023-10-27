@@ -55,6 +55,8 @@ Route::prefix('operator')->middleware(['auth', 'auth.operator'])->group(function
     Route::resource('tagihan', TagihanController::class);
     Route::resource('setting', SettingController::class);
     Route::get('nota/update-and-print/{tagihan_id}', 'NotaController@updateStatusAndPrint')->name('update.and.print.nota');
+    // route bayar masal
+    Route::post('tagihan/bayar-masal', 'TagihanController@bayarMasal')->name('tagihan.bayar-masal');
     Route::resource('transaksi-penarikan', TransaksiPenarikanController::class);
     Route::get('transaksi-penarikan/create/{id_nasabah?}', 'TransaksiPenarikanController@create')->name('transaksi-penarikan.create');
     Route::resource('transaksi-bank', TransaksiBankController::class);
@@ -98,3 +100,7 @@ Route::get('logout', function () {
     Auth::logout();
     return redirect('/login');
 });
+
+
+// route prefix untuk api
+Route::get('api/login', 'App\Http\Controllers\Auth\LoginController@loginApi')->name('api.login');
