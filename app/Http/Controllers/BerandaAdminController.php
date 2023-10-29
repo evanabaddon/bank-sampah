@@ -57,7 +57,7 @@ class BerandaAdminController extends Controller
         // buat array data transaksi tagihan lunas tiap bulan
         $dataTagihanLunas = [];
         foreach($dataBulan as $bulan){
-            $dataTagihanLunas[] = Tagihan::where('status', 'lunas')->whereMonth('tanggal_bayar', date('m', strtotime($bulan)))->sum('jumlah_tagihan');
+            $dataTagihanLunas[] = Tagihan::where('status', 'lunas')->whereMonth('tanggal_tagihan', date('m', strtotime($bulan)))->sum('jumlah_tagihan');
         }
 
         // buat array data transaksi tagihan belum lunas tiap bulan

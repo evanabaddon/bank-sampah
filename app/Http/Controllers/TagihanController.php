@@ -7,6 +7,7 @@ use App\Models\Tagihan as Model;
 use App\Http\Requests\StoreTagihanRequest;
 use App\Http\Requests\UpdateTagihanRequest;
 use App\Models\KategoriLayanan;
+use App\Models\Nasabah;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -100,7 +101,7 @@ class TagihanController extends Controller
                 })->paginate(50);
             }
 
-            $models = $tagihanQuery->paginate(10);
+            $models = $tagihanQuery->paginate(50);
         } else  {
             
             // Jika bukan admin, filter data dengan status belum tanpa user_id atau filter data dengan status lunas dengan user_id, atau filter data berdasarakan pencarian nama nasabah dengan status belum tanpa user_id atau filter data berdasarakan pencarian nama nasabah dengan status lunas dengan user_id
@@ -157,13 +158,110 @@ class TagihanController extends Controller
         return view('tagihan.' . $this->viewIndex, $data);
     }
 
-    public function bayarMasal(Request $request)
+    // buat tagihan untuk semua nasabah yang sudah terdaftar selama 1 tahun
+    public function buatTagihan()
     {
-        $tagihanIds = $request->input('tagihan_ids');
+        // Ambil semua nasabah yang sudah terdaftar
+        $nasabahs = Nasabah::where('is_ppc', 1)->get();
 
-        dd($tagihanIds);
-        
-        return redirect()->route('tagihan.index')->with('success', 'Pembayaran masal berhasil.');
+        // Ambil tahun sekarang
+        $currentYear = now()->year;
+
+        // Mulai dari bulan pertama (Januari)
+        $startMonth = 1;
+
+        // Sampai dengan bulan kedua belas (Desember)
+        $endMonth = 12;
+
+        // Looping untuk setiap nasabah
+        foreach ($nasabahs as $nasabah) {
+            // Ambil kategori layanan dari nasabah
+            $kategoriLayanan = $nasabah->kategoriLayanan;
+
+            // Looping untuk setiap bulan
+            for ($month = $startMonth; $month <= $endMonth; $month++) {
+                // Buat tanggal tagihan 2023-01-01
+                $tanggalTagihan = $currentYear . '-' . $month . '-' . '01';
+
+                // Buat tanggal jatuh tempo 2023-01-25
+                $tanggalJatuhTempo = $currentYear . '-' . $month . '-' . '27';
+
+                // parameter tanggal tagihan
+                $cekTagihan = now()->setYear($currentYear)->setMonth($month)->setDay(01);
+
+                // Cek apakah tagihan sudah ada
+                $existingBill = Model::where('nasabah_id', $nasabah->id)
+                    ->whereMonth('tanggal_tagihan', $cekTagihan->month)
+                    ->whereYear('tanggal_tagihan', $currentYear)
+                    ->first();
+
+                // Jika belum ada, buat tagihan baru
+                if (!$existingBill) {
+                    // Hitung jumlah tagihan berdasarkan harga kategori layanan
+                    $jumlahTagihan = $kategoriLayanan->harga;
+
+                    // Buat record tagihan baru
+                    Model::create([
+                        'nasabah_id' => $nasabah->id,
+                        'tanggal_tagihan' => $tanggalTagihan,
+                        'tanggal_jatuh_tempo' => $tanggalJatuhTempo,
+                        'jumlah_tagihan' => $jumlahTagihan,
+                        'status' => 'belum',
+                        'keterangan' => 'Tagihan bulan ' . $tanggalTagihan
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('tagihan.index')->with('success', 'Selesai membuat tagihan untuk seluruh bulan pada tahun yang berjalan.');
+    }
+
+    // fungsu buat tagihan untuk semua nasabah pada bulan ini
+    public function buatTagihanBulanIni()
+    {
+        // Ambil semua nasabah yang sudah terdaftar
+        $nasabahs = Nasabah::where('is_ppc', 1)->get();
+
+        // Ambil tahun sekarang
+        $currentYear = now()->year;
+
+        // Ambil bulan sekarang
+        $currentMonth = 2;
+
+
+        // Looping untuk setiap nasabah
+        foreach ($nasabahs as $nasabah) {
+            // Ambil kategori layanan dari nasabah
+            $kategoriLayanan = $nasabah->kategoriLayanan;
+
+            // Buat tanggal tagihan
+            $tanggalTagihan = $currentYear . '-' . $currentMonth . '-' . '01';
+
+
+            // Cek apakah tagihan sudah ada
+            $existingBill = Model::where('nasabah_id', $nasabah->id)
+                ->whereMonth('tanggal_tagihan', $tanggalTagihan)
+                ->whereYear('tanggal_tagihan', $currentYear)
+                ->first();
+
+            // Jika belum ada, buat tagihan baru
+            if (!$existingBill) {
+                // Hitung jumlah tagihan berdasarkan harga kategori layanan
+                $jumlahTagihan = $kategoriLayanan->harga;
+
+                // Buat record tagihan baru
+                Model::create([
+                    'nasabah_id' => $nasabah->id,
+                    'tanggal_tagihan' => $tanggalTagihan,
+                    'tanggal_jatuh_tempo' => now()->setYear($currentYear)->setMonth($currentMonth)->setDay(25),
+                    'jumlah_tagihan' => $jumlahTagihan,
+                    'status' => 'belum',
+                    'keterangan' => 'Tagihan bulan ' . $tanggalTagihan
+                ]);
+            }
+        }
+
+        return redirect()->route('tagihan.index')->with('success', 'Selesai membuat tagihan untuk bulan ini.');
     }
 
     /**

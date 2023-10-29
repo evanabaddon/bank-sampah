@@ -27,7 +27,7 @@
                                 <div class="col-sm-2">
                                     {!! Form::select('kategori_layanan_id', $kategoriLayanan, request('kategori_layanan_id'), ['class' => 'form-control', 'placeholder'=>'Pilih Kategori Layanan']) !!}
                                 </div>
-                                <div class="col-sm-2">
+                                <div class="col-sm-1">
                                     <select name="status" class="form-control pull-left">
                                         <option value="">Status</option>
                                         <option value="belum" {{ request('status') == 'belum' ? 'selected' : '' }}>Belum Bayar</option>
@@ -40,12 +40,13 @@
                                     }), request('rt'), ['class' => 'form-control', 'placeholder' => 'Pilih RT']) !!}
                                 </div>       
                             <div class="col-sm-1">
-                                <button type="submit" class="btn btn-block btn-primary"><i class="fa fa-filter"></i>  Filter</button>
+                                <button type="submit" class="btn  btn-primary"><i class="fa fa-filter"></i>  Filter</button>
                             </div>
                         {!! Form::close() !!}
-                        <div class="col-sm-1">
-                            <button type="button" class="btn btn-block btn-success" id="bayar-massal">Bayar Massal</button>
-                        </div>                        
+                        <div class="col-sm-2">
+                            <button type="button" class="btn  btn-success" id="bayar-massal">Bayar Massal</button>
+                            <a href="{{ route('buat-tagihan') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Buat Tagihan</a>
+                        </div>  
                     </div> 
                     
                 </div>
@@ -56,7 +57,7 @@
                             <thead>
                                 <tr>
                                     <td>
-                                        <input type="checkbox" name="" value="">
+                                        <input type="checkbox" name="" id="select_all_ids" value="">
                                     </td>
                                     <th>No</th>
                                     <th>Invoice</th>
@@ -75,7 +76,7 @@
                                 @forelse ($models as $item)
                                     <tr>
                                         <td>
-                                            <input type="checkbox" name="tagihan_ids[]" value="{{ $item->id }}">
+                                            <input type="checkbox" name="tagihan_ids" class="checkbox_ids" id="" value="{{ $item->id }}">
                                         </td>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{  'PPC/' . $item->id . '/' . $item->nasabah_id . '/' . date('my', strtotime($item->tanggal_tagihan)) }}</td>
@@ -133,38 +134,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- Modal Pembayaran Massal -->
-                                    <div class="modal fade" id="modal-bayar-massal" tabindex="-1" role="dialog" aria-labelledby="modal-bayar-massal-label">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h4 class="modal-title" id="modal-bayar-massal-label">Pembayaran Massal</h4>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <!-- Isi modal pembayaran masal di sini, misalnya, daftar tagihan yang dicentang -->
-                                                    <form id="form-bayar-massal" action="{{ route('tagihan.bayar-masal') }}" method="POST">
-                                                        @csrf
-                                                        <!-- Di sini Anda dapat menampilkan daftar tagihan yang dicentang -->
-                                                        <ul id="tagihan-massal-list">
-                                                            <!-- Daftar tagihan akan ditampilkan di sini -->
-                                                        </ul>
-                                                    </form>
-                                                </div>
-                                                
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                                                    <button type="submit" form="form-bayar-massal" class="btn btn-success">Bayar Massal</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
                                     
                                 @empty
                                     <tr>
-                                        <td class="text-center" colspan="11">Data tidak ada</td>
+                                        <td class="text-center" colspan="12">Data tidak ada</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -179,63 +153,159 @@
             <!-- /.box -->
         </div>
     </div>
+    <!-- Modal Pembayaran Massal -->
+    <div class="modal fade" id="modal-bayar-massal" tabindex="-1" role="dialog" aria-labelledby="modal-bayar-massal-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modal-bayar-massal-label">Pembayaran Massal</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Invoice</th>
+                                <th>Nama Nasabah</th>
+                                <th>Tanggal Tagihan</th>
+                                <th>Tanggal Jatuh Tempo</th>
+                                <th>Kategori Layanan</th>
+                                <th>Total Tagihan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="selected-invoices-list">
+                            <!-- List of selected invoices will be displayed here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-success" id="submit-bayar-massal">Bayar Massal</button>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <!-- Modal Warning -->
+    <div class="modal fade" id="no-data-warning-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Warning</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Silahkan pilih satu atau lebih tagihan yang akan dibayar</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary pull-left" data-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 @section('scripts')
 <script>
-    $(document).ready(function () {
-    // Inisialisasi variabel untuk menyimpan ID tagihan yang dicentang
-    var tagihanIds = [];
+    $(function(e){
+        $("#select_all_ids").click(function(e){
+            if($(this).is(':checked',true))  
+            {
+                $(".checkbox_ids").prop('checked', true);  
+            } else {  
+                $(".checkbox_ids").prop('checked',false);  
+            }  
+        });
 
-    // Ketika kotak ceklis diubah, perbarui daftar tagihan dalam modal
-    $('input[name="tagihan_ids[]"]').change(function () {
-        var tagihanId = $(this).val();
-        var tagihanName = $(this).closest('tr').find('td:eq(3)').text(); // Ubah ini sesuai dengan indeks kolom yang sesuai
-        var tagihanList = $('#tagihan-massal-list');
-
-        if ($(this).is(":checked")) {
-            // Tambahkan tagihan ke daftar
-            tagihanList.append('<li>' + tagihanName + '</li');
-            
-            // Tambahkan ID tagihan ke dalam array tagihanIds
-            tagihanIds.push(tagihanId);
-        } else {
-            // Hapus tagihan dari daftar
-            tagihanList.find('li:contains("' + tagihanName + '")').remove();
-            
-            // Hapus ID tagihan dari dalam array tagihanIds
-            tagihanIds = tagihanIds.filter(id => id !== tagihanId);
-        }
-
-        updateBayarMassalButton();
-    });
-
-    // Memanggil updateBayarMassalButton saat halaman dimuat
-    updateBayarMassalButton();
-
-    // Ketika tombol "Bayar Massal" ditekan, tampilkan modal
-    $('#bayar-massal').click(function () {
-        if (tagihanIds.length > 0) {
-            // Tampilkan modal
-            $('#modal-bayar-massal').modal('show');
-
-            // Isi modal dengan daftar tagihan yang dicentang
-            var tagihanList = $('#tagihan-massal-list');
-            tagihanList.empty();
-            $.each(tagihanIds, function (index, tagihanId) {
-                tagihanList.append('<input type="hidden" name="tagihan_ids[]" value="' + tagihanId + '">');
+        // bayar masal modal
+        $("#bayar-massal").click(function () {
+            var selectedInvoices = [];
+            $('input:checkbox[name=tagihan_ids]:checked').each(function () {
+                var row = $(this).closest('tr');
+                var invoiceData = {
+                    invoiceNumber: row.find('td:eq(2)').text(),
+                    customerName: row.find('td:eq(3)').text(),
+                    invoiceDate: row.find('td:eq(4)').text(),
+                    dueDate: row.find('td:eq(5)').text(),
+                    serviceCategory: row.find('td:eq(6)').text(),
+                    totalAmount: row.find('td:eq(7)').text(),
+                };
+                selectedInvoices.push(invoiceData);
             });
+
+            // Check if any data is selected
+            if (selectedInvoices.length > 0) {
+                var modal = $("#modal-bayar-massal");
+                var selectedInvoicesList = modal.find("#selected-invoices-list");
+                selectedInvoicesList.empty();
+
+                $.each(selectedInvoices, function (index, invoiceData) {
+                    selectedInvoicesList.append(
+                        '<tr>' +
+                        '<td>' + invoiceData.invoiceNumber + '</td>' +
+                        '<td>' + invoiceData.customerName + '</td>' +
+                        '<td>' + invoiceData.invoiceDate + '</td>' +
+                        '<td>' + invoiceData.dueDate + '</td>' +
+                        '<td>' + invoiceData.serviceCategory + '</td>' +
+                        '<td>' + invoiceData.totalAmount + '</td>' +
+                        '</tr>'
+                    );
+                });
+
+                modal.modal('show');
+            } else {
+                // Show a warning modal if no data is checked
+                var warningModal = $("#no-data-warning-modal");
+                warningModal.modal('show');
+            }
+        });
+
+        $("#submit-bayar-massal").click(function () {
+        // Collect selected tagihan IDs
+        var selectedInvoices = [];
+        $('input:checkbox[name=tagihan_ids]:checked').each(function () {
+            var tagihanId = $(this).val();
+            selectedInvoices.push(tagihanId);
+        });
+
+        if (selectedInvoices.length > 0) {
+            // Send the selected tagihan IDs to the server for processing via Ajax
+            $.ajax({
+                type: "POST",
+                url: "{{ route('bayar-massal') }}", // Ganti dengan URL yang sesuai
+                data: {
+                    '_token': '{{ csrf_token() }}',
+                    'tagihan_ids': selectedInvoices
+                },
+                success: function (data) {
+                    if (data.success) {
+                        // Jika pembayaran berhasil, Anda dapat melakukan tindakan yang sesuai, misalnya menampilkan pesan sukses
+                        alert("Pembayaran massal berhasil dilakukan.");
+                    } else {
+                        // Jika ada kesalahan atau pembayaran gagal, Anda dapat menangani kasus ini
+                        alert("Pembayaran massal gagal.");
+                    }
+                    // Tutup modal bayar massal
+                    $("#modal-bayar-massal").modal('hide');
+                    // Refresh halaman atau lakukan tindakan lain yang sesuai
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    // Handle errors or failed requests
+                    console.log(xhr.responseText);
+                }
+            });
+        } else {
+            // Show a warning modal if no data is checked
+            var warningModal = $("#no-data-warning-modal");
+            warningModal.modal('show');
         }
     });
 
-    // Fungsi untuk mengaktifkan/menonaktifkan tombol "Bayar Massal"
-    function updateBayarMassalButton() {
-        if (tagihanIds.length > 0) {
-            $('#bayar-massal').prop('disabled', false);
-        } else {
-            $('#bayar-massal').prop('disabled', true);
-        }
-    }
-});
+    });
 
 </script>
 @endsection

@@ -84,9 +84,6 @@ class TransaksiPengeluaranController extends Controller
         $saldoPerusahaan->saldo -= $transaksiPengeluaran->jumlah; // Mengurangkan saldo perusahaan sesuai dengan jumlah pengeluaran
         $saldoPerusahaan->save();
 
-        // flash
-        flash()->addSuccess('Data Berhasil Disimpan');
-
         // Redirect ke halaman yang sesuai
         return redirect()->route($this->routePrefix . '.index')->with('success', 'Transaksi berhasil disimpan');
     }
@@ -110,7 +107,14 @@ class TransaksiPengeluaranController extends Controller
      */
     public function edit(TransaksiPengeluaran $transaksiPengeluaran)
     {
-        //
+        $data = [
+            'model' => Model::findOrFail($transaksiPengeluaran->id),
+            'method' => 'PUT',
+            'route' => [$this->routePrefix . '.update', $transaksiPengeluaran->id],
+            'button' => 'UPDATE',
+            'title' => 'Kategori Layanan'
+        ];
+        return view('transaksi-pengeluaran.' . $this->viewEdit,$data);
     }
 
     /**
@@ -122,7 +126,16 @@ class TransaksiPengeluaranController extends Controller
      */
     public function update(UpdateTransaksiPengeluaranRequest $request, TransaksiPengeluaran $transaksiPengeluaran)
     {
-        //
+        $requestData = $request->validate([
+            'deskripsi' => 'required',
+            'jumlah' => 'required|numeric|min:0',
+            'tanggal' => 'required|date',
+        ]);
+
+        $model = Model::findOrFail($transaksiPengeluaran->id);
+        $model->fill($requestData);
+        $model->save();
+        return redirect()->route('transaksi-pengeluaran.index')->with('success', 'Transaksi Pengeluaran Berhasil Diubah');
     }
 
     /**
@@ -139,9 +152,6 @@ class TransaksiPengeluaranController extends Controller
         $saldoPerusahaan->save();
         // Hapus data transaksi pengeluaran
         $transaksiPengeluaran->delete();
-
-        // flash
-        flash()->addSuccess('Data Berhasil Dihapus');
 
         return redirect()->route($this->routePrefix . '.index')->with('success', 'Transaksi berhasil dihapus');
     }

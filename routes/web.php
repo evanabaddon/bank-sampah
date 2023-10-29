@@ -55,8 +55,11 @@ Route::prefix('operator')->middleware(['auth', 'auth.operator'])->group(function
     Route::resource('tagihan', TagihanController::class);
     Route::resource('setting', SettingController::class);
     Route::get('nota/update-and-print/{tagihan_id}', 'NotaController@updateStatusAndPrint')->name('update.and.print.nota');
-    // route bayar masal
-    Route::post('tagihan/bayar-masal', 'TagihanController@bayarMasal')->name('tagihan.bayar-masal');
+    // route bayar masal menggunakan notacontroller fungsi updateStatusMasal
+    Route::post('/bayar-massal', 'NotaController@updateStatusMasal')->name('bayar-massal');
+    Route::get('/buat-tagihan', 'TagihanController@buatTagihan')->name('buat-tagihan');
+    // buat tagihan bulan ini
+    Route::get('/buat-tagihan-bulan-ini', 'TagihanController@buatTagihanBulanIni')->name('buat-tagihan-bulan-ini');
     Route::resource('transaksi-penarikan', TransaksiPenarikanController::class);
     Route::get('transaksi-penarikan/create/{id_nasabah?}', 'TransaksiPenarikanController@create')->name('transaksi-penarikan.create');
     Route::resource('transaksi-bank', TransaksiBankController::class);

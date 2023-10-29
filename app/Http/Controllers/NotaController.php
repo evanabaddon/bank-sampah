@@ -17,8 +17,18 @@ class NotaController extends Controller
 
     public function kwitansi($tagihan_id)
     {
+        // ambil nilai nasabah_id dari tagihan
+        $nasabah_id = Tagihan::findOrFail($tagihan_id)->nasabah_id;
+
+        // tampilkan list semua tagihan mulai januari - desember berdasarkan user_id
+        $listtagihan = Tagihan::where('nasabah_id', $nasabah_id)->get();
+
         $tagihan = Tagihan::findOrFail($tagihan_id);
-        return view('nota.kwitansi', compact('tagihan'));
+
+        // urutkan berdasarkan bulan mulai dari januari - desember
+        $listtagihan = $listtagihan->sortBy('tanggal_tagihan');
+        
+        return view('nota.kwitansi', compact('tagihan', 'listtagihan'));
     }
 
     public function updateStatusAndPrint($tagihan_id)
@@ -48,6 +58,54 @@ class NotaController extends Controller
         // return ke halaman detail nasabah
         return redirect()->route('nasabah.show', ['nasabah' => $tagihan->nasabah_id])->with('success', 'Pembayaran berhasil dilakukan.');
     }
+    
+    // update status bayar massal
+    public function updateStatusMasal(Request $request)
+    {
+        // Ambil semua tagihan dari request
+        $tagihan_ids = $request->tagihan_ids;
+
+        // Ambil semua tagihan berdasarkan tagihan_ids dengan status 'belum'
+        $tagihan = Tagihan::whereIn('id', $tagihan_ids)->where('status', 'belum')->get();
+
+        // Inisialisasi variabel untuk melacak keberhasilan pembayaran massal
+        $success = true;
+
+        // Proses pembayaran untuk setiap tagihan yang sesuai
+        foreach ($tagihan as $item) {
+            // Periksa jika tagihan belum lunas
+            if ($item->status === 'belum') {
+                // Update status tagihan menjadi 'lunas' dan catat tanggal bayar serta user yang melakukan pembayaran
+                $item->update([
+                    'user_id' => auth()->user()->id,
+                    'status' => 'lunas',
+                    'tanggal_bayar' => now(),
+                ]);
+
+                // Mengambil jumlah tagihan yang telah dibayar
+                $jumlahTagihan = $item->jumlah_tagihan;
+
+                // Mengambil saldo perusahaan
+                $saldoPerusahaan = Saldo::firstOrNew(['id' => 1]);
+
+                // Menambahkan saldo perusahaan sesuai dengan jumlah tagihan yang dibayar
+                $saldoPerusahaan->saldo += $jumlahTagihan;
+                $saldoPerusahaan->save();
+            } else {
+                // Jika tagihan sudah lunas, tandai pembayaran massal sebagai gagal
+                $success = false;
+            }
+        }
+
+        // Berikan respons berdasarkan hasil pembayaran massal
+        if ($success) {
+            return response()->json(['success' => true]);
+        } else {
+            return response()->json(['success' => false]);
+        }
+    }
+
+
 
     // fungsi kirim nota ke whatsapp nasabah
     public function kirimNota($tagihan_id)
