@@ -56,7 +56,7 @@
                         <td>{{ \Carbon\Carbon::parse($item->created_at)->formatLocalized('%d %B %Y %H:%M:%S') }}</td>
                         <td>{{ $item->nasabah->name }}</td>
                         <td>{{ $item->formatRupiah('jumlah') }}</td>
-                        <td>{{ $item->formatRupiah('saldo') }}</td>
+                        <td>{{ $item->nasabah->formatRupiah('saldo') }}</td>
                         <td>{{ $item->user ? $item->user->name : 'User Tidak Ditemukan' }}</td>
                     </tr>
                 @empty

@@ -40,6 +40,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.js"></script>
   <style>
     /* CSS untuk mengubah ukuran font di tabel */
     .table-smaller-font {
@@ -166,8 +167,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <li class="header">UTAMA</li>
           @if(Auth::user()->akses == 'operator')
             <li class="{{ \Route::is('operator.beranda') ? 'active' : '' }}"><a href="{{ route('operator.beranda') }}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-            <li class="header">MASTER DATA</li>
-            <li class="{{ \Route::is('nasabah.*') ? 'active' : '' }}"><a href="{{ route('nasabah.index') }}"><i class="fa fa-group"></i> <span>Nasabah</span></a></li>
             <li class="header">TRANSAKSI</li>
             <li class="{{ \Route::is('tagihan.*') ? 'active' : '' }}"><a href="{{ route('tagihan.index') }}"><i class="fa fa-file-text-o"></i> <span>Transaksi PPC</span></a></li>
             <li class="{{ \Route::is('transaksi-bank.*') ? 'active' : '' }}"><a href="{{ route('transaksi-bank.index') }}"><i class="fa fa-university"></i> <span>Transaksi BSP</span></a></li>
@@ -253,8 +252,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <script src="{{ asset('adminlte') }}/bower_components/fastclick/lib/fastclick.js"></script>
   <!-- AdminLTE App -->
   <script src="{{ asset('adminlte') }}/dist/js/adminlte.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js></script>
   <script src="{{ asset('js/jquery.mask.min.js') }}"></script>
 
   @yield('scripts')

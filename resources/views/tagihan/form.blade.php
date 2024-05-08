@@ -63,7 +63,8 @@
                     <div class="form-group">
                         <label for="status" class="col-sm-2 control-label">Status</label>
                         <div class="col-sm-6">
-                            {!! Form::select('status', ['belum', 'bayar'], null, ['class'=>'form-control']) !!}
+                            {{ $model->status }}
+                            {!! Form::select('status', ['belum', 'lunas'], $model->status, ['class'=>'form-control']) !!}
                             <span class="text-danger">{{ $errors->first('status') }}</span> 
                         </div>
                     </div>

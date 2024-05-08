@@ -13,7 +13,9 @@
             <div class="box box-info">
                 <div class="box-header with-border">
                     @if(Auth::user()->akses == 'admin')
-                        <a href="{{ route('nasabah.create') }}" class="btn btn-primary">Tambah Nasabah</a>
+                        <a href="{{ route('nasabah.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Tambah</a>
+                        <a href="#" data-toggle="modal" data-target="#importModal" class="btn btn-success" id="importButton"><i class="fa fa-upload"></i> Import</a>
+                        <a href="{{ route('nasabah.export') }}" class="btn btn-success"><i class="fa fa-download"></i> Export</a>
                     @endif
                     <div class="box-tools">
                         {!! Form::open(['route' => $routePrefix . '.index', 'method' => 'GET']) !!}
@@ -100,6 +102,38 @@
                 <!-- /.box-body -->
                 <div class="box-footer">
                     {!! $models->links() !!}
+                </div>
+                <!-- Modal Import Nasabah -->
+                <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="importModalLabel">Import Nasabah</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ route('nasabah.import') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <input type="file" id="fileInput" class="form-control-file" name="file">
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <button type="submit" class="btn btn-primary btn-block" id="uploadButton">Upload</button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="mt-2">
+                                    <p>Anda juga dapat mengunduh file contoh <a href="https://unitppc.bumdespringgondani.com/file/SampleImportNasabah.xlsx">di sini</a>.</p>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- /.box -->

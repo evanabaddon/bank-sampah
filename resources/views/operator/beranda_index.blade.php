@@ -2,7 +2,7 @@
 
 @section('content')
 <section class="content-header">
-   
+
 </section>
 <section class="content">
     <div class="row">
@@ -14,7 +14,8 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <div id="reader"></div>
+                            {{-- <div id="reader"></div> --}}
+                            <video id="preview" autoplay="autoplay" class="active" style="transform: scaleX(-1);height: 100%;width: 100%;"></video>
                         </div>
                     </div>
                 </div>
@@ -25,7 +26,7 @@
         <div class="col-md-8">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Tagihan Belum Terbayar</h3>
+                    <h3 class="box-title">Transaksi Tagihan Terakhir</h3>
                     <div class="box-tools">
                         <div class="input-group input-group-sm" style="width: 100px;">
                             <div class="input-group-btn">
@@ -61,7 +62,7 @@
                                     <td>{{ $dataTagihan->nasabah->nohp }}</td>
                                     <td>{{ $dataTagihan->nasabah->kategoriLayanan->name }}</td>
                                     <td>{{ $dataTagihan->formatRupiah('jumlah_tagihan') }}</td>
-                                    <td><span class="label label-danger">Belum Terbayar</span></td>
+                                    <td><span class="label label-success">Terbayar</span></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -126,9 +127,54 @@
     
     
 </section>
-<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+{{-- <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script> --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script>
+<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+
+<script type="text/javascript">
+    let qrScanned = false;
+
+    let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+    scanner.addListener('scan', function (content) {
+        if (qrScanned) {
+            return;
+        }
+
+        $('#result').val(content);
+        let id = content;
+
+        $.ajax({
+            url: "{{ route('validasi-qr', '') }}/" + id,
+            type: 'GET',
+            success: function(response) {
+                if (response.status == 'success') {
+                    qrScanned = true;
+                    alert('Berhasil');
+                    window.location.href = "{{ route('nasabah.show', '') }}/" + response.nasabah;
+                } else {
+                    alert('Gagal atau QR Code tidak valid');
+                }
+            },
+            error: function(error) {
+                alert('Terjadi kesalahan saat mengirim permintaan ke server.');
+            }
+        });
+    });
+
+    Instascan.Camera.getCameras().then(function (cameras) {
+        if (cameras.length > 0) {
+            scanner.start(cameras[0]);
+        } else {
+            console.error('No cameras found.');
+            alert('Tidak ada kamera yang ditemukan.');
+        }
+    }).catch(function (e) {
+        console.error(e);
+        alert('Terjadi kesalahan saat mencoba mengakses kamera.');
+    });
+</script>
+
+{{-- <script>
     // Buat variabel untuk menandai apakah pemindaian sudah berhasil
     let qrScanned = false;
 
@@ -175,7 +221,7 @@
     { fps: 10, qrbox: {width: 250, height: 250} },
     /* verbose= */ false);
     html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-</script>
+</script> --}}
 @endsection
 
 

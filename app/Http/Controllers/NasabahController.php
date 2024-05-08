@@ -1,11 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Exports\NasabahExport;
+use App\Imports\NasabahImport;
 use App\Models\KategoriLayanan;
 use Illuminate\Http\Request;
 use App\Models\Nasabah as Model;
 use App\Models\Tagihan;
 use Carbon\Carbon;
+use Excel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class NasabahController extends Controller
@@ -254,11 +258,20 @@ class NasabahController extends Controller
      */
     public function destroy($id)
     {
-        $model= Model::findOrFail($id);
-        if ($model-> email=='admin@admin.com') {
-            flash('Data tidak bisa dihapus',$level='danger');
+        $model = Model::findOrFail($id);
+
+        // Cek apakah nasabah memiliki tagihan
+        if ($model->tagihans()->exists()) {
+            return back()->with('error', 'Nasabah masih memiliki tagihan dan tidak dapat dihapus.');
+        }
+
+        // Cek apakah email adalah admin
+        if ($model->email == 'admin@admin.com') {
+            flash('Data tidak bisa dihapus', 'danger');
             return back();
         }
+
+        // Hapus nasabah jika tidak ada tagihan dan bukan admin
         $model->delete();
         return back()->with('success', 'Nasabah Berhasil Dihapus');
     }
@@ -299,6 +312,32 @@ class NasabahController extends Controller
         
         // Kirim data nasabah ke tampilan nasabah.kartu
         return view('nasabah.kartu', ['nasabah' => $nasabah]);
+    }
+
+    // export nasabah
+    public function export()
+    {
+        // Mendapatkan data nasabah dari database
+        $nasabah = Model::all();
+        // Ekspor data nasabah ke dalam file Excel
+        return Excel::download(new NasabahExport($nasabah), 'nasabah.xlsx');
+    }
+    
+    // import nasabah
+    public function import(Request $request)
+    {
+        // Validate the uploaded file
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+ 
+        // Get the uploaded file
+        $file = $request->file('file');
+ 
+        // Process the Excel file
+        Excel::import(new NasabahImport, $file);
+ 
+        return redirect()->back()->with('success', 'File berhasil di Import!');
     }
 
 }

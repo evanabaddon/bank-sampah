@@ -58,7 +58,7 @@ class TransaksiPenarikanController extends Controller
             'method' => 'POST',
             'route' => $this->routePrefix . '.store',
             'button' => 'SIMPAN',
-            'title' => 'Transaksi BSP',
+            'title' => 'Transaksi Penarikan Saldo',
             'idNasabah' => $id_nasabah, // Variabel ini akan digunakan dalam form
         ];
 

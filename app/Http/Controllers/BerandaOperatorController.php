@@ -16,9 +16,8 @@ class BerandaOperatorController extends Controller
     {
        // daftar transaksi bank terbaru berdasarkan user yang login
         $dataTransaksiBSP = TransaksiBank::where('id_operator', auth()->user()->id)->orderBy('id', 'desc')->take(5)->get();
-
         // daftar tagihan terbaru dengan status belum lunas
-        $dataTagihan = Tagihan::where('status', 'belum')->orderBy('id', 'desc')->take(5)->get();
+        $dataTagihan = Tagihan::where('status', 'lunas')->where('user_id', auth()->user()->id)->orderBy('id', 'desc')->take(5)->get();
 
         return view('operator.beranda_index', compact('dataTransaksiBSP', 'dataTagihan'));
     }

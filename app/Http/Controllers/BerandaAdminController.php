@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Nasabah;
+use App\Models\Saldo;
 use App\Models\Tagihan;
 use App\Models\TransaksiBank;
 use App\Models\TransaksiPengeluaran;
@@ -11,7 +12,9 @@ class BerandaAdminController extends Controller
 {
     public function index()
     {
-        
+        //saldo
+        $saldo = Saldo::first();
+
         // hitung jumlah nasabah
         $jumlahNasabah = Nasabah::count();
 
@@ -160,6 +163,7 @@ class BerandaAdminController extends Controller
         }
 
         return view('admin.beranda_index', compact(
+            'saldo',
             'jumlahNasabah',
             'totalTagihanBulanIni',
             'totalTagihanLunasBulanIni',

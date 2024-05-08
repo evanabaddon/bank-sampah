@@ -17,7 +17,7 @@
                             <div class="col-sm-2">
                                 <input type="text" name="q" class="form-control pull-right" placeholder="Cari Nasabah" value="{{ request('q') }}">
                             </div>
-                                <div class="col-sm-2">
+                                <div class="col-sm-1">
                                     {!! Form::selectMonth('bulan', request('bulan'), ['class'=>'form-control', 'placeholder'=>'Pilih Bulan']) !!}
                                 </div>
                                 <div class="col-sm-1">
@@ -38,13 +38,18 @@
                                     {!! Form::select('rt', $rt->mapWithKeys(function ($rt) {
                                         return [$rt => $rt];
                                     }), request('rt'), ['class' => 'form-control', 'placeholder' => 'Pilih RT']) !!}
-                                </div>       
+                                </div>
+                                <div class="col-sm-1">
+                                    {!! Form::select('rw', $rw->mapWithKeys(function ($rw) {
+                                        return [$rw => $rw];
+                                    }), request('rw'), ['class' => 'form-control', 'placeholder' => 'Pilih RW']) !!}
+                                </div>         
                             <div class="col-sm-1">
                                 <button type="submit" class="btn  btn-primary"><i class="fa fa-filter"></i>  Filter</button>
                             </div>
                         {!! Form::close() !!}
                         <div class="col-sm-2">
-                            <button type="button" class="btn  btn-success" id="bayar-massal">Bayar Massal</button>
+                            <button type="button" class="btn  btn-success" id="bayar-massal"><i class="fa fa-money"></i> Bayar Massal</button>
                             <a href="{{ route('buat-tagihan') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Buat Tagihan</a>
                         </div>  
                     </div> 
@@ -69,7 +74,7 @@
                                     <th>Status</th>
                                     <th>Tanggal Bayar</th>
                                     <th>Operator</th>
-                                    <th style="width: 200px">Aksi</th>
+                                    <th style="width: 150px">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -100,15 +105,19 @@
                                                 'method' => 'DELETE',
                                                 'onsubmit' => 'return confirm("Yakin ingin menghapus data ini?")'
                                             ]) !!}
-                                            <div class="btn-group">
                                                 @if ($item && $item->status === 'belum')
-                                                    
                                                     <a href="#" class="btn btn-block btn-success" data-toggle="modal" data-target="#confirmModal-{{ $item->id }}"><b>Bayar</b></a>
                                                 @elseif ($item && $item->status === 'lunas')
-                                                    <a href="{{ route('print.nota', ['tagihan_id' => $item->id]) }}" class="btn btn-primary" target="_blank">Cetak Nota</a>
-                                                    <a href="{{ route('kirim.nota', ['tagihan_id' => $item->id]) }}" class="btn btn-success" target="_blank">Kirim Nota</a>
+                                                    <a href="{{ route('print.nota', ['tagihan_id' => $item->id]) }}" class="btn btn-primary" target="_blank" title="Cetak Nota">
+                                                        <i class="fa fa-print"></i>
+                                                    </a>
+                                                    <a href="{{ route('kirim.nota', ['tagihan_id' => $item->id]) }}" class="btn btn-success" target="_blank" title="Kirim Nota">
+                                                        <i class="fa fa-paper-plane"></i>
+                                                    </a>
+                                                    @if(Auth::user()->akses == 'admin')
+                                                        <a href="#" class="btn btn-warning" data-toggle="modal" data-target="#editStatusModal-{{ $item->id }}"><i class="fa fa-edit"></i></a>
+                                                    @endif
                                                 @endif
-                                            </div>
                                             {!! Form::close() !!}
                                         </td>
                                     </tr>
@@ -134,7 +143,34 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+                                    <!-- Modal Edit Status -->
+                                    <div class="modal fade" id="editStatusModal-{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="editStatusModalLabel-{{ $item->id }}">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title" id="editStatusModalLabel-{{ $item->id }}">Edit Status Pembayaran</h4>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {!! Form::open([
+                                                        'route' => ['update.status', $item->id],
+                                                        'method' => 'PUT'
+                                                    ]) !!}
+                                                    <div class="form-group">
+                                                        {!! Form::label('status', 'Status Pembayaran') !!}
+                                                        {!! Form::select('status', ['belum' => 'Belum Bayar'], null, ['class' => 'form-control', 'placeholder' => 'Pilih Status Pembayaran']) !!}
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                                                    {!! Form::submit('Simpan', ['class' => 'btn btn-primary']) !!}
+                                                    {!! Form::close() !!}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     
                                 @empty
                                     <tr>
@@ -155,7 +191,7 @@
     </div>
     <!-- Modal Pembayaran Massal -->
     <div class="modal fade" id="modal-bayar-massal" tabindex="-1" role="dialog" aria-labelledby="modal-bayar-massal-label">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="modal-bayar-massal-label">Pembayaran Massal</h4>

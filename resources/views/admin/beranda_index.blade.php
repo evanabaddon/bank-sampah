@@ -1,15 +1,6 @@
 
-
-{{-- if mobile detect use layouts.app-mobile --}}
-{{-- @extends(
-    (new Jenssegers\Agent\Agent())->isMobile() ? 
-    'layouts.app-mobile' : 
-    'layouts.app'
- ) --}}
-
 @extends('layouts.app')
 @section('content')
-
         <section class="content-header">
             <h1>
                 Dashboard
@@ -69,6 +60,7 @@
                         <a href="{{ route('transaksi-bank.index') }}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
+
             </div>
            
             <div class="row">
@@ -253,8 +245,9 @@
                 </div>
             </div>
         </section>
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.js"></script>
 <script>
+    
     var ctx = document.getElementById('chartPpc').getContext('2d');
     var pemasukanData = [{{  implode(",", $dataTagihanLunas); }} ];
     var pengeluaranData = [{{ implode(",", $dataTagihanBelumLunas);  }} ];

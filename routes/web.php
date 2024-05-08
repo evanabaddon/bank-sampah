@@ -27,13 +27,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     
         if (Auth::check()) {
-            if (Auth::user()->role == 'admin') {
+            if (Auth::user()->akses == 'admin') {
                 return redirect()->route('admin.beranda');
-            } elseif (Auth::user()->role == 'operator') {
+            } elseif (Auth::user()->akses == 'operator') {
                 return redirect()->route('operator.beranda');
             }
         } else {
-            return view('welcome');
+            return view('login');
         }
 });
 
@@ -42,7 +42,18 @@ Route::redirect('/', '/login');
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', function () {
+    
+    if (Auth::check()) {
+        if (Auth::user()->akses == 'admin') {
+            return redirect()->route('admin.beranda');
+        } elseif (Auth::user()->akses == 'operator') {
+            return redirect()->route('operator.beranda');
+        }
+    } else {
+        return view('login');
+    }
+});
 
 Route::prefix('nasabah')->middleware(['auth', 'auth.nasabah'])->group(function () {
     Route::get('beranda', 'BerandaNasabahController@index')->name('nasabah.beranda');
@@ -66,6 +77,7 @@ Route::prefix('operator')->middleware(['auth', 'auth.operator'])->group(function
     Route::get('transaksi-bank/create/{id_nasabah?}', 'TransaksiBankController@create')->name('transaksi-bank.create');
     Route::get('validasi-qr/{kodenasabah}', 'BerandaOperatorController@validasiQr')->name('validasi-qr');
     Route::get('nasabah/cetak-kartu/{id}', 'NasabahController@cetakKartu')->name('nasabah.cetakKartu');
+    Route::get('broadcast', 'TagihanController@broadcastWhatsapp')->name('broadcast');
 
 });
 
@@ -92,6 +104,10 @@ Route::prefix('admin')->middleware(['auth', 'auth.admin'])->group(function () {
     Route::get('nasabah/{id}/kirim-pin', 'App\Http\Controllers\NasabahController@kirimPin')->name('nasabah.kirim-pin');
     Route::get('neraca-keuangan', [NeracaKeuanganController::class, 'index'])->name('neraca-keuangan.index');
     Route::get('neraca-keuangan/pdf', 'NeracaKeuanganController@generatePdf')->name('neraca-keuangan.pdf');
+    Route::put('/tagihan/{id}/update-status', 'TagihanController@updateStatus')->name('update.status');
+    Route::post('nasabah/import', 'NasabahController@import')->name('nasabah.import');
+    Route::get('nasabah/export', 'NasabahController@export')->name('nasabah.export');
+    Route::get('/broadcast', 'TagihanController@broadcastWhatsapp')->name('broadcast');
 
 });
 

@@ -12,7 +12,7 @@
         <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <a href="{{ route('jenis-sampah.create') }}" class="btn btn-primary">Tambah Jenis Sampah</a>
+                    <a href="{{ route('jenis-sampah.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Tambah</a>
                     <div class="box-tools">
                         <div class="input-group input-group-sm hidden-xs" style="width: 200px;">
                             <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">

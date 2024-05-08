@@ -49,7 +49,7 @@ class TransaksiPengeluaranController extends Controller
             'method' => 'POST',
             'route' => $this->routePrefix . '.store',
             'button' => 'SIMPAN',
-            'title' => 'Jenis Sampah'
+            'title' => 'Pengeluaran'
         ];
         return view('transaksi-pengeluaran.' . $this->viewCreate, $data);
     }

@@ -19,7 +19,7 @@
                     <h4>Laporan Tagihan Sampah</h4>
                     <div class="row">
                         {!! Form::open(['route' => 'laporan.tagihan', 'method' => 'GET']) !!}
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label for="kategori_layanan_id" class="control-label">Layanan</label>
                                 {!! Form::select('kategori_layanan_id', $kategoriLayanans->pluck('name', 'id'), null, ['class'=>'form-control', 'id' => 'kategori_layanan', 'placeholder' => 'Pilih Layanan']) !!}    
@@ -39,18 +39,23 @@
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="bulan" class="control-label">Bulan</label>
-                                {!! Form::selectMonth('bulan', request('bulan'), ['class'=>'form-control', 'placeholder'=>'Pilih Bulan']) !!}
-                                <span class="text-danger">{{ $errors->first('bulan') }}</span> 
+                                <label for="tanggal_mulai" class="control-label">Tanggal Mulai</label>
+                                {!! Form::date('tanggal_mulai', request('tanggal_mulai'), ['class'=>'form-control', 'placeholder'=>'Pilih Tanggal Mulai']) !!}
+                                <span class="text-danger">{{ $errors->first('tanggal_mulai') }}</span>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="tahun" class="control-label" >Tahun</label>
-                                {{-- {!! Form::selectRange($name, $min, $max), $selected, [$options !!} --}}
-                                {{-- {!! Form::selectRange('tahun', date('Y'), date('Y') + 1, request('tahun'), ['class' => 'form-control', 'placeholder'=>'Pilih Tahun']) !!} --}}
-                                {!! Form::selectRange('tahun', $tahunTagihanMin, $tahunTagihanMax, request('tahun'), ['class' => 'form-control', 'placeholder'=>'Pilih Tahun']) !!}
-                                <span class="text-danger">{{ $errors->first('tahun') }}</span>
+                                <label for="tanggal_selesai" class="control-label">Tanggal Selesai</label>
+                                {!! Form::date('tanggal_selesai', request('tanggal_selesai'), ['class'=>'form-control', 'placeholder'=>'Pilih Tanggal Selesai']) !!}
+                                <span class="text-danger">{{ $errors->first('tanggal_selesai') }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="user_id" class="control-label">User</label>
+                                {!! Form::select('user_id', $users->pluck('name', 'id'), request('user_id'), ['class'=>'form-control', 'placeholder'=>'Pilih User']) !!}
+                                <span class="text-danger">{{ $errors->first('user_id') }}</span>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -64,7 +69,7 @@
                     <h4>Laporan Bank Sampah</h4>
                     <div class="row">
                         {!! Form::open(['route' => 'laporan.transaksi-bank', 'method' => 'GET']) !!}
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label for="nama" class="control-label">Nama Nasabah</label>
                                 {!! Form::text('nama', null, ['class'=>'form-control', 'placeholder' => 'Nama Nasabah']) !!}    
@@ -80,19 +85,26 @@
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="bulan" class="control-label">Bulan</label>
-                                {!! Form::selectMonth('bulan', request('bulan'), ['class'=>'form-control', 'placeholder'=>'Pilih Bulan']) !!}
-                                <span class="text-danger">{{ $errors->first('bulan') }}</span> 
+                                <label for="tanggal_mulai" class="control-label">Tanggal Mulai</label>
+                                {!! Form::date('tanggal_mulai', request('tanggal_mulai'), ['class'=>'form-control', 'placeholder'=>'Pilih Tanggal Mulai']) !!}
+                                <span class="text-danger">{{ $errors->first('tanggal_mulai') }}</span>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="tahun" class="control-label" >Tahun</label>
-                                {!! Form::selectRange('tahun', $tahunBankMin, $tahunBankMax, request('tahun'), ['class' => 'form-control', 'placeholder'=>'Pilih Tahun']) !!}
-                                <span class="text-danger">{{ $errors->first('tahun') }}</span>
+                                <label for="tanggal_selesai" class="control-label">Tanggal Selesai</label>
+                                {!! Form::date('tanggal_selesai', request('tanggal_selesai'), ['class'=>'form-control', 'placeholder'=>'Pilih Tanggal Selesai']) !!}
+                                <span class="text-danger">{{ $errors->first('tanggal_selesai') }}</span>
                             </div>
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="user_id" class="control-label">User</label>
+                                {!! Form::select('user_id', $users->pluck('name', 'id'), request('user_id'), ['class'=>'form-control', 'placeholder'=>'Pilih User']) !!}
+                                <span class="text-danger">{{ $errors->first('user_id') }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
                             <div class="form-group" style="margin-top: 25px;">
                                 <button type="submit" class="btn btn-primary">Tampil</button>
                             </div>

@@ -41,6 +41,7 @@
                                     <th>Tanggal Transaksi</th>
                                     <th>Jenis Sampah</th>
                                     <th>Total Transaksi</th>
+                                    <th>Operator</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -55,6 +56,7 @@
                                             @endforeach
                                         </td>
                                         <td>{{ $item->formatRupiah('total_harga') }}</td>
+                                        <td>{{ $item->user->name }}</td>
                                     </tr>
                                    
                                 @empty

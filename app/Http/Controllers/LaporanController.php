@@ -9,6 +9,7 @@ use App\Models\Tagihan;
 use App\Models\TransaksiBank;
 use App\Models\TransaksiPenarikan;
 use App\Models\TransaksiPenjualan;
+use App\Models\User;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Illuminate\Http\Request;
 use Excel;
@@ -51,6 +52,9 @@ class LaporanController extends Controller
         // ambil nilai tahunnya saja pada tahunBankMax
         $tahunBankMax = date('Y', strtotime($tahunBankMax));
 
+         // Ambil semua data pengguna
+        $users = User::all();
+
         $data = 
             [
                 'tahunTagihanMin' => $tahunTagihanMin,
@@ -59,6 +63,7 @@ class LaporanController extends Controller
                 'tahunBankMax' => $tahunBankMax,              
                 'kategoriLayanans' => $kategoriLayanans,
                 'jenisSampahs' => $jenisSampahs,
+                'users' => $users,
                 'routePrefix' => $this->routePrefix,
                 'title' => 'Laporan'
             ];
@@ -92,6 +97,20 @@ class LaporanController extends Controller
             $query->whereHas('nasabah', function ($q) use ($request) {
                 $q->where('kategori_layanan_id', $request->kategori_layanan_id);
             });
+        }
+
+        // Filter berdasarkan tanggal mulai dan tanggal selesai jika keduanya terisi
+        if ($request->has('tanggal_mulai') && $request->has('tanggal_selesai')
+            && !empty($request->tanggal_mulai) && !empty($request->tanggal_selesai)) {
+            $tanggalMulai = $request->tanggal_mulai;
+            $tanggalSelesai = $request->tanggal_selesai;
+
+            $query->whereBetween('tanggal_bayar', [$tanggalMulai, $tanggalSelesai]);
+        }
+
+         // Filter berdasarkan user_id jika user_id tidak kosong
+        if ($request->has('user_id') && !empty($request->user_id)) {
+            $query->where('user_id', $request->user_id);
         }
 
         // Eksekusi query dan ambil hasilnya
@@ -144,6 +163,20 @@ class LaporanController extends Controller
             $query->whereHas('nasabah', function ($q) use ($request) {
                 $q->where('kategori_layanan_id', $request->kategori_layanan_id);
             });
+        }
+
+        // Filter berdasarkan tanggal mulai dan tanggal selesai jika keduanya terisi
+        if ($request->has('tanggal_mulai') && $request->has('tanggal_selesai')
+            && !empty($request->tanggal_mulai) && !empty($request->tanggal_selesai)) {
+            $tanggalMulai = $request->tanggal_mulai;
+            $tanggalSelesai = $request->tanggal_selesai;
+
+            $query->whereBetween('tanggal_bayar', [$tanggalMulai, $tanggalSelesai]);
+        }
+
+         // Filter berdasarkan user_id jika user_id tidak kosong
+        if ($request->has('user_id') && !empty($request->user_id)) {
+            $query->where('user_id', $request->user_id);
         }
 
         // Eksekusi query dan ambil hasilnya
@@ -261,6 +294,21 @@ class LaporanController extends Controller
                 $q->where('name', 'LIKE', '%' . $request->nama . '%');
             });
         }
+
+        // Filter berdasarkan tanggal mulai dan tanggal selesai jika keduanya terisi
+        if ($request->has('tanggal_mulai') && $request->has('tanggal_selesai')
+            && !empty($request->tanggal_mulai) && !empty($request->tanggal_selesai)) {
+            $tanggalMulai = date('Y-m-d 00:00:00', strtotime($request->tanggal_mulai));
+            $tanggalSelesai = date('Y-m-d 23:59:59', strtotime($request->tanggal_selesai));
+
+            $query->whereBetween('created_at', [$tanggalMulai, $tanggalSelesai]);
+        }
+
+         // Filter berdasarkan user_id jika user_id tidak kosong
+        if ($request->has('user_id') && !empty($request->user_id)) {
+            $query->where('id_operator', $request->user_id);
+        }
+
         // Ekseskusi query dan ambil hasilnya
         $data = $query->get();
 
@@ -300,13 +348,27 @@ class LaporanController extends Controller
             });
         }
 
-
         // Filter berdasarkan nama jikan tabel transaksi bank berelasikan dengan tabel nasabah dengan menggunakan id nasabah
         if ($request->has('nama') && !empty($request->nama)) {
             $query->whereHas('nasabah', function ($q) use ($request) {
                 $q->where('name', 'LIKE', '%' . $request->nama . '%');
             });
         }
+
+        // Filter berdasarkan tanggal mulai dan tanggal selesai jika keduanya terisi
+        if ($request->has('tanggal_mulai') && $request->has('tanggal_selesai')
+            && !empty($request->tanggal_mulai) && !empty($request->tanggal_selesai)) {
+            $tanggalMulai = date('Y-m-d 00:00:00', strtotime($request->tanggal_mulai));
+            $tanggalSelesai = date('Y-m-d 23:59:59', strtotime($request->tanggal_selesai));
+
+            $query->whereBetween('created_at', [$tanggalMulai, $tanggalSelesai]);
+        }
+
+         // Filter berdasarkan user_id jika user_id tidak kosong
+        if ($request->has('user_id') && !empty($request->user_id)) {
+            $query->where('id_operator', $request->user_id);
+        }
+
         // Ekseskusi query dan ambil hasilnya
         $data = $query->get();
 
@@ -415,6 +477,9 @@ class LaporanController extends Controller
         // Ambil data dari model Transaksi Bank berdasarkan kriteria yang diberikan dalam request
         $query = TransaksiPenarikan::query();
 
+        // Gabungkan data transaksi penarikan dengan data nasabah untuk mendapatkan saldo
+        $query->with('nasabah');
+
         // Filter berdasarkan bulan jika bulan tidak kosong ambil dari kolom created_at
         if ($request->has('bulan') && !empty($request->bulan)) {
             $query->whereMonth('created_at', $request->bulan);
@@ -450,6 +515,9 @@ class LaporanController extends Controller
         // Ambil data dari model Transaksi Bank berdasarkan kriteria yang diberikan dalam request
         $query = TransaksiPenarikan::query();
 
+        // Gabungkan data transaksi penarikan dengan data nasabah untuk mendapatkan saldo
+        $query->with('nasabah');
+
         // Filter berdasarkan bulan jika bulan tidak kosong ambil dari kolom created_at
         if ($request->has('bulan') && !empty($request->bulan)) {
             $query->whereMonth('created_at', $request->bulan);
@@ -475,8 +543,6 @@ class LaporanController extends Controller
             'title' => 'Laporan Tagihan',
             'model' => $data,
         ];
-
-        // return view('laporan.laporan-penarikan-pdf', $models);
 
         // Cetak PDF dengan nama file 'laporan-stok.pdf' dan kirim data yang sudah diambil sebelumnya
         $pdf = \PDF::loadView('laporan.laporan-penarikan-pdf', $models);

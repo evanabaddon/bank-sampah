@@ -8,6 +8,8 @@ use App\Http\Requests\StoreTagihanRequest;
 use App\Http\Requests\UpdateTagihanRequest;
 use App\Models\KategoriLayanan;
 use App\Models\Nasabah;
+use App\Models\Saldo;
+use App\Models\Tagihan;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -62,17 +64,25 @@ class TagihanController extends Controller
         // ambil data RT dari nasabah
         $rt = $tagihanQuery->get()->pluck('nasabah.rt')->unique();
 
+        // ambil data RT dari nasabah
+        $rw = $tagihanQuery->get()->pluck('nasabah.rw')->unique();
+
 
         // Jika pengguna adalah admin, maka tampilkan semua data
-        if (!$currentUser || $currentUser->akses == 'admin') {
+        if ($currentUser->akses == 'admin') {
             // filter data berasarkan bulan
             if (request()->filled('bulan') && !request()->filled('tahun')) {
                 $models = $tagihanQuery->whereMonth('tanggal_tagihan', request('bulan'))->paginate(50);
             }
-
             // filter data berasarkan tahun
             if (!request()->filled('tahun') && request()->filled('tahun')) {
                 $models = $tagihanQuery->whereYear('tanggal_tagihan', request('tahun'))->paginate(50);
+            }
+
+            // filter data berasarkan bulan dan tahun
+            if (request()->filled('bulan') && request()->filled('tahun')) {
+                $models = $tagihanQuery->whereMonth('tanggal_tagihan', request('bulan'))
+                                ->whereYear('tanggal_tagihan', request('tahun'));
             }
 
             // filter data berasarkan status
@@ -101,39 +111,20 @@ class TagihanController extends Controller
                 })->paginate(50);
             }
 
-            $models = $tagihanQuery->paginate(50);
-        } else  {
-            
-            // Jika bukan admin, filter data dengan status belum tanpa user_id atau filter data dengan status lunas dengan user_id, atau filter data berdasarakan pencarian nama nasabah dengan status belum tanpa user_id atau filter data berdasarakan pencarian nama nasabah dengan status lunas dengan user_id
-            if (request()->filled('q')) {
-                $models = $tagihanQuery->where(function ($query) use ($currentUser) {
-                    $query->where('status', 'belum')->whereNull('user_id')->whereHas('nasabah', function ($query) {
-                        $query->where('name', 'like', '%' . request('q') . '%');
-                    });
-                })->orWhere(function ($query) use ($currentUser) {
-                    $query->where('status', 'lunas')->where('user_id', $currentUser->id)->whereHas('nasabah', function ($query) {
-                        $query->where('name', 'like', '%' . request('q') . '%');
-                    });
+            // filter data berdasarkan RW nasabah
+            if (request()->filled('rw')) {
+                $models = $tagihanQuery->whereHas('nasabah', function ($query) {
+                    $query->where('rw', request('rw'));
                 })->paginate(50);
             }
 
-            // Jika bukan admin, request status belum filter data dengan status belum tanpa user_id
-            if (request()->filled('status') && request('status') == 'belum') {
-                $models = $tagihanQuery->where('status', 'belum')->whereNull('user_id')->paginate(50);
-            }
-
-            // Jika bukan admin, request status lunas filter data dengan status lunas dengan user_id
-            if ( request('status') == 'lunas') {
-                $models = $tagihanQuery->where('status', 'lunas')->where('user_id', $currentUser->id)->paginate(50);
-            }
-
+            $models = $tagihanQuery->paginate(50);
+            
+        } else  {
             // Jika bukan admin, filter data dengan status belum tanpa user_id atau filter data dengan status lunas dengan user_id
-            $models = $tagihanQuery->where(function ($query) use ($currentUser) {
-                $query->where('status', 'belum')->whereNull('user_id');
-            })->orWhere(function ($query) use ($currentUser) {
+             $models = $tagihanQuery->where(function ($query) use ($currentUser) {
                 $query->where('status', 'lunas')->where('user_id', $currentUser->id);
             })->paginate(50);
-            
         } 
 
         // Ubah format tanggal tagihan dan tanggal jatuh tempo menjadi format Indonesia menggunakan Carbon
@@ -150,6 +141,7 @@ class TagihanController extends Controller
             'tahunMax' => $tahunMax,
             'tahun' => $tahun,
             'rt' => $rt,
+            'rw' => $rw,
             'kategoriLayanan' => $kategoriLayanan,
             'routePrefix' => $this->routePrefix,
             'title' => 'Tagihan'
@@ -331,6 +323,7 @@ class TagihanController extends Controller
     {
         // update tagihan
         $model = Model::findOrFail($tagihan->id);
+        dd($model);
         $model->fill($request);
         $model->save();
         
@@ -348,4 +341,65 @@ class TagihanController extends Controller
         //
     }
 
+    public function updateStatus(Request $request, $id)
+    {
+        $tagihan = Tagihan::findOrFail($id);
+        
+        // Validasi status
+        $request->validate([
+            'status' => 'required|in:belum'
+        ]);
+
+        // Hitung saldo baru setelah pembayaran
+        $saldoTerbaru = Saldo::latest()->first();
+        $saldoBaru = $saldoTerbaru->saldo - $tagihan->jumlah_tagihan;
+        
+        // Update saldo utama
+        $saldoTerbaru->update([
+            'saldo' => $saldoBaru
+        ]);
+        
+        // Update status pembayaran
+        $tagihan->update([
+            'status' => $request->status
+        ]);
+        
+        return redirect()->back()->with('success', 'Status pembayaran berhasil diperbarui.');
+    }
+
+    public function broadcastWhatsapp()
+    {
+        // Ambil semua tagihan yang belum dibayar
+        $tagihans = Model::where('status', 'belum')->get();
+
+
+        foreach ($tagihans as $tagihan) {
+            // Ambil nomor WhatsApp dari nasabah
+            $nomorWhatsApp = $tagihan->nasabah->nohp;
+
+            $bulanTagihan = Carbon::parse($tagihan->tanggal_tagihan)->translatedFormat('F');
+            $pesan = "Halo, " . $tagihan->nasabah->name . ". Ini adalah pengingat bahwa tagihan Anda dengan jumlah Rp. " . number_format($tagihan->jumlah_tagihan, 0, ',', '.')." Periode Bulan " . $bulanTagihan . " belum dibayar. Silakan segera lakukan pembayaran melalui aplikasi atau melalui outlet terdekat. Terima kasih.";
+
+            dd($pesan);
+            // Kirim pesan menggunakan API WhatsApp
+            $this->kirimPesanWhatsApp($nomorWhatsApp, $pesan);
+        }
+
+        return back()->with('success', 'Broadcast WhatsApp telah dikirim ke semua nasabah dengan tagihan belum dibayar.');
+    }
+
+    private function kirimPesanWhatsApp($nomor, $pesan)
+    {
+        // Contoh fungsi untuk mengirim pesan WhatsApp, sesuaikan dengan API yang digunakan
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request('POST', 'https://api.whatsapp.com/send', [
+            'form_params' => [
+                'phone' => $nomor,
+                'text' => $pesan,
+                'key' => 'your-api-key' // Ganti dengan API key Anda
+            ]
+        ]);
+
+        return $response;
+    }
 }

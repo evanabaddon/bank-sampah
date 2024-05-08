@@ -12,7 +12,7 @@
         <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <a href="{{ route('kategori-layanan.create') }}" class="btn btn-primary">Tambah Kategori Layanan</a>
+                    <a href="{{ route('kategori-layanan.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Tambah</a>
                     <div class="box-tools">
                         {!! Form::open(['route' => $routePrefix . '.index', 'method' => 'GET']) !!}
                         <div class="input-group input-group-sm hidden-xs" style="width: 200px;">

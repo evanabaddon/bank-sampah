@@ -72,7 +72,14 @@
                             @endif
                         </div>
                     </div>
-
+                    <div class="form-group">
+                        <label for="wa_api" class="col-sm-2 control-label">API Whatsapp Server</label>
+                        <div class="col-sm-10">
+                            {!! Form::text('wa_api', settings()->get('wa_api'), ['class'=>'form-control']) !!}
+                            <small id="wa_api_helper" class="form-text text-muted">Masukkan API untuk WhatsApp Server. Kosongkan jika tidak menggunakan layanan Notifikasi Whatsapp</small>
+                            <span class="text-danger">{{ $errors->first('wa_api') }}</span> 
+                        </div>
+                    </div>
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">

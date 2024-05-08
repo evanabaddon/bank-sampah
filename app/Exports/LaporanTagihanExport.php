@@ -1,11 +1,8 @@
 <?php
 
 namespace App\Exports;
-
-use App\Models\Tagihan;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
 class LaporanTagihanExport implements FromCollection, WithHeadings, WithMapping

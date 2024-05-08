@@ -52,6 +52,8 @@ class SettingController extends Controller
             $datasetting['app_stempel'] = $filename;
         }
 
+        
+
         Settings::set($datasetting);
         
         return back()->with('success', 'Pengaturan berhasil disimpan')->with('success', 'Pengaturan berhasil disimpan');

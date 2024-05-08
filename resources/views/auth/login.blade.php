@@ -1,9 +1,26 @@
 @extends('layouts.core')
 
 @section('content')
+<style>
+  .login-logo img {
+      max-width: 150px; /* Sesuaikan dengan ukuran yang diinginkan */
+      height: auto;
+      margin-bottom: 10px; /* Berikan margin bawah agar terpisah dari teks di bawahnya */
+  }
+  .login-box {
+      display: flex;
+      justify-content: center; /* Memposisikan elemen secara horizontal di tengah */
+      height: 80vh; /* Menggunakan tinggi layar penuh */
+      flex-direction:column;
+  }
+  
+  
+
+</style>
 <div class="login-box">
     <div class="login-logo">
-      <a href="../../index2.html"><b>Smart</b>Trash</a>
+      <a href=""><img src="{{ asset('images/'.settings()->get('app_logo')) }}" alt="SmartTrash Logo"></a>
+      <p>{{ settings()->get('app_name') }}</b></p>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
