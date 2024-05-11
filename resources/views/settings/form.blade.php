@@ -26,6 +26,13 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label for="business_name" class="col-sm-2 control-label">Nama Bisnis</label>
+                            <div class="col-sm-10">
+                                {!! Form::text('business_name', settings()->get('business_name'), ['class'=>'form-control']) !!}
+                                <span class="text-danger">{{ $errors->first('business_name') }}</span> 
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="app_email" class="col-sm-2 control-label">Email</label>
                             <div class="col-sm-10">
                                {!! Form::email('app_email', settings()->get('app_email'), ['class'=>'form-control']) !!}
@@ -56,6 +63,14 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
+                            <label for="komisi" class="col-sm-2 control-label">Komisi Outlet</label>
+                            <div class="col-sm-10">
+                                {!! Form::number('komisi', settings()->get('komisi'), ['class'=>'form-control']) !!}
+                                <small id="wa_api_helper" class="form-text text-muted">Komisi Outlet dari Transaksi / Nasabah</small>
+                                <span class="text-danger">{{ $errors->first('komisi') }}</span> 
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="app_logo" class="col-sm-2 control-label">Logo Aplikasi</label>
                             <div class="col-sm-10">
                                 {!! Form::file('app_logo', ['class'=>'form-control', 'enctype' => 'multipart/form-data', 'accept' => 'image/*']) !!}
@@ -76,15 +91,15 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="komisi" class="col-sm-2 control-label">Komisi Outlet</label>
+                            <label for="wa_server" class="col-sm-2 control-label">URL WA Server</label>
                             <div class="col-sm-10">
-                                {!! Form::number('komisi', settings()->get('komisi'), ['class'=>'form-control']) !!}
-                                <small id="wa_api_helper" class="form-text text-muted">Komisi Outlet dari Transaksi / Nasabah</small>
-                                <span class="text-danger">{{ $errors->first('komisi') }}</span> 
+                                {!! Form::text('wa_server', settings()->get('wa_server'), ['class'=>'form-control']) !!}
+                                <small id="wa_server_helper" class="form-text text-muted">Masukkan URL untuk WhatsApp Server. Kosongkan jika tidak menggunakan layanan Notifikasi Whatsapp</small>
+                                <span class="text-danger">{{ $errors->first('wa_server') }}</span> 
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="wa_api" class="col-sm-2 control-label">API Whatsapp Server</label>
+                            <label for="wa_api" class="col-sm-2 control-label">API WA Server</label>
                             <div class="col-sm-10">
                                 {!! Form::text('wa_api', settings()->get('wa_api'), ['class'=>'form-control']) !!}
                                 <small id="wa_api_helper" class="form-text text-muted">Masukkan API untuk WhatsApp Server. Kosongkan jika tidak menggunakan layanan Notifikasi Whatsapp</small>

@@ -14,48 +14,52 @@
                 <div class="box-header with-border"> 
                     <div class="row">
                         {!! Form::open(['route' => $routePrefix . '.index', 'method' => 'GET']) !!}
-                            <div class="col-sm-2">
+                            <div class="col-md-2">
                                 <input type="text" name="q" class="form-control pull-right" placeholder="Cari Nasabah" value="{{ request('q') }}">
                             </div>
-                                <div class="col-sm-1">
-                                    {!! Form::selectMonth('bulan', request('bulan'), ['class'=>'form-control', 'placeholder'=>'Pilih Bulan']) !!}
-                                </div>
-                                <div class="col-sm-1">
-                                    {!! Form::selectRange('tahun', $tahunMin, $tahunMax, request('tahun'), ['class' => 'form-control', 'placeholder'=>'Pilih Tahun']) !!}
-                                </div>
-                            
-                                <div class="col-sm-2">
-                                    {!! Form::select('kategori_layanan_id', $kategoriLayanan, request('kategori_layanan_id'), ['class' => 'form-control', 'placeholder'=>'Pilih Kategori Layanan']) !!}
-                                </div>
-                                <div class="col-sm-1">
-                                    <select name="status" class="form-control pull-left">
-                                        <option value="">Status</option>
-                                        <option value="belum" {{ request('status') == 'belum' ? 'selected' : '' }}>Belum Bayar</option>
-                                        <option value="lunas" {{ request('status') == 'lunas' ? 'selected' : '' }}>Terbayar</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-1">
-                                    {!! Form::select('rt', $rt->mapWithKeys(function ($rt) {
-                                        return [$rt => $rt];
-                                    }), request('rt'), ['class' => 'form-control', 'placeholder' => 'Pilih RT']) !!}
-                                </div>
-                                <div class="col-sm-1">
-                                    {!! Form::select('rw', $rw->mapWithKeys(function ($rw) {
-                                        return [$rw => $rw];
-                                    }), request('rw'), ['class' => 'form-control', 'placeholder' => 'Pilih RW']) !!}
-                                </div>         
-                            <div class="col-sm-1">
-                                <button type="submit" class="btn  btn-primary"><i class="fa fa-filter"></i>  Filter</button>
+                            <div class="col-md-1">
+                                {!! Form::selectMonth('bulan', request('bulan'), ['class'=>'form-control', 'placeholder'=>'Pilih Bulan']) !!}
+                            </div>
+                            <div class="col-md-1">
+                                {!! Form::selectRange('tahun', $tahunMin, $tahunMax, request('tahun'), ['class' => 'form-control', 'placeholder'=>'Pilih Tahun']) !!}
+                            </div>
+                            <div class="col-sm-2">
+                                {!! Form::select('kategori_layanan_id', $kategoriLayanan, request('kategori_layanan_id'), ['class' => 'form-control', 'placeholder'=>'Pilih Kategori Layanan']) !!}
+                            </div>
+                            <div class="col-md-1">
+                                <select name="status" class="form-control pull-left">
+                                    <option value="">Status</option>
+                                    <option value="belum" {{ request('status') == 'belum' ? 'selected' : '' }}>Belum Bayar</option>
+                                    <option value="lunas" {{ request('status') == 'lunas' ? 'selected' : '' }}>Terbayar</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                {!! Form::select('rt', $rt->mapWithKeys(function ($rt) {
+                                    return [$rt => $rt];
+                                }), request('rt'), ['class' => 'form-control', 'placeholder' => 'Pilih RT']) !!}
+                            </div>
+                            <div class="col-md-1">
+                                {!! Form::select('rw', $rw->mapWithKeys(function ($rw) {
+                                    return [$rw => $rw];
+                                }), request('rw'), ['class' => 'form-control', 'placeholder' => 'Pilih RW']) !!}
+                            </div>         
+                            <div class="col-md-1">
+                                <button type="submit" class="btn  btn-primary btn-block"><i class="fa fa-filter"></i>  Filter</button>
                             </div>
                         {!! Form::close() !!}
                             @if(Auth::user()->akses == 'admin')
-                                <div class="col-sm-2">
-                                    <a href="{{ route('buat-tagihan') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Buat Tagihan</a>
-                                    <button type="button" class="btn  btn-success" id="bayar-massal"><i class="fa fa-money"></i> Bayar Massal</button>
-                                </div>  
+                            <div class="col-md-2">
+                                <div class="dropdown">
+                                    <button class="btn btn-primary btn-block dropdown-toggle" type="button" id="more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></button>
+                                    <ul class="dropdown-menu" aria-labelledby="more">
+                                        <li><a href="{{ route('buat-tagihan') }}"><i class="fa fa-plus"></i> Buat Tagihan</a></li>
+                                        <li id="bayar-massal"><a href="#"><i class="fa fa-money"></i> Bayar Massal</a></li>
+                                        <li><a href="{{ route('broadcast') }}"><i class="fa fa-whatsapp"></i> Broadcast Tagihan</a></li>
+                                    </ul>
+                                </div>
+                            </div>
                             @endif
-                    </div> 
-                    
+                    </div>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body table-responsive">
@@ -113,7 +117,7 @@
                                                     <a href="{{ route('print.nota', ['tagihan_id' => $item->id]) }}" class="btn btn-primary" target="_blank" title="Cetak Nota">
                                                         <i class="fa fa-print"></i>
                                                     </a>
-                                                    <a href="{{ route('kirim.nota', ['tagihan_id' => $item->id]) }}" class="btn btn-success" target="_blank" title="Kirim Nota">
+                                                    <a href="{{ route('kirim.nota', ['tagihan_id' => $item->id]) }}" class="btn btn-success" title="Kirim Nota">
                                                         <i class="fa fa-paper-plane"></i>
                                                     </a>
                                                     @if(Auth::user()->akses == 'admin')

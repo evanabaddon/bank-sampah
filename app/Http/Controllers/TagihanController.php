@@ -6,15 +6,18 @@ use Carbon\Carbon;
 use App\Models\Tagihan as Model;
 use App\Http\Requests\StoreTagihanRequest;
 use App\Http\Requests\UpdateTagihanRequest;
+use App\Jobs\SendWhatsAppMessage;
 use App\Models\KategoriLayanan;
 use App\Models\Nasabah;
 use App\Models\Saldo;
 use App\Models\Tagihan;
+use App\Traits\WhatsAppApi;
 use Auth;
 use Illuminate\Http\Request;
 
 class TagihanController extends Controller
 {
+    use WhatsAppApi;
 
     private $viewIndex = 'index';
     private $viewCreate = 'form';
@@ -369,37 +372,56 @@ class TagihanController extends Controller
 
     public function broadcastWhatsapp()
     {
-        // Ambil semua tagihan yang belum dibayar
-        $tagihans = Model::where('status', 'belum')->get();
+        // Mendapatkan tanggal awal bulan ini
+        $tanggalAwalBulanIni = now()->startOfMonth()->toDateString();
 
+        // dd($tanggalAwalBulanIni);
 
+        // Mendapatkan tagihan yang belum dibayar dan memiliki tanggal tagihan pada bulan ini
+        $tagihans = Tagihan::where('status', 'belum')
+                            ->where('tanggal_tagihan', $tanggalAwalBulanIni)
+                            ->get();
+
+        // Cek apakah berhasil mengambil data
+        // dd($tagihans);
+
+        // Kirim pesan WhatsApp untuk setiap tagihan
         foreach ($tagihans as $tagihan) {
             // Ambil nomor WhatsApp dari nasabah
             $nomorWhatsApp = $tagihan->nasabah->nohp;
 
+            // cek nomor hp nasabah, jika didepan ada 08 maka ganti dengan 628
+            if (substr($nomorWhatsApp, 0, 2) == '08') {
+                $nomorWhatsApp = '628' . substr($nomorWhatsApp, 2);
+            } else {
+                $nomorWhatsApp = $nomorWhatsApp;
+            }
+
+
+            // Buat pesan WhatsApp
             $bulanTagihan = Carbon::parse($tagihan->tanggal_tagihan)->translatedFormat('F');
             $pesan = "Halo, " . $tagihan->nasabah->name . ". Ini adalah pengingat bahwa tagihan Anda dengan jumlah Rp. " . number_format($tagihan->jumlah_tagihan, 0, ',', '.')." Periode Bulan " . $bulanTagihan . " belum dibayar. Silakan segera lakukan pembayaran melalui aplikasi atau melalui outlet terdekat. Terima kasih.";
 
-            dd($pesan);
+            // dd($nomorWhatsApp);
             // Kirim pesan menggunakan API WhatsApp
-            $this->kirimPesanWhatsApp($nomorWhatsApp, $pesan);
+            $waResponse = $this->sendMessage($nomorWhatsApp, $pesan);
+            
+            // Periksa respon dari pengiriman pesan
+            if ($waResponse) {
+                // Jika berhasil, atur nilai whatsapp_sent menjadi 1
+                $tagihan->update(['whatsapp_sent' => 1]);
+            } else {
+                // Jika gagal, lakukan penanganan kesalahan
+                Log::error('Gagal mengirim pesan WhatsApp untuk tagihan dengan ID: ' . $tagihan->id);
+                // Lakukan tindakan lain sesuai kebutuhan aplikasi Anda, misalnya, kirim notifikasi ke admin
+            }
         }
 
-        return back()->with('success', 'Broadcast WhatsApp telah dikirim ke semua nasabah dengan tagihan belum dibayar.');
+        return back()->with('success', 'Broadcast WhatsApp telah dimasukkan ke dalam antrian.');
     }
 
-    private function kirimPesanWhatsApp($nomor, $pesan)
-    {
-        // Contoh fungsi untuk mengirim pesan WhatsApp, sesuaikan dengan API yang digunakan
-        $client = new \GuzzleHttp\Client();
-        $response = $client->request('POST', 'https://api.whatsapp.com/send', [
-            'form_params' => [
-                'phone' => $nomor,
-                'text' => $pesan,
-                'key' => 'your-api-key' // Ganti dengan API key Anda
-            ]
-        ]);
 
-        return $response;
-    }
+
+
+    
 }

@@ -6,9 +6,12 @@ use App\Models\Nasabah;
 use App\Models\Saldo;
 use App\Models\Tagihan;
 use Illuminate\Http\Request;
+use App\Traits\WhatsAppApi; 
 
 class NotaController extends Controller
 {
+    use WhatsAppApi;
+
     public function print($tagihan_id)
     {
         $tagihan = Tagihan::findOrFail($tagihan_id);
@@ -123,7 +126,7 @@ class NotaController extends Controller
         $bulan_tagihan = date('F Y', strtotime($tagihan->tanggal_tagihan));
 
         // footer pesan. ambil dari env nama aplikasi
-        $footer = env('APP_NAME');
+        $footer = settings()->get('business_name');
 
         // ambil link nota.print berdasarkan tagihan_id ambil dari fungsi print
         $link = route('kwitansi.nota', ['tagihan_id' => $tagihan->id]);
@@ -135,21 +138,22 @@ class NotaController extends Controller
             $nasabah->nohp = $nasabah->nohp;
         }
 
-        // Format URL untuk mengirim pesan ke WhatsApp nasabah dengan status tagihan lunas dan link nota
-        $whatsappUrl = 'https://api.whatsapp.com/send?phone='
-            . $nasabah->nohp
-            . '&text=Halo%20' . $nasabah->nama
-            . ',%20tagihan%20anda%20untuk%20bulan%20'
-            . $bulan_tagihan
-            . '%20dengan%20nomor%20tagihan%20'
-            . $nomor_tagihan
-            . '%20telah%20lunas.%20Terima%20kasih.%0A%0A'
-            . $footer
-            . '%0A%0A'
-            . $link;
+        $pesan = 'Halo ' . $nasabah->name .', tagihan anda untuk bulan ' .$bulan_tagihan .' dengan nomor tagihan ' .$nomor_tagihan . ' telah lunas. Terima kasih. ' . $footer . '. '. $link;
 
-        // dd($whatsappUrl);
-        // Redirect ke URL WhatsApp dengan membuka tab baru
-        return redirect()->away($whatsappUrl)->withHeaders(['target' => '_blank',]);
+        // Kirim pesan melalui WhatsApp menggunakan metode sendMessage dari traits WhatsAppApi
+        $waResponse = $this->sendMessage($nasabah->nohp, $pesan);
+
+        // Periksa status respon
+        $response = json_decode($waResponse, true);
+        // dd($response);
+
+        if (isset($response['status']) && $response['status'] === false) {
+            // Jika terjadi kesalahan dalam pengiriman pesan WhatsApp
+            return redirect()->back()->with('error', 'Data pemakaian berhasil disimpan! Gagal mengirim pesan WhatsApp: ' . $response['message']);
+        } else {
+            // Jika pengiriman berhasil, lanjutkan dengan operasi lainnya
+            return redirect()->back()->with('success', 'Data pemakaian berhasil disimpan! Pesan WhatsApp berhasil dikirim!');
+        }
+
     }
 }

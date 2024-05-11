@@ -113,6 +113,7 @@ Route::prefix('admin')->middleware(['auth', 'auth.admin'])->group(function () {
     Route::post('nasabah/import', 'NasabahController@import')->name('nasabah.import');
     Route::get('nasabah/export', 'NasabahController@export')->name('nasabah.export');
     Route::get('/broadcast', 'TagihanController@broadcastWhatsapp')->name('broadcast');
+    Route::get('/queue-monitor', 'QueueMonitorController@index')->name('queue-monitor.index');
 
 });
 
