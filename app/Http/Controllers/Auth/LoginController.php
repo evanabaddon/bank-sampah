@@ -43,7 +43,7 @@ class LoginController extends Controller
     {
         if ($user->akses == 'admin') {
             return redirect()->route('admin.beranda');
-        } elseif ($user->akses == 'operator') {
+        } elseif ($user->akses == 'operator'|| $user->akses == 'outlet') {
             return redirect()->route('operator.beranda');
         } else {
             Auth::user()->logout();

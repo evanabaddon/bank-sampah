@@ -52,8 +52,11 @@ class LaporanController extends Controller
         // ambil nilai tahunnya saja pada tahunBankMax
         $tahunBankMax = date('Y', strtotime($tahunBankMax));
 
-         // Ambil semua data pengguna
+        // Ambil semua data pengguna
         $users = User::all();
+
+        // ambil user outlet
+        $outlet = User::where('akses', 'outlet')->get();
 
         $data = 
             [
@@ -64,6 +67,7 @@ class LaporanController extends Controller
                 'kategoriLayanans' => $kategoriLayanans,
                 'jenisSampahs' => $jenisSampahs,
                 'users' => $users,
+                'outlet' => $outlet,
                 'routePrefix' => $this->routePrefix,
                 'title' => 'Laporan'
             ];
@@ -135,6 +139,178 @@ class LaporanController extends Controller
         ];
 
         return view('laporan.laporan-tagihan', $models);
+    }
+
+    // function laporan tagihan berdasarkan request dari index
+    public function outlet(Request $request)
+    {
+        // Periksa apakah user_id telah disertakan dalam permintaan
+        if (!$request->has('user_id') || empty($request->user_id)) {
+            // Redirect user ke halaman sebelumnya dengan pesan kesalahan
+            return redirect()->back()->with('error', 'Anda harus memilih outlet terlebih dahulu.');
+        }
+
+        // Ambil data dari model Tagihan berdasarkan kriteria yang diberikan dalam request
+        $query = Tagihan::query();
+
+        $query->where('status','lunas');
+
+        // Filter berdasarkan bulan jika bulan tidak kosong
+        if ($request->has('bulan') && !empty($request->bulan)) {
+            $query->whereMonth('tanggal_tagihan', $request->bulan);
+        }
+
+        // Filter berdasarkan tahun jika tahun tidak kosong
+        if ($request->has('tahun') && !empty($request->tahun)) {
+            $query->whereYear('tanggal_tagihan', $request->tahun);
+        }
+
+        // Filter berdasarkan kategori layanan jika kategori layanan tidak kosong
+        if ($request->has('kategori_layanan_id') && !empty($request->kategori_layanan_id)) {
+            $query->whereHas('nasabah', function ($q) use ($request) {
+                $q->where('kategori_layanan_id', $request->kategori_layanan_id);
+            });
+        }
+
+        // Filter berdasarkan tanggal mulai dan tanggal selesai jika keduanya terisi
+        if ($request->has('tanggal_mulai') && $request->has('tanggal_selesai')
+            && !empty($request->tanggal_mulai) && !empty($request->tanggal_selesai)) {
+            $tanggalMulai = $request->tanggal_mulai;
+            $tanggalSelesai = $request->tanggal_selesai;
+
+            $query->whereBetween('tanggal_bayar', [$tanggalMulai, $tanggalSelesai]);
+        }
+
+         // Filter berdasarkan user_id jika user_id tidak kosong
+        if ($request->has('user_id') && !empty($request->user_id)) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        // Eksekusi query dan ambil hasilnya
+        $data = $query->get();
+
+        // Ambil kategori layanan berdasarkan 'kategori_layanan_id' dari query parameter
+        $kategoriLayanan = KategoriLayanan::find($request->kategori_layanan_id);
+
+        // ambil outlet
+        $outlet = User::find($request->user_id);
+
+        // Ubah format tanggal tagihan dan tanggal jatuh tempo menjadi format Indonesia menggunakan Carbon
+        foreach ($data as $model) {
+            $model->tanggal_tagihan = \Carbon\Carbon::parse($model->tanggal_tagihan)->translatedFormat('d F Y');
+            $model->tanggal_jatuh_tempo = \Carbon\Carbon::parse($model->tanggal_jatuh_tempo)->translatedFormat('d F Y');
+            $model->tanggal_bayar = \Carbon\Carbon::parse($model->tanggal_bayar)->translatedFormat('d F Y');
+        }
+        $komisi = floatval(settings()->get('komisi'));
+
+        // total komisi, hitung jumlah transaksi x komisi
+        $totalTransaksi = $data->count(); // Menghitung jumlah transaksi
+        $totalKomisi = $totalTransaksi * $komisi; 
+
+        // Hitung total jumlah_tagihan dari semua tagihan
+        $totalJumlahTagihan = $data->sum('jumlah_tagihan');
+
+        // Kirim data ke view dengan nama variabel yang benar
+        $models = [
+            'routePrefix' => $this->routePrefix,
+            'title' => 'Laporan Tagihan',
+            'kategoriLayanan' => $kategoriLayanan,
+            'outlet'=> $outlet,
+            'model' => $data, // Ganti 'data' menjadi 'model'
+            'komisi'=> $komisi,
+            'totalKomisi' => $totalKomisi,
+            'totalJumlahTagihan' => $totalJumlahTagihan,
+        ];
+
+        return view('laporan.laporan-outlet', $models);
+    }
+
+    // function laporan tagihan berdasarkan request dari index
+    public function cetakPdfOutlet(Request $request)
+    {
+        // Periksa apakah user_id telah disertakan dalam permintaan
+        if (!$request->has('user_id') || empty($request->user_id)) {
+            // Redirect user ke halaman sebelumnya dengan pesan kesalahan
+            return redirect()->back()->with('error', 'Anda harus memilih outlet terlebih dahulu.');
+        }
+        
+        // Ambil data dari model Tagihan berdasarkan kriteria yang diberikan dalam request
+        $query = Tagihan::query();
+
+        $query->where('status','lunas');
+
+        // Filter berdasarkan bulan jika bulan tidak kosong
+        if ($request->has('bulan') && !empty($request->bulan)) {
+            $query->whereMonth('tanggal_tagihan', $request->bulan);
+        }
+
+        // Filter berdasarkan tahun jika tahun tidak kosong
+        if ($request->has('tahun') && !empty($request->tahun)) {
+            $query->whereYear('tanggal_tagihan', $request->tahun);
+        }
+
+        // Filter berdasarkan kategori layanan jika kategori layanan tidak kosong
+        if ($request->has('kategori_layanan_id') && !empty($request->kategori_layanan_id)) {
+            $query->whereHas('nasabah', function ($q) use ($request) {
+                $q->where('kategori_layanan_id', $request->kategori_layanan_id);
+            });
+        }
+
+        // Filter berdasarkan tanggal mulai dan tanggal selesai jika keduanya terisi
+        if ($request->has('tanggal_mulai') && $request->has('tanggal_selesai')
+            && !empty($request->tanggal_mulai) && !empty($request->tanggal_selesai)) {
+            $tanggalMulai = $request->tanggal_mulai;
+            $tanggalSelesai = $request->tanggal_selesai;
+
+            $query->whereBetween('tanggal_bayar', [$tanggalMulai, $tanggalSelesai]);
+        }
+
+         // Filter berdasarkan user_id jika user_id tidak kosong
+        if ($request->has('user_id') && !empty($request->user_id)) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        // Eksekusi query dan ambil hasilnya
+        $data = $query->get();
+
+        // Ambil kategori layanan berdasarkan 'kategori_layanan_id' dari query parameter
+        $kategoriLayanan = KategoriLayanan::find($request->kategori_layanan_id);
+
+        // ambil outlet
+        $outlet = User::find($request->user_id);
+
+        // Ubah format tanggal tagihan dan tanggal jatuh tempo menjadi format Indonesia menggunakan Carbon
+        foreach ($data as $model) {
+            $model->tanggal_tagihan = \Carbon\Carbon::parse($model->tanggal_tagihan)->translatedFormat('d F Y');
+            $model->tanggal_jatuh_tempo = \Carbon\Carbon::parse($model->tanggal_jatuh_tempo)->translatedFormat('d F Y');
+            $model->tanggal_bayar = \Carbon\Carbon::parse($model->tanggal_bayar)->translatedFormat('d F Y');
+        }
+        $komisi = floatval(settings()->get('komisi'));
+
+        // total komisi, hitung jumlah transaksi x komisi
+        $totalTransaksi = $data->count(); // Menghitung jumlah transaksi
+        $totalKomisi = $totalTransaksi * $komisi; 
+
+        // Hitung total jumlah_tagihan dari semua tagihan
+        $totalJumlahTagihan = $data->sum('jumlah_tagihan');
+
+        // Kirim data ke view dengan nama variabel yang benar
+        $models = [
+            'routePrefix' => $this->routePrefix,
+            'title' => 'Laporan Tagihan',
+            'kategoriLayanan' => $kategoriLayanan,
+            'outlet'=> $outlet,
+            'model' => $data, // Ganti 'data' menjadi 'model'
+            'komisi'=> $komisi,
+            'totalKomisi' => $totalKomisi,
+            'totalJumlahTagihan' => $totalJumlahTagihan,
+        ];
+
+        // return view('laporan.laporan-outlet-pdf', $models);
+
+        // Cetak PDF dengan nama file 'laporan-tagihan.pdf' dan kirim data yang sudah diambil sebelumnya
+        $pdf = \PDF::loadView('laporan.laporan-outlet-pdf', $models);
+        return $pdf->download('laporan-outlet.pdf');
     }
 
     // function cetak pdf tagihan

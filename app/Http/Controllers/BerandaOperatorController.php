@@ -5,13 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Nasabah;
 use App\Models\Tagihan;
 use App\Models\TransaksiBank;
-use DB;
-use Illuminate\Http\Request;
 
 class BerandaOperatorController extends Controller
 {
-    
-
     public function index()
     {
        // daftar transaksi bank terbaru berdasarkan user yang login

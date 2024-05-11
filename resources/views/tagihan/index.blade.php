@@ -48,10 +48,12 @@
                                 <button type="submit" class="btn  btn-primary"><i class="fa fa-filter"></i>  Filter</button>
                             </div>
                         {!! Form::close() !!}
-                        <div class="col-sm-2">
-                            <button type="button" class="btn  btn-success" id="bayar-massal"><i class="fa fa-money"></i> Bayar Massal</button>
-                            <a href="{{ route('buat-tagihan') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Buat Tagihan</a>
-                        </div>  
+                            @if(Auth::user()->akses == 'admin')
+                                <div class="col-sm-2">
+                                    <a href="{{ route('buat-tagihan') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Buat Tagihan</a>
+                                    <button type="button" class="btn  btn-success" id="bayar-massal"><i class="fa fa-money"></i> Bayar Massal</button>
+                                </div>  
+                            @endif
                     </div> 
                     
                 </div>

@@ -18,7 +18,7 @@
                 <!-- /.box-header -->
                 <!-- form start -->
                 
-                <form role="form" action="{{ route('user.store') }}" method="POST" class="form-horizontal">
+                {!! Form::model($model, ['route' => $route, 'method' => $method, 'class'=>'form-horizontal']) !!}
                     @csrf
                     <div class="box-body">
                         <div class="form-group">
@@ -48,7 +48,8 @@
                                 {!! Form::select('akses', [
                                     'admin' => 'Admin',
                                     'operator' => 'Operator',
-                                ], null, ['class'=>'form-control']) !!}
+                                    'outlet' => 'Outlet',
+                                ], $model->akses ?? null, ['class'=>'form-control']) !!}
                             </div>
                         </div>
                         <div class="form-group">
@@ -65,7 +66,7 @@
                         <button type="submit" class="btn btn-primary pull-right">Simpan</button>
                     </div>
                   <!-- /.box-footer -->
-                </form>
+                  {!! Form::close() !!}
             </div>
             <!-- /.box -->
         </div>

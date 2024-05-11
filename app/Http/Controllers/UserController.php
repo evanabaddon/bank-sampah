@@ -60,7 +60,7 @@ class UserController extends Controller
                 'email' => 'email|unique:users',
                 'nohp' => 'required|unique:users',
                 'password'=> 'required',
-                'akses' => 'required|in:operator,admin'
+                'akses' => 'required|in:operator,admin,outlet'
             ]
         );
         $requestData['password'] = bcrypt($requestData['password']);
@@ -116,7 +116,7 @@ class UserController extends Controller
                 'email' => 'email|unique:users,email,' . $id,
                 'nohp' => 'required|unique:users,nohp,' . $id,
                 'password'=> 'nullable',
-                'akses' => 'required|in:operator,admin'
+                'akses' => 'required|in:operator,admin,outlet'
             ]
         );
         $model = Model::findOrFail($id);

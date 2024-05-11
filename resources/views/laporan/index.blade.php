@@ -112,6 +112,45 @@
                         {!! Form::close() !!}
                     </div>
                     <hr>
+                    <h4>Laporan Komisi Outlet</h4>
+                    <div class="row">
+                        {!! Form::open(['route' => 'laporan.outlet', 'method' => 'GET']) !!}
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="kategori_layanan_id" class="control-label">Layanan</label>
+                                {!! Form::select('kategori_layanan_id', $kategoriLayanans->pluck('name', 'id'), null, ['class'=>'form-control', 'id' => 'kategori_layanan', 'placeholder' => 'Pilih Layanan']) !!}    
+                                <span class="text-danger">{{ $errors->first('kategori_layanan_id') }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="tanggal_mulai" class="control-label">Tanggal Mulai</label>
+                                {!! Form::date('tanggal_mulai', request('tanggal_mulai'), ['class'=>'form-control', 'placeholder'=>'Pilih Tanggal Mulai']) !!}
+                                <span class="text-danger">{{ $errors->first('tanggal_mulai') }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="tanggal_selesai" class="control-label">Tanggal Selesai</label>
+                                {!! Form::date('tanggal_selesai', request('tanggal_selesai'), ['class'=>'form-control', 'placeholder'=>'Pilih Tanggal Selesai']) !!}
+                                <span class="text-danger">{{ $errors->first('tanggal_selesai') }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="user_id" class="control-label">User</label>
+                                {!! Form::select('user_id', $outlet->pluck('name', 'id'), request('user_id'), ['class'=>'form-control', 'placeholder'=>'Pilih Outlet']) !!}
+                                <span class="text-danger">{{ $errors->first('user_id') }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group" style="margin-top: 25px;">
+                                <button type="submit" class="btn btn-primary">Tampil</button>
+                            </div>
+                        </div>
+                        {!! Form::close() !!}
+                    </div>
+                    <hr>
                     <h4>Laporan Penarikan Saldo</h4>
                     <div class="row">
                         {!! Form::open(['route' => 'laporan.transaksi-penarikan', 'method' => 'GET']) !!}

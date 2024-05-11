@@ -24,18 +24,20 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
-Route::get('/', function () {
-    
-        if (Auth::check()) {
-            if (Auth::user()->akses == 'admin') {
-                return redirect()->route('admin.beranda');
-            } elseif (Auth::user()->akses == 'operator') {
-                return redirect()->route('operator.beranda');
-            }
-        } else {
-            return view('login');
+ Route::get('/', function () {
+    if (Auth::check()) {
+        $userAkses = Auth::user()->akses;
+
+        if ($userAkses == 'admin') {
+            return redirect()->route('admin.beranda');
+        } elseif ($userAkses == 'operator' || $userAkses == 'outlet') {
+            return redirect()->route('operator.beranda');
         }
+    } else {
+        return view('login');
+    }
 });
+
 
 // redirect / to /login
 Route::redirect('/', '/login');
@@ -43,11 +45,12 @@ Route::redirect('/', '/login');
 Auth::routes();
 
 Route::get('/home', function () {
-    
     if (Auth::check()) {
-        if (Auth::user()->akses == 'admin') {
+        $userAkses = Auth::user()->akses;
+        
+        if ($userAkses == 'admin') {
             return redirect()->route('admin.beranda');
-        } elseif (Auth::user()->akses == 'operator') {
+        } elseif ($userAkses == 'operator' || $userAkses == 'outlet') {
             return redirect()->route('operator.beranda');
         }
     } else {
@@ -92,6 +95,8 @@ Route::prefix('admin')->middleware(['auth', 'auth.admin'])->group(function () {
     Route::resource('laporan', LaporanController::class);
     Route::get('laporan-tagihan', 'LaporanController@tagihan')->name('laporan.tagihan');
     Route::get('laporan-tagihan/cetak-pdf', 'LaporanController@cetakPdfTagihan')->name('laporan.tagihan.cetak-pdf');
+    Route::get('laporan-outlet', 'LaporanController@outlet')->name('laporan.outlet');
+    Route::get('laporan-outlet/cetak-pdf', 'LaporanController@cetakPdfOutlet')->name('laporan.outlet.cetak-pdf');
     Route::get('laporan-transaksi-bank', 'LaporanController@transaksiBank')->name('laporan.transaksi-bank');
     Route::get('laporan-transaksi-bank/cetak-pdf', 'LaporanController@cetakPdfTransaksiBank')->name('laporan.transaksi.bank.cetak-pdf');
     Route::get('laporan-transaksi-penjualan', 'LaporanController@transaksiPenjualan')->name('laporan.transaksi-penjualan');

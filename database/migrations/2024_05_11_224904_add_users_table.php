@@ -23,6 +23,7 @@ return new class extends Migration
                 [
                     'admin',
                     'operator',
+                    'outlet',
                     'nasabah',
                 ]
             )->default('nasabah');
