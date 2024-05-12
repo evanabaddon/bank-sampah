@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ApiStatus;
 use Illuminate\Http\Request;
 use Settings;
 use Illuminate\Support\Facades\Storage;
@@ -10,7 +11,10 @@ class SettingController extends Controller
 {
     public function create()
     {
-        return view('settings.form');
+        // Ambil data status dari database
+        $apiStatus = ApiStatus::latest()->first();
+        
+        return view('settings.form', compact(['apiStatus']));
     }
 
     public function store(Request $request)

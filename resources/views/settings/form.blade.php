@@ -106,6 +106,18 @@
                                 <span class="text-danger">{{ $errors->first('wa_api') }}</span> 
                             </div>
                         </div>
+                        {{-- <div class="form-group">
+                            <label class="col-sm-2 control-label" for="server-status">Server Status</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="server-status" value="{{ $apiStatus->server_status ?? '' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="device-status">Device Status</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="device-status" value="{{ $apiStatus->device_status ?? '' }}" readonly>
+                            </div>
+                        </div> --}}
                     </div>
                     
                 </div>
