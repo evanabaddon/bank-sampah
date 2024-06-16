@@ -58,8 +58,8 @@ class TransaksiBankController extends Controller
     public function create($id_nasabah = null)
     {
         
-        // Get nasabah when is_bsp = 1
-        $nasabahs = Nasabah::where('is_bsp', 1)->pluck('name', 'id')->all();
+        // Get nasabah when is_bsp = 1 and order by name
+        $nasabahs = Nasabah::where('is_bsp', 1)->orderBy('name')->pluck('name', 'id')->all();
 
         // Get jenis sampah and convert it to an array with 'id' as the key and 'harga' as the value
         $jenisSampahs = JenisSampah::pluck('name', 'id')->all();

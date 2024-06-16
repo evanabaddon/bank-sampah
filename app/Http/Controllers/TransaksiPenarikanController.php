@@ -49,7 +49,7 @@ class TransaksiPenarikanController extends Controller
     {
         
         // Get nasabah when is_bsp = 1
-        $nasabahs = Nasabah::where('is_bsp', 1)->pluck('name', 'id')->all();
+        $nasabahs = Nasabah::where('is_bsp', 1)->orderBy('name')->pluck('name', 'id')->all();
 
        
         // Define additional data

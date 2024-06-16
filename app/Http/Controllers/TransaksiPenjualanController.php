@@ -49,7 +49,7 @@ class TransaksiPenjualanController extends Controller
     public function create()
     {
         // mengambil data dari table jenis sampah
-        $jenisSampahs = JenisSampah::pluck('name', 'id')->all();
+        $jenisSampahs = JenisSampah::pluck('name', 'id')->orderBy('name')->all();
 
         // mengabil data pengepul
         $pengepuls = Pengepul::pluck('name', 'id')->all();
