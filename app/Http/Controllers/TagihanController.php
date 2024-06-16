@@ -61,7 +61,7 @@ class TagihanController extends Controller
         // Query builder untuk mengambil data tagihan berdasarkan user_id
         $tagihanQuery = Model::with('nasabah.kategoriLayanan')->latest();
 
-         // Tambahkan orderBy ke query builder untuk mengurutkan berdasarkan tanggal tagihan
+        // Tambahkan orderBy ke query builder untuk mengurutkan berdasarkan tanggal tagihan
         $tagihanQuery->orderBy('tanggal_tagihan', 'asc');
 
         // ambil data RT dari nasabah
@@ -70,65 +70,50 @@ class TagihanController extends Controller
         // ambil data RT dari nasabah
         $rw = $tagihanQuery->get()->pluck('nasabah.rw')->unique();
 
+        // Menyimpan filter dalam variabel
+        $filters = $request->only(['bulan', 'tahun', 'status', 'kategori_layanan_id', 'q', 'rt', 'rw']);
 
         // Jika pengguna adalah admin, maka tampilkan semua data
         if ($currentUser->akses == 'admin') {
-            // filter data berasarkan bulan
-            if (request()->filled('bulan') && !request()->filled('tahun')) {
-                $models = $tagihanQuery->whereMonth('tanggal_tagihan', request('bulan'))->paginate(50);
-            }
-            // filter data berasarkan tahun
-            if (!request()->filled('tahun') && request()->filled('tahun')) {
-                $models = $tagihanQuery->whereYear('tanggal_tagihan', request('tahun'))->paginate(50);
-            }
-
-            // filter data berasarkan bulan dan tahun
-            if (request()->filled('bulan') && request()->filled('tahun')) {
-                $models = $tagihanQuery->whereMonth('tanggal_tagihan', request('bulan'))
-                                ->whereYear('tanggal_tagihan', request('tahun'));
-            }
-
-            // filter data berasarkan status
-            if (request()->filled('status')) {
-                $models = $tagihanQuery->where('status', request('status'))->paginate(50);
-            }
-
-            // filter data berasarkan kategori layanan
-            if (request()->filled('kategori_layanan_id')) {
-                $models = $tagihanQuery->whereHas('nasabah', function ($query) {
-                    $query->where('kategori_layanan_id', request('kategori_layanan_id'));
-                })->paginate(50);
-            }
-
-            // filter data berasarkan nama nasabah
-            if (request()->filled('q')) {
-                $models = $tagihanQuery->whereHas('nasabah', function ($query) {
-                    $query->where('name', 'like', '%' . request('q') . '%');
-                })->paginate(50);
+            foreach ($filters as $key => $value) {
+                if ($key === 'bulan' && !empty($value)) {
+                    $tagihanQuery->whereMonth('tanggal_tagihan', $value);
+                }
+                if ($key === 'tahun' && !empty($value)) {
+                    $tagihanQuery->whereYear('tanggal_tagihan', $value);
+                }
+                if ($key === 'status' && !empty($value)) {
+                    $tagihanQuery->where('status', $value);
+                }
+                if ($key === 'kategori_layanan_id' && !empty($value)) {
+                    $tagihanQuery->whereHas('nasabah', function ($query) use ($value) {
+                        $query->where('kategori_layanan_id', $value);
+                    });
+                }
+                if ($key === 'q' && !empty($value)) {
+                    $tagihanQuery->whereHas('nasabah', function ($query) use ($value) {
+                        $query->where('name', 'like', '%' . $value . '%');
+                    });
+                }
+                if ($key === 'rt' && !empty($value)) {
+                    $tagihanQuery->whereHas('nasabah', function ($query) use ($value) {
+                        $query->where('rt', $value);
+                    });
+                }
+                if ($key === 'rw' && !empty($value)) {
+                    $tagihanQuery->whereHas('nasabah', function ($query) use ($value) {
+                        $query->where('rw', $value);
+                    });
+                }
             }
 
-            // filter data berdasarkan RT nasabah
-            if (request()->filled('rt')) {
-                $models = $tagihanQuery->whereHas('nasabah', function ($query) {
-                    $query->where('rt', request('rt'));
-                })->paginate(50);
-            }
-
-            // filter data berdasarkan RW nasabah
-            if (request()->filled('rw')) {
-                $models = $tagihanQuery->whereHas('nasabah', function ($query) {
-                    $query->where('rw', request('rw'));
-                })->paginate(50);
-            }
-
-            $models = $tagihanQuery->paginate(50);
-            
-        } else  {
-            // Jika bukan admin, filter data dengan status belum tanpa user_id atau filter data dengan status lunas dengan user_id
-             $models = $tagihanQuery->where(function ($query) use ($currentUser) {
+            $models = $tagihanQuery->paginate(50)->appends($filters);
+        } else {
+            // Jika bukan admin, filter data dengan status lunas dan user_id
+            $models = $tagihanQuery->where(function ($query) use ($currentUser) {
                 $query->where('status', 'lunas')->where('user_id', $currentUser->id);
-            })->paginate(50);
-        } 
+            })->paginate(50)->appends($filters);
+        }
 
         // Ubah format tanggal tagihan dan tanggal jatuh tempo menjadi format Indonesia menggunakan Carbon
         foreach ($models as $model) {
@@ -152,6 +137,7 @@ class TagihanController extends Controller
 
         return view('tagihan.' . $this->viewIndex, $data);
     }
+
 
     // buat tagihan untuk semua nasabah yang sudah terdaftar selama 1 tahun
     public function buatTagihan()

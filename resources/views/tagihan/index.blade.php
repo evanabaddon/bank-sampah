@@ -195,6 +195,7 @@
             <!-- /.box -->
         </div>
     </div>
+    
     <!-- Modal Pembayaran Massal -->
     <div class="modal fade" id="modal-bayar-massal" tabindex="-1" role="dialog" aria-labelledby="modal-bayar-massal-label">
         <div class="modal-dialog modal-lg" role="document">
